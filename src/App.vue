@@ -1,11 +1,23 @@
 <template>
-  <nav>
+  <nav class="nav-1">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/painel">Painel</router-link>
+    <router-link to="/maquinas">Maquinas</router-link>
+    <router-link to="/produtividade">Produtividade</router-link>
+    <router-link to="/parada">Paradas</router-link>
   </nav>
   <router-view/>
 </template>
+<script>
+import M from 'materialize-css'
 
+export default {
+
+mounted () {
+    M.AutoInit()
+},
+}
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -15,13 +27,16 @@
   color: #2c3e50;
 }
 
-nav {
-  padding: 30px;
+.nav-1 {
+  background-color: rgb(105, 105, 196);
+  display: flex;
+  justify-content: center;
 }
 
 nav a {
   font-weight: bold;
   color: #2c3e50;
+  padding: 0 1vmax;
 }
 
 nav a.router-link-exact-active {

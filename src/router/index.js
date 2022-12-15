@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-
+import Produtividade from '../views/ProdutividadeView.vue'
 const routes = [
   {
     path: '/',
@@ -8,27 +8,26 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-  ,
-  {
     path: '/produtividade',
     name: 'produtividade',
-    component: () => import(/* webpackChunkName: "produtividade" */ '../views/ProdutividadeView.vue')
-  }
-  ,
+    component: Produtividade
+  },
   {
+    path: '/painel',
+    name: 'painel',
+    component: () => import(/* webpackChunkName: "painel" */ '../views/PainelView.vue')
+  },{
     path: '/maquinas',
     name: 'maquinas',
     component: () => import(/* webpackChunkName: "maquinas" */ '../views/MaquinasView.vue')
-  }
-  ,
-  {
-    path: '/paradas',
-    name: 'paradas',
-    component: () => import(/* webpackChunkName: "paradas" */ '../views/ParadasView.vue')
+  },{
+    path: '/maquinas',
+    name: 'maquinas',
+    component: () => import(/* webpackChunkName: "maquinas" */ '../views/MaquinasView.vue')
+  },{
+    path: '/parada',
+    name: 'parada',
+    component: () => import(/* webpackChunkName: "parada" */ '../views/ParadasView.vue')
   }
 ]
 
