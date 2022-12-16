@@ -1,8 +1,37 @@
 <template>
   <div class="produtividade">
+    <vue-gauge :refid="'type-unique-id'" :options="opts1"></vue-gauge>
+    <vue-gauge :refid="'type-unique-id'" :options="opts2"></vue-gauge>
+
+    <vue-gauge :refid="'type-unique-id'" :options="{
+        needleValue:valorOee,
+        arcDelimiters:[40],
+    }">
+    </vue-gauge>
+    <!-- <vue-gauge :refid="'type-unique-id'" :options="{
+        'needleValue':utilizacao,
+        'arcDelimiters':[40],
+        'agulhaUpdateSpeed' : 33,
+        
+    }">
+    
+    <vue-gauge :refid="'type-unique-id'" :options="{
+        'needleValue':utilizacao,
+        'arcDelimiters':[40],
+    }">
+    </vue-gauge>
+    <vue-gauge :refid="'type-unique-id'" :options=opts>
+    </vue-gauge> -->
+    
+    
+    {{oee}}
+    {{eficiencia}}
+    {{refugo}}
+    {{utilizacao}}
     <h1 class=center-align>Produtividade <span id=galpao></span></h1>
+
     <div>
-        <!-- <div class="row speedometer">
+        <div class="row speedometer">
             <div class="col l3">
                 <div class="row flex center-align">
                     <div class=canvas-container>
@@ -10,7 +39,7 @@
                     </div>
                 </div>
                 <div class="row center-align">
-                    <strong>Eficiência (<span id=eficienciaValue>{{velocimetro.indicadores.eficiencia}}</span>)</strong>
+                    <strong>Eficiência (<span id=eficienciaValue>{{velocimetro.eficiencia}}</span>)</strong>
                 </div>
             </div>
             <div class="col l3">
@@ -20,7 +49,7 @@
                     </div>
                 </div>
                 <div class="row center-align">
-                    <strong>OEE (<span id=oeeValue>{{velocimetro.indicadores.indOEE}}</span>)</strong>
+                    <strong>OEE (<span id=oeeValue>{{velocimetro.indOEE}}</span>)</strong>
                 </div>
             </div>
             <div class="col l3">
@@ -30,7 +59,7 @@
                     </div>
                 </div>
                 <div class="row center-align">
-                    <strong>Utilização (<span id=utilizacaoValue>{{velocimetro.indicadores.indUtilizacao}}</span>)</strong>
+                    <strong>Utilização (<span id=utilizacaoValue>{{velocimetro.indUtilizacao}}</span>)</strong>
                 </div>
             </div>
             <div class="col l3">
@@ -40,42 +69,36 @@
                     </div>
                 </div>
                 <div class="row center-align">
-                    <strong>Refugo (<span id=refugoValue>{{velocimetro.indicadores.indRef}}</span>)</strong>
+                    <strong>Refugo (<span id=refugoValue>{{velocimetro.indRef}}</span>)</strong>
                 </div>
             </div>
-        </div> -->
-         <!-- <thead>
+        </div>
+         <thead>
             <th></th>
-            <% turnos.forEach(function(turno){ %>
-                <th><%=turno.dsTurno%></th>
-            <% }); %>
+                <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.dsTurno}}</th>
             <th>Acumulado mês</th>
-        </thead>      -->
+        </thead>     
         <table>
-            <tr>
-                <th></th>
-                    <th v-for="(indicadoresTurno, index) in bi.indicadoresTurno">{{indicadoresTurno.dsTurno}}</th>
-                <th>ACUMULADO MÊS</th>
-            </tr>
-            <tr>
-                <td>% Produtividade  OEE</td>
-                <th v-for="(indicadoresTurno, index) in bi.indicadoresTurno">{{indicadoresTurno.indOEE}}</th>
-                <td>{{bi.indicadores.indOEE}}%</td>
-            </tr>
+                <tr>
+                    <td>% Produtividade  OEE</td>
+                    <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indOEE}}</th>
+                    <td>{{indicadores.indOEE}}%</td>
+                </tr>
+            
             <tr>
                 <td>% Eficiência</td>
-                <th v-for="(indicadoresTurno, index) in bi.indicadoresTurno">{{indicadoresTurno.eficiencia}}</th>
-                <td>{{bi.indicadores.eficiencia}}%</td>
+                <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.eficiencia}}</th>
+                <td>{{indicadores.eficiencia}}%</td>
             </tr>
             <tr>
                 <td>% Utilização</td>
-                <th v-for="(indicadoresTurno, index) in bi.indicadoresTurno">{{indicadoresTurno.indUtilizacao}}</th>
-                <td>{{bi.indicadores.indUtilizacao}}%</td>
+                <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indUtilizacao}}</th>
+                <td>{{indicadores.indUtilizacao}}%</td>
             </tr>
             <tr>
                 <td>% Refugo</td>
-                <th v-for="(indicadoresTurno, index) in bi.indicadoresTurno">{{indicadoresTurno.indRef}}</th> 
-                <td>{{bi.indicadores.indRef}}%</td>
+                <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indRef}}</th> 
+                <td>{{indicadores.indRef}}%</td>
             </tr>
 
         </table>
@@ -123,22 +146,54 @@
             </div>
         </div> -->
     </div>
-    {{info}}
+
+    <!-- {{indicadores}}
+    {{info}} -->
   </div>
 </template>
 <script>
+import Gauge from '@chrisheanan/vue-gauge';
 import axios from 'axios'
+import $ from 'jquery'
+import VueGauge from 'vue-gauge';
 export default{
-  data(){
-    return{
-      cd: '000001',
-      info:null,
-      bi : null,
-      velocimetro : null, 
-      turnos: null,
+    components: { VueGauge, Gauge },
+
+created() {
+    setInterval(() => (this.toggle = !this.toggle), 1111);
+  },
+  data() {
+    return {
+        valorOee: 0,
+        cd: '000001',
+        info:null,
+        bi : null,
+        indicadores : {},
+        velocimetro : {}, 
+        turnos: null,
+        oee : null,
+        refugo : null,
+        eficiencia : null,
+        utilizacao : null,
+        opts1 : null,
+        opts2 : {
+        needleValue: 1,
+        arcDelimiters:[1]     
+        },
+        opts3 : {
+        needleValue: 1,
+        arcDelimiters:[1]     
+        },
+        opts4 : {
+        needleValue: 1,
+        arcDelimiters:[1]     
+        },
+      
+
+
     }
   },
-  mounted(){
+  created() {
     var turnoAtualVar;
     const ip = 'http://170.10.0.208:8080'
     const dataTeste = "2020-01-21";
@@ -149,43 +204,61 @@ export default{
     var turnoGlobal;
     var ultimaAtualizacao;
     var globalRequest;
+    
 
-    function retornaMes(){
+    // function retornaMes(){
 
-            if (data.getMonth(new Date()) < 10){
+    //         if (data.getMonth(new Date()) < 10){
 
-                return "0" + data.getMonth(new Date())
-            } else{
+    //             return "0" + data.getMonth(new Date())
+    //         } else{
 
-                return data.getMonth(new Date())
-            }
-    }
+    //             return data.getMonth(new Date())
+    //         }
+    // }
 
-    function getToday(){
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
-        var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds()
+    // function getToday(){
+    //     var today = new Date();
+    //     var dd = String(today.getDate()).padStart(2, '0');
+    //     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    //     var yyyy = today.getFullYear();
+    //     var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds()
         
-        if(String(today.getHours()).length < 2){
-            h = '0'+String(today.getHours())
-        }
-        if(String(today.getMinutes()).length < 2){
-            m = '0'+String(today.getMinutes())
-        }
-        if(String(today.getSeconds()).length < 2){
-            s = '0'+String(today.getSeconds())
-        }
-        today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
-        return today;
-    }
+    //     if(String(today.getHours()).length < 2){
+    //         h = '0'+String(today.getHours())
+    //     }
+    //     if(String(today.getMinutes()).length < 2){
+    //         m = '0'+String(today.getMinutes())
+    //     }
+    //     if(String(today.getSeconds()).length < 2){
+    //         s = '0'+String(today.getSeconds())
+    //     }
+    //     today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
+    //     return today;
+    // }
     // setInterval(function(){  
     //     produtividadeTask(request);
     // }, 600000);
     axios
     .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
     .then(turnoAtual => {
+        const Gauge = require('./gauge')
+        var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
+        var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
+        var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
+        function formatDate(date, format) {
+            const map = {
+                mm: date.getMonth() + 1,
+                dd: date.getDate(),
+                aa: date.getFullYear().toString().slice(-2),
+                aaaa: date.getFullYear()
+            }
+            return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
+        }
+        const today = new Date();
+        var year = new Date().getFullYear()
+        var mes = new Date().getMonth()+1
+        var data = formatDate(today, 'aaaa-mm-dd')
         turnoAtualVar = turnoAtual.data.cdTurno
         axios
         .all([
@@ -193,46 +266,32 @@ export default{
                 cdGalpao: this.cd,
                 agrupamentoBI: 2,
                 cdTurno: turnoAtual.data.cdTurno,
-                dtIni: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date()),
-                dtFim: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date())
+                dtIni: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
+                dtFim: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
             }),
             axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
-                anoIni: data.getYear(new Date()),
-                mesIni: retornaMes(),
-                anoFim: data.getYear(new Date()),
-                mesFim: retornaMes(),
+                anoIni: year,
+                mesIni: mes,
+                anoFim: year,
+                mesFim: mes,
                 cdGalpao: this.cd,
                 agrupamentoBI: 1,
             }),
             axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
         ])
-        .then(axios.spread((velocimetro, bi, turnos) => {       
-               
-            
-            // this.info = {
-            //   velocimetroGlobal : velocimetro,
-            //   biGlobal : bi,
-            //   turnoGlobal : turnos,
-            //   ultimaAtualizacao : getToday(),
-            // }
-            this.bi = bi.data
-            this.velocimetro = velocimetro.data
+        .then(axios.spread((velocimetro, bi, turnos) => {  
+            this.opts2 = { needleValue: 80, arcDelimiters:[80] }     
+            this.bi = bi.data.indicadoresTurno
+            this.indicadores = bi.data.indicadores
+            this.velocimetro = velocimetro.data.indicadores
             this.turnos = turnos.data.turnos
-            this.info = {
-              bi : bi.data,
-              velocimetro : velocimetro.data,
-              turnos : turnos.data.turnos
-            }
-            // response.status(200).render('produtividade', {
-            //     velocimetro: velocimetro.data,
-            //     bi: bi.data,
-            //     turnos: turnos.data.turnos,
-            //     secondsTransition: request.session.cfg.tempo_trans,
-            //     cor_fundo: request.session.cfg.cor_fundo,
-            //     nextPage: panel.switch(request.baseUrl, request.session.paineis),
-            //     logo: logo.hasLogo(),
-            //     ultimaAtualizacao : getToday()
-            // }); 
+
+            this.oee = parseFloat(this.velocimetro.indOEE)
+            this.refugo = parseFloat(this.velocimetro.indRef)
+            this.eficiencia = parseFloat(this.velocimetro.eficiencia)
+            this.utilizacao = parseInt(this.velocimetro.indUtilizacao)
+           
+    
         }))
         // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
         .catch(errorBI => this.info = errorBI);
@@ -242,49 +301,419 @@ export default{
       .catch(errorTurnoAtual => this.info = errorTurnoAtual);
   
     
-    async function produtividadeTask(request){   
-    console.log("Fez chamada de produtividade na thread as " + getToday());
-    await axios
-    .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
-    .then(turnoAtual => {   
-      console.log("entrou no metodo task");
-      axios
-      .all([
-          axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
-              cdGalpao: this.cd,
-              agrupamentoBI: 2,
-              cdTurno: turnoAtual.data.cdTurno,                            
-              dtIni: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date()),
-              dtFim: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date())
-          }),
-          axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
-              anoIni: data.getYear(new Date()),
-              mesIni: retornaMes(),
-              anoFim: data.getYear(new Date()),
-              mesFim: retornaMes(),
-              cdGalpao: this.cd,
-              agrupamentoBI: 1,
-          }),
-          axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
-      ])
-      .then(axios.spread((velocimetro, bi, turnos) => {
+    // async function produtividadeTask(request){   
+    // console.log("Fez chamada de produtividade na thread as " + getToday());
+    // await axios
+    // .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
+    // .then(turnoAtual => {   
+    //   console.log("entrou no metodo task");
+    //   axios
+    //   .all([
+    //       axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
+    //           cdGalpao: this.cd,
+    //           agrupamentoBI: 2,
+    //           cdTurno: turnoAtual.data.cdTurno,                            
+    //           dtIni: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date()),
+    //           dtFim: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date())
+    //       }),
+    //       axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
+    //           anoIni: data.getYear(new Date()),
+    //           mesIni: retornaMes(),
+    //           anoFim: data.getYear(new Date()),
+    //           mesFim: retornaMes(),
+    //           cdGalpao: this.cd,
+    //           agrupamentoBI: 1,
+    //       }),
+    //       axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
+    //   ])
+    //   .then(axios.spread((velocimetro, bi, turnos) => {
                                 
-              velocimetroGlobal = velocimetro;
-              biGlobal = bi;
-              turnoGlobal = turnos;  
-              ultimaAtualizacao = getToday();
-              this.bi = bi.data
-              this.velocimetro = velocimetro.data
-              this.turnos = turnos.data.turnos
+    //           velocimetroGlobal = velocimetro;
+    //           biGlobal = bi;
+    //           turnoGlobal = turnos;  
+    //           ultimaAtualizacao = getToday();
+    //           this.bi = bi.data
+    //           this.velocimetro = velocimetro.data
+    //           this.turnos = turnos.data.turnos
 
 
-      }))
-      .catch(errorBI => console.log('teste', errorBI));
-      } )
-    .catch(errorTurnoAtual => console.log('teste 1', errorTurnoAtual));
+    //   }))
+    //   .catch(errorBI => console.log('teste', errorBI));
+    //   } )
+    // .catch(errorTurnoAtual => console.log('teste 1', errorTurnoAtual));
   
-    }      
+    // }      
+  },
+  mounted(){
+    setTimeout(() => {
+        this.valorOee = 90
+        this.oee = this.valorOee
+    }, 10000);
+  },
+  watch:{
+    oee(newValue, oldValue) {
+      this.valorOee = newValue
+    }
   }
 }
-  
 </script>
+<style>
+html{
+    --tema-padrao: #0077FF;
+    --bg: #FCFCFC;
+    --bg-panel: #EBEBEB;
+    --bg-container: rgba(0, 0, 0, 0.1);
+    --secundary-color: #FCFCFC;
+    --color: rgba(0, 0, 0, 0.8);
+    --color-headings: #0077FF;
+    --color-text: #333333;
+    --color-title: #262626;
+}
+body{
+    background-color: var(--bg);
+}
+h1, h2, h3, h4, h5, h6, p, label, tr, td, th{
+    color: var(--color-text);
+}
+
+.flex {
+    display: flex;
+    
+}
+.flex .item {
+    margin: 5px;
+    text-align: center;
+    font-size: 1.5em;
+    flex: 1;
+}
+
+.flex .grow0 {
+flex-grow: 0;
+}
+.flex .grow1 {
+flex-grow: 1;
+}
+div.container {
+    font-weight: bold;
+}
+.canvas-container {
+    width: 100%;
+    text-align: center;
+}
+
+canvas {
+    display: inline;
+}
+
+.Gauge {
+    padding: 10px;
+}
+.speedometer {
+    background-color: var(--tema-padrao);
+    color: white; 
+}
+strong {
+    font-size: 40px;
+}
+table {
+    font-size: 1.4em;
+}
+#updateProduction{
+    font-size: 2.5em;
+    position: relative;
+    margin: 0;}
+
+th {
+    font-size:1.1em;
+    text-align: center;
+}
+td {
+    font-size:1.4em;
+    font-weight: bold;
+    text-align: center;
+}
+
+img {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 25px 25px 0 0;
+}
+  
+  .material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+  @media(max-height: 480px)and(max-width: 640px ){
+    img{
+        margin-top: 0;
+        width: 50px;
+        height: 50px;
+    }
+    h1{
+        margin-top: 0;
+        font-size: 28px;        
+    }    
+    .center-align strong {
+        font-size: 20px;
+    }
+    span {
+        font-size: 20px;
+    }
+    th {
+        font-size: 10px;
+    }
+    td {
+        font-size: 13px;
+    }
+    .speedometer {
+        background-color: #263743;
+        color: white;
+       
+    }
+    .speedometer strong {
+        font-size: 15px;
+    }
+    .speedometer span {
+        font-size: 15px;
+    }
+    .material-icons {
+        font-size: 10px;
+    }
+    button {
+        font-display: 16px;
+    }
+    #eficiencia {
+        width: 50%;
+    }
+    #oee {
+        width: 50%;
+    }
+    #utilizacao {
+        width: 50%;
+    }
+    #refugo {
+        width: 50%;
+    }    
+}
+  @media(min-width: 641px)and(max-width: 800px ){
+    img{
+        margin-top: 0;
+        width: 50px;
+        height: 50px;
+    }
+    h1{
+        margin-top: 0;
+        font-size: 28px;        
+    }    
+    .center-align strong {
+        font-size: 20px;
+    }
+    span {
+        font-size: 20px;
+    }
+    th {
+        font-size: 10px;
+    }
+    td {
+        font-size: 13px;
+    }
+    .speedometer {
+        background-color: #263743;
+        color: white;
+        
+    }
+    .speedometer strong {
+        font-size: 15px;
+    }
+    .speedometer span {
+        font-size: 15px;
+    }
+    .material-icons {
+        font-size: 10px;
+    }
+    button {
+        font-display: 16px;
+    }
+    #eficiencia {
+        width: 61%;
+    }
+    #oee {
+        width: 61%;
+    }
+    #utilizacao {
+        width: 61%;
+    }
+    #refugo {
+        width: 61%;
+    }    
+}
+  @media(min-width: 801px)and(max-width: 854px ){
+    img{
+        margin-top: 0;
+        width: 50px;
+        height: 50px;
+    }
+    h1{
+        margin-top: 0;
+        font-size: 28px;        
+    }    
+    .center-align strong {
+        font-size: 20px;
+    }
+    span {
+        font-size: 20px;
+    }
+    th {
+        font-size: 10px;
+    }
+    td {
+        font-size: 13px;
+        padding-right: 75px;
+    }
+    .speedometer {
+        background-color: #263743;
+        color: white;
+        
+    }
+    .speedometer strong {
+        font-size: 15px;
+    }
+    .speedometer span {
+        font-size: 15px;
+    }
+    .material-icons {
+        font-size: 10px;
+    }
+    button {
+        font-display: 16px;
+    }
+    #eficiencia {
+        width: 63%;
+    }
+    #oee {
+        width: 63%;
+    }
+    #utilizacao {
+        width: 63%;
+    }
+    #refugo {
+        width: 63%;
+    }    
+}
+  @media(min-height: 481px)and(max-height: 640px ){
+    img{
+        margin-top: 0;
+        width: 50px;
+        height: 50px;
+    }
+    h1{
+        margin-top: 0;
+        font-size: 28px;        
+    }    
+    .center-align strong {
+        font-size: 20px;
+    }
+    span {
+        font-size: 20px;
+    }
+    th {
+        font-size: 15px;
+    }
+    td {
+        font-size: 20px;
+    }
+    .speedometer {
+        background-color: #263743;
+        color: white;
+        
+    }
+    .speedometer strong {
+        font-size: 15px;
+    }
+    .speedometer span {
+        font-size: 15px;
+    }
+    .material-icons {
+        font-size: 10px;
+    }
+    button {
+        font-display: 16px;
+    }
+    #eficiencia {
+        width: 73%;
+    }
+    #oee {
+        width: 73%;
+    }
+    #utilizacao {
+        width: 73%;
+    }
+    #refugo {
+        width: 73%;
+    }    
+}
+@media(min-height: 641px)and(max-height: 750px ){
+    img{
+        margin-top: 0;
+        width: 50px;
+        height: 50px;
+    }
+    h1{
+        margin-top: 0;
+        font-size: 28px;        
+    }    
+    .center-align strong {
+        font-size: 20px;
+    }
+    span {
+        font-size: 20px;
+    }
+    th {
+        font-size: 15px;
+    }
+    td {
+        font-size: 20px;
+    }
+    .speedometer {
+        background-color: #263743;
+        color: white;
+        
+    }
+    .speedometer strong {
+        font-size: 15px;
+    }
+    .speedometer span {
+        font-size: 15px;
+    }
+    .material-icons {
+        font-size: 10px;
+    }
+    button {
+        font-display: 16px;
+    }
+    #eficiencia {
+        width: 73%;
+    }
+    #oee {
+        width: 73%;
+    }
+    #utilizacao {
+        width: 73%;
+    }
+    #refugo {
+        width: 73%;
+    }    
+}
+</style>

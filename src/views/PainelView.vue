@@ -1,6 +1,23 @@
 <template>
-    <div class="painel">
-      <h1>This is an painel page</h1>
-    </div>
-  </template>
-  
+  <gauge
+      heading="A title goes here"
+      :min="0"
+      :max="100"
+      :value="exampleValue"
+  />
+</template>
+
+<script>
+import Gauge from '@chrisheanan/vue-gauge';
+
+export default {
+components: {
+  Gauge
+},
+data() {
+  return {
+    exampleValue: 35
+  };
+}
+};
+</script>

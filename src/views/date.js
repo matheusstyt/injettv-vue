@@ -1,53 +1,70 @@
-const moment = require('moment');
-alert('data')
-module.exports = {
-    getYear: data => new Date(data).getFullYear(),
-    getMonth: data => (data.getMonth() >= 0 && data.getMonth() <= 9) ? `${data.getMonth() + 1}` : data.getMonth() + 1,
-    day: date => (date.getDate() >= 1 && date.getDate() <= 9) ? `0${date.getDate()}` : date.getDate(),
-    formated: date => {
-        let dataAtual = new Date().toLocaleString(),
-            dataMaquina = [
-                date.split(' ')[0].split('/')[2],
-                date.split(' ')[0].split('/')[1],
-                date.split(' ')[0].split('/')[0]
-            ].concat(date.split(' ')[1].split(':'));
+// $('#galpao').text(sessionStorage.getItem('galpao'));
+// $.fn.gauge = function (opts) {
+//     this.each(function () {
+//         var $this = $(this),
+//             data = $this.data();
 
-        dataAtual = dataAtual.split(' ')[0].split('-').concat(dataAtual.split(' ')[1].split(':'));
+//         if (data.gauge) {
+//             data.gauge.stop();
+//             delete data.gauge;
+//         }
+//         if (opts !== false) {
+//             data.gauge = new Gauge(this).setOptions(opts);
+//         }
+//     });
+//     return this;
+// };
 
-        return moment(dataAtual).diff(moment(dataMaquina), 'hours') >= 24 ? (moment(dataAtual).diff(moment(dataMaquina), 'days') > 1 ? `${moment(dataAtual).diff(moment(dataMaquina), 'days')} dias` : `${moment(dataAtual).diff(moment(dataMaquina), 'days')} dia`) : (moment(dataAtual).diff(moment(dataMaquina), 'hours') > 1 ? `${moment(dataAtual).diff(moment(dataMaquina), 'hours')} horas` : `${moment(dataAtual).diff(moment(dataMaquina), 'hours')} hora`);
-    },
-    dhms: date => {
-        let data = date.split(' ')[0].split('/'),
-            hora = date.split(' ')[1];
+// var speeds = [
+//     {   
+//         id: 'eficiencia',
+//         value: $('#eficienciaValue').text()
+//     },
+//     {
+//         id: 'oee',
+//         value: $('#oeeValue').text()
+//     },
+//     {
+//         id: 'utilizacao',
+//         value: $('#utilizacaoValue').text()
+//     },
+//     {
+//         id: 'refugo',
+//         value: $('#refugoValue').text()
+//     }
+// ];
 
-        data = `${data[2]}-${data[1]}-${data[0]}`;
+// speeds.forEach(speed => {
+//     var opts = {
+//         angle: -0.10, // The span of the gauge arc
+//         lineWidth: 0.25, // The line thickness
+//         radiusScale: 0.9, // Relative radius
+//         pointer: {
+//             iconPath: 'images/ponteiro.png',
+//             iconScale: 1,
+//             iconAngle: 0,
+//             length: 0.0, // // Relative to gauge radius
+//             strokeWidth: 0.00, // The thickness
+//             // color: '#000000' // Fill color
+//         },
+//         limitMax: false,     // If false, max value increases automatically if value > maxValue
+//         limitMin: false,     // If true, the min value of the gauge will be fixed
+//         generateGradient: true,
+//         highDpiSupport: true,     // High resolution support
+//         percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+//         staticLabels: {
+//             font: '20px sans-serif',
+//             labels: [50, 100],
+//             color: '#fff'
+//         }
+//     };
+    
+//     var target = document.getElementById(speed.id); // your canvas element
+//     var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+//     gauge.maxValue = 100; // set max gauge value
+//     gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+//     gauge.animationSpeed = 33; // set animation speed (32 is default value)
+//     gauge.set(speed.value); // set actual value
+// });
 
-        let delta = Math.abs(new Date(`${data} ${hora}`).getTime() - new Date().getTime()) / 1000;
-
-        let horas = Math.floor(delta / 3600) ;
-        let days = Math.floor(delta / 86400);
-        delta -= days * 86400;
-
-        let hours = Math.floor(delta / 3600) % 24;
-        delta -= hours * 3600;
-
-        let minutes = Math.floor(delta / 60) % 60;
-        delta -= minutes * 60;
-
-        let seconds = delta % 60;
-        seconds = Math.floor(seconds);
-
-        let response = `${horas}:${minutes}:${seconds}`;
-
-        if(response.split(':')[0].length == 1)
-            response = `0${response.split(':')[0]}:${response.split(':')[1]}:${response.split(':')[2]}`;
-            
-        if(response.split(':')[1].length == 1)
-            response = `${response.split(':')[0]}:0${response.split(':')[1]}:${response.split(':')[2]}`;
-            
-        if(response.split(':')[2].length == 1)
-            response = `${response.split(':')[0]}:${response.split(':')[1]}:0${response.split(':')[2]}`;
-        
-        return response;
-    }
-};
+//setTimeout(() => window.location.replace(`/${nextPage}`), secondsTransition);
