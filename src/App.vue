@@ -5,6 +5,7 @@
     <router-link to="/maquinas">Maquinas</router-link>
     <router-link to="/produtividade">Produtividade</router-link>
     <router-link to="/parada">Paradas</router-link>
+    <router-link to="/carrosel">Carrosel</router-link>
   </nav>
   <router-view/>
 </template>

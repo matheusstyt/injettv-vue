@@ -1,77 +1,50 @@
 <template>
   <div class="produtividade">
-    <vue-gauge :refid="'type-unique-id'" :options="opts1"></vue-gauge>
-    <vue-gauge :refid="'type-unique-id'" :options="opts2"></vue-gauge>
-
-    <vue-gauge :refid="'type-unique-id'" :options="{
-        needleValue:valorOee,
-        arcDelimiters:[40],
-    }">
-    </vue-gauge>
-    <!-- <vue-gauge :refid="'type-unique-id'" :options="{
-        'needleValue':utilizacao,
-        'arcDelimiters':[40],
-        'agulhaUpdateSpeed' : 33,
-        
-    }">
     
-    <vue-gauge :refid="'type-unique-id'" :options="{
-        'needleValue':utilizacao,
-        'arcDelimiters':[40],
-    }">
-    </vue-gauge>
-    <vue-gauge :refid="'type-unique-id'" :options=opts>
-    </vue-gauge> -->
-    
-    
-    {{oee}}
-    {{eficiencia}}
-    {{refugo}}
-    {{utilizacao}}
     <h1 class=center-align>Produtividade <span id=galpao></span></h1>
-
+        {{info}}
     <div>
         <div class="row speedometer">
-            <div class="col l3">
-                <div class="row flex center-align">
-                    <div class=canvas-container>
-                        <canvas class=Gauge id=eficiencia></canvas>
-                    </div>
-                </div>
-                <div class="row center-align">
-                    <strong>Eficiência (<span id=eficienciaValue>{{velocimetro.eficiencia}}</span>)</strong>
-                </div>
-            </div>
-            <div class="col l3">
-                <div class="row flex">
-                    <div class=canvas-container>
-                        <canvas class=Gauge id=oee></canvas>
-                    </div>
-                </div>
-                <div class="row center-align">
-                    <strong>OEE (<span id=oeeValue>{{velocimetro.indOEE}}</span>)</strong>
-                </div>
-            </div>
-            <div class="col l3">
-                <div class="row flex">
-                    <div class=canvas-container>
-                        <canvas class=Gauge id=utilizacao></canvas>
-                    </div>
-                </div>
-                <div class="row center-align">
-                    <strong>Utilização (<span id=utilizacaoValue>{{velocimetro.indUtilizacao}}</span>)</strong>
-                </div>
-            </div>
-            <div class="col l3">
-                <div class="row flex">
-                    <div class=canvas-container>
-                        <canvas class=Gauge id=refugo></canvas>
-                    </div>
-                </div>
-                <div class="row center-align">
-                    <strong>Refugo (<span id=refugoValue>{{velocimetro.indRef}}</span>)</strong>
-                </div>
-            </div>
+                        <div class="col l3">
+                            <div class="row flex center-align">
+                                <div class=canvas-container>
+                                    <canvas class=Gauge id=eficiencia></canvas>
+                                </div>
+                            </div>
+                            <div class="row center-align">
+                                <strong>Eficiência (<span id=eficienciaValue>{{eficiencia}}</span>)</strong>
+                            </div>
+                        </div>
+                        <div class="col l3">
+                            <div class="row flex">
+                                <div class=canvas-container>
+                                    <canvas class=Gauge id=oee></canvas>
+                                </div>
+                            </div>
+                            <div class="row center-align">
+                                <strong>OEE (<span id=oeeValue>{{oee}}</span>)</strong>
+                            </div>
+                        </div>
+                        <div class="col l3">
+                            <div class="row flex">
+                                <div class=canvas-container>
+                                    <canvas class=Gauge id=utilizacao></canvas>
+                                </div>
+                            </div>
+                            <div class="row center-align">
+                                <strong>Utilização (<span id=utilizacaoValue>{{utilizacao}}</span>)</strong>
+                            </div>
+                        </div>
+                        <div class="col l3">
+                            <div class="row flex">
+                                <div class=canvas-container>
+                                    <canvas class=Gauge id=refugo></canvas>
+                                </div>
+                            </div>
+                            <div class="row center-align">
+                                <strong>Refugo (<span id=refugoValue>{{refugo}}</span>)</strong>
+                            </div>
+                        </div>
         </div>
          <thead>
             <th></th>
@@ -100,64 +73,18 @@
                 <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indRef}}</th> 
                 <td>{{indicadores.indRef}}%</td>
             </tr>
-
         </table>
-        <!-- <div class="col l12">  
-            <div class=row>
-                <table class="centered striped">
-                    <thead>
-                        <th></th>
-                        <% turnos.forEach(function(turno){ %>
-                            <th><%=turno.dsTurno%></th>
-                        <% }); %>
-                        <th>Acumulado mês</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>% Produtividade OEE</td>
-                            <% bi.indicadoresTurno.forEach(function(indicadoresTurno){ %>
-                                <td><%=indicadoresTurno.indicadores.indOEE%>%</td>
-                            <% }); %>
-                            <td><%=bi.indicadores.indOEE%>%</td>
-                        </tr>
-                        <tr>
-                            <td>% Eficiência</td>
-                            <% bi.indicadoresTurno.forEach(function(indicadoresTurno){ %>
-                                <td><%=indicadoresTurno.indicadores.eficiencia%>%</td>
-                            <% }); %>
-                            <td><%=bi.indicadores.eficiencia%>%</td>
-                        </tr>
-                        <tr>
-                            <td>% Utilização</td>
-                            <% bi.indicadoresTurno.forEach(function(indicadoresTurno){ %>
-                                <td><%=indicadoresTurno.indicadores.indUtilizacao%>%</td>
-                            <% }); %>
-                            <td><%=bi.indicadores.indUtilizacao%>%</td>
-                        </tr>
-                        <tr>
-                            <td>% Refugo</td>
-                            <% bi.indicadoresTurno.forEach(function(indicadoresTurno){ %>
-                                <td><%=indicadoresTurno.indicadores.indRef%>%</td>
-                            <% }); %>
-                            <td><%=bi.indicadores.indRef%>%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div> -->
     </div>
-
+    {{info}}
     <!-- {{indicadores}}
-    {{info}} -->
+    -->
   </div>
 </template>
 <script>
-import Gauge from '@chrisheanan/vue-gauge';
 import axios from 'axios'
 import $ from 'jquery'
-import VueGauge from 'vue-gauge';
 export default{
-    components: { VueGauge, Gauge },
+
 
 created() {
     setInterval(() => (this.toggle = !this.toggle), 1111);
@@ -166,7 +93,7 @@ created() {
     return {
         valorOee: 0,
         cd: '000001',
-        info:null,
+        info:'teste',
         bi : null,
         indicadores : {},
         velocimetro : {}, 
@@ -205,44 +132,10 @@ created() {
     var ultimaAtualizacao;
     var globalRequest;
     
-
-    // function retornaMes(){
-
-    //         if (data.getMonth(new Date()) < 10){
-
-    //             return "0" + data.getMonth(new Date())
-    //         } else{
-
-    //             return data.getMonth(new Date())
-    //         }
-    // }
-
-    // function getToday(){
-    //     var today = new Date();
-    //     var dd = String(today.getDate()).padStart(2, '0');
-    //     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    //     var yyyy = today.getFullYear();
-    //     var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds()
-        
-    //     if(String(today.getHours()).length < 2){
-    //         h = '0'+String(today.getHours())
-    //     }
-    //     if(String(today.getMinutes()).length < 2){
-    //         m = '0'+String(today.getMinutes())
-    //     }
-    //     if(String(today.getSeconds()).length < 2){
-    //         s = '0'+String(today.getSeconds())
-    //     }
-    //     today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
-    //     return today;
-    // }
-    // setInterval(function(){  
-    //     produtividadeTask(request);
-    // }, 600000);
     axios
     .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
     .then(turnoAtual => {
-        const Gauge = require('./gauge')
+        const Gauge = require('../../public/js/gauge')
         var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
         var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
         var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
@@ -298,7 +191,7 @@ created() {
 
       })
       //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
-      .catch(errorTurnoAtual => this.info = errorTurnoAtual);
+      .catch(errorTurnoAtual => this.info = errorBI);
   
     
     // async function produtividadeTask(request){   
@@ -345,10 +238,66 @@ created() {
     // }      
   },
   mounted(){
-    setTimeout(() => {
-        this.valorOee = 90
-        this.oee = this.valorOee
-    }, 10000);
+    
+$.fn.gauge = function (opts) {
+    this.each(function () {
+        var $this = $(this),
+            data = $this.data();
+
+        if (data.gauge) {
+            data.gauge.stop();
+            delete data.gauge;
+        }
+        if (opts !== false) {
+            data.gauge = new Gauge(this).setOptions(opts);
+        }
+    });
+    return this;
+};
+
+var speeds = [
+    {
+        id: 'eficiencia',
+        value: this.eficiencia
+    },
+    {
+        id: 'oee',
+        value: this.oee
+    },
+    {
+        id: 'utilizacao',
+        value: this.utilizacao
+    },
+    {
+        id: 'refugo',
+        value: this.refugo
+    }
+];
+
+speeds.forEach(speed => {
+    var opts = {
+        angle: -0.10, // The span of the gauge arc
+        lineWidth: 0.25, // The line thickness
+        radiusScale: 0.9, // Relative radius
+        limitMax: false,     // If false, max value increases automatically if value > maxValue
+        limitMin: false,     // If true, the min value of the gauge will be fixed
+        generateGradient: true,
+        highDpiSupport: true,     // High resolution support
+        percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+        staticLabels: {
+            font: '20px sans-serif',
+            labels: [50, 100],
+            color: '#fff'
+        }
+        };
+        
+        var target = document.getElementById(speed.id); // your canvas element
+        var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+        gauge.maxValue = 100; // set max gauge value
+        gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+        gauge.animationSpeed = 33; // set animation speed (32 is default value)
+        gauge.set(speed.value); // set actual value
+    });
   },
   watch:{
     oee(newValue, oldValue) {

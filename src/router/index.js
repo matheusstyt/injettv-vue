@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Produtividade from '../views/ProdutividadeView.vue'
+import Carrosel from '../views/CarroselView.vue'
+import Error from '../views/ErrorPageView.vue'
 const routes = [
   {
     path: '/',
@@ -11,6 +13,16 @@ const routes = [
     path: '/produtividade',
     name: 'produtividade',
     component: Produtividade
+  },
+  {
+    path: '/error',
+    name: 'error',
+    component: Error
+  },
+  {
+    path: '/carrosel',
+    name: 'carrosel',
+    component: Carrosel
   },
   {
     path: '/painel',
