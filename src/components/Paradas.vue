@@ -1,6 +1,7 @@
 <template>
     <div class="paradas">
       <h1 class=center-align>Paradas | Alertas</h1>
+      {{ sec }}
         <div class="container">
             <table>
                 <tr>
@@ -19,41 +20,164 @@
   
     </template>
   <script>
+  // @ is an alias to /src
+  // import HelloWorld from '@/components/HelloWorld.vue'
+  import { isIntegerKey } from '@vue/shared'
+  import axios from 'axios'
   export default {
-    name: 'Maquinas',
-    components: {
-      
-    },
-    props:{
-        pts: Object,
-        turno : Object,
-    },
-    data(){
+      name: 'Maquinas',
+      components: {
+          
+      },
+      created () {
+          setInterval(() => {
+              this.getParadas()
+              this.sec++
+          }, 1000)
+      },
+      methods:{
+          async getParadas(){
+              function getToday(){
+                  var today = new Date();
+                  var dd = String(today.getDate()).padStart(2, '0');
+                  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                  var yyyy = today.getFullYear();
+                  var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds()
+                  
+                  if(String(today.getHours()).length < 2){
+                      h = '0'+String(today.getHours())
+                  }
+                  if(String(today.getMinutes()).length < 2){
+                      m = '0'+String(today.getMinutes())
+                  }
+                  if(String(today.getSeconds()).length < 2){
+                      s = '0'+String(today.getSeconds())
+                  }
+                  today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
+                  return today;
+              }
+              await axios.all([        
+                  axios.get(`http://170.10.0.208:8080/idw/rest/injet/paradas/pesquisaParadasByGalpao` ,{params: {cdGalpao:this.cd}}),
+                  axios.get(`http://170.10.0.208:8080/idw/rest/injet/alertas/pesquisaAlertasByGalpao`,{params: {cdGalpao:this.cd}})
+              ])
+              .then(
+                  axios.spread((paradas, alertas) => {
+  
+                  let alerta = [], parada = [], pts = [], pts_ = [];
+                  
+                  // FORMATANDO O HORÁRIO
+                  let formatado = ''
+                  for (var par = 0; par < paradas.data.paradasGalpao.length;par++ ){
+                      
+                      let tempoFormatado = paradas.data.paradasGalpao[par].tempoParado.split(":");
+  
+                      if( tempoFormatado[0].length < 2 ){
+                          tempoFormatado[0] = '0'+tempoFormatado[0]
+                      }
+                      if( tempoFormatado[1].length < 2 ){
+                          tempoFormatado[1] = '0'+tempoFormatado[1]
+                      }
+                      if( tempoFormatado[2].length < 2 ){
+                          tempoFormatado[2] = '0'+tempoFormatado[2]
+                      }
+  
+                      formatado = tempoFormatado[0]+':'+tempoFormatado[1]+':'+tempoFormatado[2]
+                  
+                      parada.push({
+                          cdPt: paradas.data.paradasGalpao[par].cdInjetora,
+                          tempo: formatado,
+                          descricao: paradas.data.paradasGalpao[par].dsParada,
+                          cor: '#ff0000'
+                      });
+                  }
+  
+                  for (var ale = 0; ale < alertas.data.alertasGalpao.length;ale++ ){
+                      
+                      let alertaFormatado = alertas.data.alertasGalpao[ale].tempoAlerta.split(":");
+                      //console.log('opa : '+alertas.data.alertasGalpao[ale].tempoAlerta)
+                      if( alertaFormatado[0].length < 2 ){
+                          alertaFormatado[0] = '0'+alertaFormatado[0]
+                      }
+                      if( alertaFormatado[1].length < 2 ){
+                          alertaFormatado[1] = '0'+alertaFormatado[1]
+                      }
+                      if( alertaFormatado[2].length < 2 ){
+                          alertaFormatado[2] = '0'+alertaFormatado[2]
+                      }
+  
+                      formatado = alertaFormatado[0]+':'+alertaFormatado[1]+':'+alertaFormatado[2]
+                      //console.log('formatado : '+formatado)
+                      alerta.push({
+                          cdPt: alertas.data.alertasGalpao[ale].cdInjetora,
+                          tempo: formatado,
+                          descricao: alertas.data.alertasGalpao[ale].dsAlerta,
+                          cor: '#ff8b16'
+                      });
+                      //console.log(alertas.data[ale])
+                  }
+                  //console.log("3")
+  
+                  pts = pts.concat(parada, alerta);
+  
+                  if(typeof this.maquinas === 'string'  ){            
+                      if (this.maquinas) {
+                          //console.log("maquina: " + " " + this.maquinas)
+                              pts_ = pts_.concat(pts.filter((pt) => {
+                                  //console.log("cdInjetora: " + " " + pt.cdPt + " == " + this.maquinas )
+                                  if (pt.cdPt === this.maquinas)                             
+                                  return pt;
+                              }));
+                          pts = pts_;
+                      }
+                  }
+                  if(typeof this.maquinas === 'undefined' || typeof this.maquinas === 'object'  ){            
+                      if (this.maquinas) {
+                          this.maquinas.forEach((maquina) => {
+                              //console.log("maquina: " + " " + maquina)
+                              pts_ = pts_.concat(pts.filter((pt) => {
+                                  //console.log("cdInjetora: " + " " + pt.cdPt + " == " + maquina )
+                                  if (pt.cdPt === maquina)                             
+                                  return pt;
+                              }));
+                          });
+                          pts = pts_;
+                      }
+                  }
+                  
+                  this.pts = pts
+              }))
+              .catch((error) => {this.pts = error});
+          }
+      },
+      data(){
       return{
-        color: 'color: ',
-
-        maquinas : undefined,
-        cd : '000001',
-        legendaColors1 : [
-          {nome:'Parada', color: '#c0392b'},
-          {nome:'Na Meta', color: '#4cd137'},
-          {nome:'Fora da Meta', color: '#f1c40f'},
-          {nome:'Offline', color: 'rgb(135, 135, 135)'}
-              ],
-        legendaColors2 : [
-          {nome:'Em Alerta', color: '#f1c40f'},
-          {nome:'Sem Planejamento', color: 'blue'},
-          {nome:'90% Op Concluída', color: 'rgb(27, 26, 90)'},
-          {nome:'Planejamneto Concluído', color: 'rgb(45, 238, 235)'},
-          {nome:'Índice de Refugo Maior que 5%', color: 'rgb(142, 142, 142)'},
-          {nome:'Parada sem Peso na Eficiência', color: 'rgb(235, 23, 192)'},
-          {nome:'Parada não Informada', color: 'rgb(0, 0, 0)'},
-          {nome:'CIP(Controle Início Processo)', color: 'rgb(115, 239, 111)'},
-          {nome:'Sem Ocorrências', color: '#ffff'}
-      ]
+          sec: 0,
+          color: 'color: ',
+          pts: null,
+          turno : null,
+          maquinas : undefined,
+          cd : '000001',
+          legendaColors1 : [
+              {nome:'Parada', color: '#c0392b'},
+              {nome:'Na Meta', color: '#4cd137'},
+              {nome:'Fora da Meta', color: '#f1c40f'},
+              {nome:'Offline', color: 'rgb(135, 135, 135)'}
+                  ],
+          legendaColors2 : [
+              {nome:'Em Alerta', color: '#f1c40f'},
+              {nome:'Sem Planejamento', color: 'blue'},
+              {nome:'90% Op Concluída', color: 'rgb(27, 26, 90)'},
+              {nome:'Planejamneto Concluído', color: 'rgb(45, 238, 235)'},
+              {nome:'Índice de Refugo Maior que 5%', color: 'rgb(142, 142, 142)'},
+              {nome:'Parada sem Peso na Eficiência', color: 'rgb(235, 23, 192)'},
+              {nome:'Parada não Informada', color: 'rgb(0, 0, 0)'},
+              {nome:'CIP(Controle Início Processo)', color: 'rgb(115, 239, 111)'},
+              {nome:'Sem Ocorrências', color: '#ffff'}
+          ]
       }
     },
-    mounted () {
+    async mounted () {
+      
     }
   }
   </script>

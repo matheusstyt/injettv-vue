@@ -1,6 +1,6 @@
 <template>
     <div class="produtividade">
-      
+        
       <h1 class=center-align>Produtividade <span id=galpao></span></h1>
       <div>
           <div class="row speedometer">
@@ -83,11 +83,7 @@
 import axios from 'axios'
   import $ from 'jquery'
   export default{
-  
-  
-  created() {
-      setInterval(() => (this.toggle = !this.toggle), 1111);
-    },
+
     props:{
         bi: {
         type: Object,
@@ -109,79 +105,82 @@ import axios from 'axios'
         refugo : Number,
         utilizacao : Number,
     },
+    created(){
+        // setInterval(() =>{
+        //     this.getGauge();  
+        // }, 15000)
+    },
     data() {
       return {
-        
       }
     },
-    
-    mounted(){
-      
-  $.fn.gauge = function (opts) {
-      this.each(function () {
-          var $this = $(this),
-              data = $this.data();
-  
-          if (data.gauge) {
-              data.gauge.stop();
-              delete data.gauge;
-          }
-          if (opts !== false) {
-              data.gauge = new Gauge(this).setOptions(opts);
-          }
-      });
-      return this;
-  };
-  
-  var speeds = [
-      {
-          id: 'eficiencia',
-          value: this.eficiencia
-      },
-      {
-          id: 'oee',
-          value: this.oee
-      },
-      {
-          id: 'utilizacao',
-          value: this.utilizacao
-      },
-      {
-          id: 'refugo',
-          value: this.refugo
-      }
-  ];
-  
-  speeds.forEach(speed => {
-      var opts = {
-          angle: -0.10, // The span of the gauge arc
-          lineWidth: 0.25, // The line thickness
-          radiusScale: 0.9, // Relative radius
-          limitMax: false,     // If false, max value increases automatically if value > maxValue
-          limitMin: false,     // If true, the min value of the gauge will be fixed
-          generateGradient: true,
-          highDpiSupport: true,     // High resolution support
-          percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
-          staticLabels: {
-              font: '20px sans-serif',
-              labels: [50, 100],
-              color: '#fff'
-          }
-          };
-          
-          var target = document.getElementById(speed.id); // your canvas element
-          var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-          gauge.maxValue = 100; // set max gauge value
-          gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-          gauge.animationSpeed = 33; // set animation speed (32 is default value)
-          gauge.set(speed.value); // set actual value
-      });
+    methods:{
+        async getGauge(){
+            $.fn.gauge = function (opts) {
+                this.each(function () {
+                    var $this = $(this),
+                        data = $this.data();
+
+                    if (data.gauge) {
+                        data.gauge.stop();
+                        delete data.gauge;
+                    }
+                    if (opts !== false) {
+                        data.gauge = new Gauge(this).setOptions(opts);
+                    }
+                });
+                return this;
+            };
+            var speeds = [
+                {
+                    id: 'eficiencia',
+                    value: this.eficiencia
+                },
+                {
+                    id: 'oee',
+                    value: this.oee
+                },
+                {
+                    id: 'utilizacao',
+                    value: this.utilizacao
+                },
+                {
+                    id: 'refugo',
+                    value: this.refugo
+                }
+            ];
+            speeds.forEach(speed => {
+                var opts = {
+                    angle: -0.10, // The span of the gauge arc
+                    lineWidth: 0.25, // The line thickness
+                    radiusScale: 0.9, // Relative radius
+                    limitMax: false,     // If false, max value increases automatically if value > maxValue
+                    limitMin: false,     // If true, the min value of the gauge will be fixed
+                    generateGradient: true,
+                    highDpiSupport: true,     // High resolution support
+                    percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+                    staticLabels: {
+                        font: '20px sans-serif',
+                        labels: [50, 100],
+                        color: '#fff'
+                    }
+                };
+                var target = document.getElementById(speed.id); // your canvas element
+                var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                gauge.maxValue = 100; // set max gauge value
+                gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+                gauge.animationSpeed = 33; // set animation speed (32 is default value)
+                gauge.set(speed.value); // set actual value
+            });
+        },
     },
     watch:{
-
-      
+        oee(newValue){this.getGauge()},
+        eficiencia(newValue){this.getGauge()},
+        refugo(newValue){this.getGauge()},
+        utilizacao(newValue){this.getGauge()},
     }
-  }
+}
   </script>
   <style scoped>
   html{

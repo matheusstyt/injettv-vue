@@ -7,6 +7,16 @@
         {{paradas}}
         maq
         {{maquinas}}
+        <div class="input-field col s12">
+            <select>
+              <option value="" disabled selected>Choose your option</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>Materialize Select</label>
+          </div>
+        
         <main class=container>
         <form id="ok" >
             <div class=row>
@@ -48,15 +58,30 @@
                     <span>Mostrar Grupo / Máquinas</span>
                 </div>
                 <div class="input-field col xl6">
-                    
-                    <input id="dsGt" name="dsGt" value="">
-                    
-                    <ul>
-                        <li v-for="(gt, index) in gts" :value="gt.cdGt" :name="gt.dsGt">{{gt.dsGt}}</li>
-                    </ul>
+                    <input type="hidden" id="dsGt" name="dsGt" value="">
+                    <select id=galpao name=galpao>
+                        <option value="" disabled selected>Escolha o Grupo de Trabalho</option>                       
+            
+                            <option v-for="(index, gt) in gts" :value="gt.cdGt" :name="gt.dsGt">{{gt.dsGt}}</option>
+
+                    </select>
                     <label>Grupo de Máquinas</label>
                 </div>
                 <div class="input-field col xl6">
+                    
+                    <input id="dsGt" name="dsGt" value="">
+                    <select name="" id="">
+                        <option value="teste1">teste1'</option>
+                        <option value="teste1">teste1'</option>
+                        <option value="teste1">teste1'</option>
+                        <option value="teste1">teste1'</option>
+                        <option value="teste1">teste1'</option>
+                        <option v-for="(gt, index) in gts" :value="gt.cdGt" :name="gt.dsGt">{{gt.dsGt}}</option>
+                    </select>
+                    
+                    <label>Grupo de Máquinas</label>
+                </div>
+                <div class="browser-default input-field col xl6">
                     <select id=maquinas name=maquinas multiple>
                         <option value="" disabled>Escolha as Máquinas</option>
                     </select>
@@ -103,6 +128,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import $ from 'jquery'
 export default {
 components: {
@@ -112,7 +138,7 @@ data() {
   return {
     info: 'a',
     produtividade : false,
-    paradas : false,
+    paradas : true,
     maquinas : false,
     gts : [
         {dsGt: 'TESTE 1', cdGt : '000001'},
@@ -125,27 +151,94 @@ data() {
   };
 },
 mounted (){
-    $(document).ready(function(){
-        $("#for_a").click(function(){
-            $("#about").animate({
-                left: "-100%"
-            }, 1000)
-
-            $("#artists").animate({
-                left: "0px"
-            }, 1000)
-        })
-        $("#for_b").click(function(){
-            $("#artists").animate({
-                left: "100%"
-            }, 1000)
-            $("#about").animate({
-                left: "0px"
-            }, 1000)
-        })
-    })
+    
+   
+},
+created(){
+    this.listGts()
+   //  this.Materizalize();
 },
 methods:{
+    Materizalize(){
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems);
+        });
+        $(document).ready(function() {
+                    $(document).ready(function() {
+            // Select - Single
+            $('select:not([multiple])').material_select();
+        });
+
+            $('#galpao').change(e => {
+            var galpaoTemp;
+            var produtividadeTemp;
+            var maquinasTemp;
+            var paradasTemp;
+
+            galpaoTemp = $('#galpao').val();
+            produtividadeTemp = $('#painelProdutividade').val();
+            maquinasTemp = $('#painelMaquinas').val();
+            paradasTemp = $('#painelParadas').val();
+
+            $('#preloader').fadeIn().toggleClass('hide');
+            axios.get(ip+`/idw/rest/injet/pts/ativoByGalpao`, {
+                params: {
+                    gt:galpaoTemp
+                }
+            })
+            .then(response => {
+                console.log("gt " + galpaoTemp)
+
+                $('#preloader').fadeOut().toggleClass('hide');
+                
+                $('#maquinas').find('option').remove().end();      
+                
+                console.log("Galpao "  +$("#galpao option:selected").html())
+
+                $('#dsGt').val($("#galpao option:selected").html());
+
+                console.log("Valor do campo dsGt " + $("#dsGt").val())
+
+                response.data.pts.forEach(pt => $('#maquinas').append(`<option value='${pt.cdPt}'>${pt.cdPt}</option>`));
+                $('select').formSelect();
+            })
+            .catch(err => {
+                M.toast({ html: 'Falha ao carregar máquinas, tente novamente mais tarde. ' + error, displayLength: 2000 })
+            })
+
+            var cliente = {
+                galpao: $("#galpao").val(),
+                produtividade: $('#painelProdutividade').is(':checked'),
+                maquinas: $('#painelMaquinas').is(':checked'),
+                paradas: $("#painelParadas").is(':checked'),
+                cor_fundo: '#ffffff',
+                path_logo: ''
+            };
+
+            // localStorage.setItem("galpao", $("#galpao").val());
+            // console.log(cliente);
+            return true;
+
+
+            });
+
+            $('#btn-cor').click(() => $('body').css('background-color', $('#cor_fundo').val()));
+
+            $('input:file').change(e => {
+            let imagem = document.getElementById('imagem').files[0],
+                fileReader = new FileReader();
+
+            fileReader.onload = (fileLoadedEvent) => $('img').attr('src', fileLoadedEvent.target.result);
+            fileReader.readAsDataURL(imagem);
+            });
+        });
+    },
+    listGts(){
+        axios.get(`http://170.10.0.208:8080/idw/rest/injet/gts/monitorizacao`)
+        .then(gts => this.gts = gts.data.gts)
+        .catch(error => this.$route.push({name: 'error'}))
+    },
     maquinasChange(){
         this.maquinas = !this.maquinas
     },
@@ -157,11 +250,13 @@ methods:{
     },
     enviar(){
         this.$router.push({ 
-                        name:"carrosel", 
-                        params: {produtividade : this.produtividade, 
+                        name:"home", 
+                        params: {
+                            produtividade : this.produtividade, 
                             maquinas : this.maquinas, 
-                            paradas : this.paradas}
+                            paradas : this.paradas
                         }
+        }
         )
     }
 }

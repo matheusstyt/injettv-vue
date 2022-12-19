@@ -1,47 +1,47 @@
 <template>
     <div class="maquinas">
-      <h1 align="center">Performance Máquinas</h1>
-          <div class=container id="container">
-  
-            <div class="legends">
-              <div id="legenda-box">
-                  <h6><b>Cor da 1° Coluna</b></h6>
-                  <div v-for="(cor1, index) in legendaColors1" class="color-conteiner"> 
-                      <div class="cor-p" :style=back+cor1.style></div>
-                      <p>{{cor1.nome}}</p>
-                  </div>
-              </div>
-              <div id="legenda-box">
-              <h6><b>Cor da 2° Coluna</b></h6>
-              <div v-for="(cor2, index) in legendaColors2" class="color-conteiner"> 
-                <div class="cor-p1" :style=back+cor2.style+as+border+cor2.style+as ></div>
-                  <p>{{cor2.nome}} </p>
-                </div>
-              </div>
+        <h1 align="center">Performance Máquinas</h1>
+            <div class=container id="container">
     
-          </div>
-          <div class="col l12" style="display:inline-block; margin: 0 auto;">
-            <table>
-                <tr>
-                    <th>1ª Coluna</th>
-                    <th>2ª Coluna</th>
-                    <th>Máquina</th>
-                    <th>Descrição do Produto</th>
-                    <th>OEE</th>
-                </tr>
-                  <tr v-for="(pt, index) in pts" class="teste" id="circle1">
-                      <td><div class="quadrado-icons" :style=back+pt.icone.caminhoIcone></div></td>
-                      <td><div class="quadrado-icons" :style=back+pt.icone.corTriangulo></div></td>
-                      <td :style=color+pt.icone.caminhoIcone>{{ pt.cdPt}}</td>
-                      <td :style=color+pt.icone.caminhoIcone>{{ pt.dsProduto}}</td>
-                      <td :style=color+pt.icone.caminhoIcone>{{ pt.indicadores.indiceProdutividadeOEE}}%</td>
+              <div class="legends">
+                <div id="legenda-box">
+                    <h6><b>Cor da 1° Coluna</b></h6>
+                    <div v-for="(cor1, index) in legendaColors1" class="color-conteiner"> 
+                        <div class="cor-p" :style=back+cor1.style></div>
+                        <p>{{cor1.nome}}</p>
+                    </div>
+                </div>
+                <div id="legenda-box">
+                <h6><b>Cor da 2° Coluna</b></h6>
+                <div v-for="(cor2, index) in legendaColors2" class="color-conteiner"> 
+                  <div class="cor-p1" :style=back+cor2.style+as+border+cor2.style+as ></div>
+                    <p>{{cor2.nome}} </p>
+                  </div>
+                </div>
+      
+            </div>
+            <div class="col l12" style="display:inline-block; margin: 0 auto;">
+              <table>
+                  <tr>
+                      <th>1ª Coluna</th>
+                      <th>2ª Coluna</th>
+                      <th>Máquina</th>
+                      <th>Descrição do Produto</th>
+                      <th>OEE</th>
                   </tr>
-                
-            </table>
+                    <tr v-for="(pt, index) in pts" class="teste" id="circle1">
+                        <td><div class="quadrado-icons" :style=back+pt.icone.caminhoIcone></div></td>
+                        <td><div class="quadrado-icons" :style=back+pt.icone.corTriangulo></div></td>
+                        <td :style=color+pt.icone.caminhoIcone>{{ pt.cdPt}}</td>
+                        <td :style=color+pt.icone.caminhoIcone>{{ pt.dsProduto}}</td>
+                        <td :style=color+pt.icone.caminhoIcone>{{ pt.indicadores.indiceProdutividadeOEE}}%</td>
+                    </tr>
+                  
+              </table>
+          </div>
         </div>
+       
       </div>
-     
-    </div>
   
     </template>
   <script>

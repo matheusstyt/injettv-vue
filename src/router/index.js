@@ -9,13 +9,9 @@ const routes = [
     name: 'home',
     component: HomeView
   },
+
   {
-    path: '/produtividade',
-    name: 'produtividade',
-    component: Produtividade
-  },
-  {
-    path: '/error',
+    path: '/error/',
     name: 'error',
     component: Error
   },
@@ -32,11 +28,13 @@ const routes = [
     path: '/maquinas',
     name: 'maquinas',
     component: () => import(/* webpackChunkName: "maquinas" */ '../views/MaquinasView.vue')
-  },{
-    path: '/maquinas',
-    name: 'maquinas',
-    component: () => import(/* webpackChunkName: "maquinas" */ '../views/MaquinasView.vue')
-  },{
+  },
+  {
+    path: '/produtividade',
+    name: 'produtividade',
+    component: Produtividade
+  },
+  {
     path: '/parada',
     name: 'parada',
     component: () => import(/* webpackChunkName: "parada" */ '../views/ParadasView.vue')

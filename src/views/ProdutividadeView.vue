@@ -1,8 +1,19 @@
 <template>
   <div class="produtividade">
-    
+    {{ errorCode }}
+    <!-- <component v-bind:is="display" 
+    :oee="oee" 
+    :eficiencia="16" 
+    :refugo="80" 
+    :utilizacao="100" ></component> -->
+
+    <!-- <Velocimetros 
+        :oee="7" 
+        :eficiencia="16" 
+        :refugo="80" 
+        :utilizacao="100" 
+        /> -->
     <h1 class=center-align>Produtividade <span id=galpao></span></h1>
-        {{info}}
     <div>
         <div class="row speedometer">
                         <div class="col l3">
@@ -75,236 +86,192 @@
             </tr>
         </table>
     </div>
-    {{info}}
     <!-- {{indicadores}}
     -->
   </div>
 </template>
 <script>
+
+import Velocimetros from '../components/Velocimetros.vue'
 import axios from 'axios'
 import $ from 'jquery'
 export default{
-
-
-created() {
-    setInterval(() => (this.toggle = !this.toggle), 1111);
-  },
-  data() {
-    return {
-        valorOee: 0,
-        cd: '000001',
-        info:'teste',
-        bi : null,
-        indicadores : {},
-        velocimetro : {}, 
-        turnos: null,
-        oee : null,
-        refugo : null,
-        eficiencia : null,
-        utilizacao : null,
-        opts1 : null,
-        opts2 : {
-        needleValue: 1,
-        arcDelimiters:[1]     
-        },
-        opts3 : {
-        needleValue: 1,
-        arcDelimiters:[1]     
-        },
-        opts4 : {
-        needleValue: 1,
-        arcDelimiters:[1]     
-        },
-      
-
-
-    }
-  },
-  created() {
-    var turnoAtualVar;
-    const ip = 'http://170.10.0.208:8080'
-    const dataTeste = "2020-01-21";
-    const data = require('./date');
-    var contador = 0;
-    var velocimetroGlobal;
-    var biGlobal;
-    var turnoGlobal;
-    var ultimaAtualizacao;
-    var globalRequest;
-    
-    axios
-    .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
-    .then(turnoAtual => {
-        const Gauge = require('../../public/js/gauge')
-        var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
-        var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
-        var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
-        function formatDate(date, format) {
-            const map = {
-                mm: date.getMonth() + 1,
-                dd: date.getDate(),
-                aa: date.getFullYear().toString().slice(-2),
-                aaaa: date.getFullYear()
-            }
-            return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
-        }
-        const today = new Date();
-        var year = new Date().getFullYear()
-        var mes = new Date().getMonth()+1
-        var data = formatDate(today, 'aaaa-mm-dd')
-        turnoAtualVar = turnoAtual.data.cdTurno
-        axios
-        .all([
-            axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
-                cdGalpao: this.cd,
-                agrupamentoBI: 2,
-                cdTurno: turnoAtual.data.cdTurno,
-                dtIni: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
-                dtFim: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
-            }),
-            axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
-                anoIni: year,
-                mesIni: mes,
-                anoFim: year,
-                mesFim: mes,
-                cdGalpao: this.cd,
-                agrupamentoBI: 1,
-            }),
-            axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
-        ])
-        .then(axios.spread((velocimetro, bi, turnos) => {  
-            this.opts2 = { needleValue: 80, arcDelimiters:[80] }     
-            this.bi = bi.data.indicadoresTurno
-            this.indicadores = bi.data.indicadores
-            this.velocimetro = velocimetro.data.indicadores
-            this.turnos = turnos.data.turnos
-
-            this.oee = parseFloat(this.velocimetro.indOEE)
-            this.refugo = parseFloat(this.velocimetro.indRef)
-            this.eficiencia = parseFloat(this.velocimetro.eficiencia)
-            this.utilizacao = parseInt(this.velocimetro.indUtilizacao)
-           
-    
-        }))
-        // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
-        .catch(errorBI => this.info = errorBI);
-
-      })
-      //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
-      .catch(errorTurnoAtual => this.info = errorBI);
-  
-    
-    // async function produtividadeTask(request){   
-    // console.log("Fez chamada de produtividade na thread as " + getToday());
-    // await axios
-    // .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
-    // .then(turnoAtual => {   
-    //   console.log("entrou no metodo task");
-    //   axios
-    //   .all([
-    //       axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
-    //           cdGalpao: this.cd,
-    //           agrupamentoBI: 2,
-    //           cdTurno: turnoAtual.data.cdTurno,                            
-    //           dtIni: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date()),
-    //           dtFim: data.getYear(new Date()) + "-" + retornaMes() +  "-" + data.day(new Date())
-    //       }),
-    //       axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
-    //           anoIni: data.getYear(new Date()),
-    //           mesIni: retornaMes(),
-    //           anoFim: data.getYear(new Date()),
-    //           mesFim: retornaMes(),
-    //           cdGalpao: this.cd,
-    //           agrupamentoBI: 1,
-    //       }),
-    //       axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
-    //   ])
-    //   .then(axios.spread((velocimetro, bi, turnos) => {
-                                
-    //           velocimetroGlobal = velocimetro;
-    //           biGlobal = bi;
-    //           turnoGlobal = turnos;  
-    //           ultimaAtualizacao = getToday();
-    //           this.bi = bi.data
-    //           this.velocimetro = velocimetro.data
-    //           this.turnos = turnos.data.turnos
-
-
-    //   }))
-    //   .catch(errorBI => console.log('teste', errorBI));
-    //   } )
-    // .catch(errorTurnoAtual => console.log('teste 1', errorTurnoAtual));
-  
-    // }      
-  },
-  mounted(){
-    
-$.fn.gauge = function (opts) {
-    this.each(function () {
-        var $this = $(this),
-            data = $this.data();
-
-        if (data.gauge) {
-            data.gauge.stop();
-            delete data.gauge;
-        }
-        if (opts !== false) {
-            data.gauge = new Gauge(this).setOptions(opts);
-        }
-    });
-    return this;
-};
-
-var speeds = [
-    {
-        id: 'eficiencia',
-        value: this.eficiencia
+    components :{
+        Velocimetros,
     },
-    {
-        id: 'oee',
-        value: this.oee
+    mounted (){
+        // this.getGauge();  
     },
-    {
-        id: 'utilizacao',
-        value: this.utilizacao
-    },
-    {
-        id: 'refugo',
-        value: this.refugo
-    }
-];
-
-speeds.forEach(speed => {
-    var opts = {
-        angle: -0.10, // The span of the gauge arc
-        lineWidth: 0.25, // The line thickness
-        radiusScale: 0.9, // Relative radius
-        limitMax: false,     // If false, max value increases automatically if value > maxValue
-        limitMin: false,     // If true, the min value of the gauge will be fixed
-        generateGradient: true,
-        highDpiSupport: true,     // High resolution support
-        percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
-        staticLabels: {
-            font: '20px sans-serif',
-            labels: [50, 100],
-            color: '#fff'
-        }
-        };
+    created () {
         
-        var target = document.getElementById(speed.id); // your canvas element
-        var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-        gauge.maxValue = 100; // set max gauge value
-        gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-        gauge.animationSpeed = 33; // set animation speed (32 is default value)
-        gauge.set(speed.value); // set actual value
-    });
-  },
-  watch:{
-    oee(newValue, oldValue) {
-      this.valorOee = newValue
+        setInterval(() => {              
+            // this.getProdutividade()
+        }, 1000)
+        setInterval(() =>{
+            // this.getGauge();  
+        }, 15000)
+    },
+    data() {
+        return {
+            component : Velocimetros,
+            errorCode: '',
+            cd: '000001',
+            bi : null,
+            indicadores : {},
+            velocimetro : {}, 
+            turnos: null,
+            oee : null,
+            refugo : null,
+            eficiencia : null,
+            utilizacao : null,
+            opts1 : null,
+            opts2 : {
+            needleValue: 1,
+            arcDelimiters:[1]     
+            },
+            opts3 : {
+            needleValue: 1,
+            arcDelimiters:[1]     
+            },
+            opts4 : {
+            needleValue: 1,
+            arcDelimiters:[1]     
+            },
+    
+        }
+    },
+    methods:{
+        async getGauge(){
+            $.fn.gauge = function (opts) {
+                this.each(function () {
+                    var $this = $(this),
+                        data = $this.data();
+
+                    if (data.gauge) {
+                        data.gauge.stop();
+                        delete data.gauge;
+                    }
+                    if (opts !== false) {
+                        data.gauge = new Gauge(this).setOptions(opts);
+                    }
+                });
+                return this;
+            };
+            var speeds = [
+                {
+                    id: 'eficiencia',
+                    value: this.eficiencia
+                },
+                {
+                    id: 'oee',
+                    value: this.velocimetro.indOEE
+                },
+                {
+                    id: 'utilizacao',
+                    value: this.utilizacao
+                },
+                {
+                    id: 'refugo',
+                    value: this.refugo
+                }
+            ];
+            speeds.forEach(speed => {
+                var opts = {
+                    angle: -0.10, // The span of the gauge arc
+                    lineWidth: 0.25, // The line thickness
+                    radiusScale: 0.9, // Relative radius
+                    limitMax: false,     // If false, max value increases automatically if value > maxValue
+                    limitMin: false,     // If true, the min value of the gauge will be fixed
+                    generateGradient: true,
+                    highDpiSupport: true,     // High resolution support
+                    percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+                    staticLabels: {
+                        font: '20px sans-serif',
+                        labels: [50, 100],
+                        color: '#fff'
+                    }
+                };
+                var target = document.getElementById(speed.id); // your canvas element
+                var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                gauge.maxValue = 100; // set max gauge value
+                gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+                gauge.animationSpeed = 33; // set animation speed (32 is default value)
+                gauge.set(speed.value); // set actual value
+            });
+        },
+        async getProdutividade (){
+            var turnoAtualVar;
+            const ip = 'http://170.10.0.208:8080'
+            const dataTeste = "2020-01-21";
+            var contador = 0;
+            var velocimetroGlobal;
+            var biGlobal;
+            var turnoGlobal;
+            var ultimaAtualizacao;
+            var globalRequest;
+            var count = 0;
+            axios
+            .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
+            .then(turnoAtual => {
+                var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
+                var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
+                var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
+                function formatDate(date, format) {
+                    const map = {
+                        mm: date.getMonth() + 1,
+                        dd: date.getDate(),
+                        aa: date.getFullYear().toString().slice(-2),
+                        aaaa: date.getFullYear()
+                    }
+                    return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
+                }
+                const today = new Date();
+                var year = new Date().getFullYear()
+                var mes = new Date().getMonth()+1
+                var data = formatDate(today, 'aaaa-mm-dd')
+                turnoAtualVar = turnoAtual.data.cdTurno
+                axios
+                .all([
+                    axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
+                        cdGalpao: this.cd,
+                        agrupamentoBI: 2,
+                        cdTurno: turnoAtual.data.cdTurno,
+                        dtIni: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
+                        dtFim: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
+                    }),
+                    axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
+                        anoIni: year,
+                        mesIni: mes,
+                        anoFim: year,
+                        mesFim: mes,
+                        cdGalpao: this.cd,
+                        agrupamentoBI: 1,
+                    }),
+                    axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
+                ])
+                .then(axios.spread((velocimetro, bi, turnos) => {  
+                    this.opts2 = { needleValue: 80, arcDelimiters:[80] }     
+                    this.bi = bi.data.indicadoresTurno
+                    this.indicadores = bi.data.indicadores
+                    this.velocimetro = velocimetro.data.indicadores
+                    this.turnos = turnos.data.turnos
+
+                    this.oee = parseFloat(this.velocimetro.indOEE)
+                    this.refugo = parseFloat(this.velocimetro.indRef)
+                    this.eficiencia = parseFloat(this.velocimetro.eficiencia)
+                    this.utilizacao = parseInt(this.velocimetro.indUtilizacao)
+            
+                }))
+                // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
+                .catch(errorBI => this.errorCOde = errorBI);
+
+            })
+            //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
+            .catch(errorTurnoAtual => this.errorCOde = errorTurnoAtual);
     }
-  }
+    },
 }
+
 </script>
 <style>
 html{
