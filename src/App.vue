@@ -12,7 +12,6 @@
 <script>
 import M from 'materialize-css'
 
-
 export default {
 
 mounted () {
@@ -44,4 +43,5 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
+@import'~bootstrap/dist/css/bootstrap.css'
 </style>

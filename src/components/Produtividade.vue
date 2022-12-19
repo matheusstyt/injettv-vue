@@ -74,7 +74,6 @@
               </tr>
           </table>
       </div>
-      {{info}}
       <!-- {{indicadores}}
       -->
     </div>
