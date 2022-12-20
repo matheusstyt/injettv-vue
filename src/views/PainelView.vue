@@ -1,32 +1,18 @@
 <template>
     <div>
-        {{info}}
-        pro
-        {{produtividade}}
-        para
-        {{paradas}}
-        maq
-        {{maquinas}}
-        <div class="input-field col s12">
-            <select>
-              <option value="" disabled selected>Choose your option</option>
-              <option value="1">Option 1</option>
-              <option value="2">Option 2</option>
-              <option value="3">Option 3</option>
-            </select>
-            <label>Materialize Select</label>
-          </div>
-        
+        <header class="center">
+            <span class="titulo">INJET TV - Painel de Controle</span>
+            <img src="../assets/images/logo/logo.jpg" alt=Logo >
+        </header>   
         <main class=container>
         <form id="ok" >
             <div class=row>
                 <div class="col s12">
                     <span>Mostrar Telas</span>
                 </div>
-            </div>
-            
+            </div>     
             <div class=row>
-                <div class="col xl12 list">
+                <div class="col xl12 list flex">
                     <p class=inline-list>
                         <label>
                             <input name=painelProdutividade type=checkbox id=painelProdutividade :cheked="produtividade" v-model="produtividade"  >
@@ -47,41 +33,21 @@
                     </p>
                 </div>
             </div>
-            <!-- <div class=row>
-                <div class="input-field col xl12">
-                    <input placeholder="Tempo de transição da tela, em segundos." type=number id=tempo_trans name=tempo_trans pattern=\d*>
-                    <label for=tempo_trans>Tempo de Transição</label>
-                </div>
-            </div> -->
             <div class=row>
                 <div class="col s12">
                     <span>Mostrar Grupo / Máquinas</span>
                 </div>
-                <div class="input-field col xl6">
-                    <input type="hidden" id="dsGt" name="dsGt" value="">
-                    <select id=galpao name=galpao>
+                <div class="input-field col xl5 select-grupo">
+                    <!-- <input type="hidden" id="dsGt" name="dsGt" value=""> -->
+                    <select class="browser-default" id=galpao name=galpao>
                         <option value="" disabled selected>Escolha o Grupo de Trabalho</option>                       
-            
-                            <option v-for="(index, gt) in gts" :value="gt.cdGt" :name="gt.dsGt">{{gt.dsGt}}</option>
-
+                        <option v-for="gt in gts" :key="gt.idGt" :value="gt.cdGt" :name="gt.dsGt" >{{gt.dsGt}}</option> 
+                        
                     </select>
                     <label>Grupo de Máquinas</label>
                 </div>
-                <div class="input-field col xl6">
-                    
-                    <input id="dsGt" name="dsGt" value="">
-                    <select name="" id="">
-                        <option value="teste1">teste1'</option>
-                        <option value="teste1">teste1'</option>
-                        <option value="teste1">teste1'</option>
-                        <option value="teste1">teste1'</option>
-                        <option value="teste1">teste1'</option>
-                        <option v-for="(gt, index) in gts" :value="gt.cdGt" :name="gt.dsGt">{{gt.dsGt}}</option>
-                    </select>
-                    
-                    <label>Grupo de Máquinas</label>
-                </div>
-                <div class="browser-default input-field col xl6">
+   
+                <div class="input-field col xl5">
                     <select id=maquinas name=maquinas multiple>
                         <option value="" disabled>Escolha as Máquinas</option>
                     </select>
@@ -95,7 +61,7 @@
                     <button id=btn-cor type=button class="light-blue darken-2 right btn">Aplicar</button>
                 </div>
             </div>
-            <span>Carregar Logo da Empresa</span>
+            <div class="col s12"><span>Carregar Logo da Empresa</span></div>
             <div class="file-field input-field">
                 <div class="light-blue darken-2 right btn waves-effect waves-light">
                     <h6>Carregar</h6>
@@ -130,6 +96,7 @@
 <script>
 import axios from 'axios'
 import $ from 'jquery'
+import MM from 'materialize-css/dist/js/materialize.min'
 export default {
 components: {
 
@@ -140,18 +107,13 @@ data() {
     produtividade : false,
     paradas : true,
     maquinas : false,
-    gts : [
-        {dsGt: 'TESTE 1', cdGt : '000001'},
-        {dsGt: 'TESTE 2', cdGt : '000002'},
-        {dsGt: 'TESTE 3', cdGt : '000003'},
-        {dsGt: 'TESTE 4', cdGt : '000004'},
-    ]
-
+    gts : [],
+    logo : ''
     
   };
 },
 mounted (){
-    
+    MM.AutoInit()
    
 },
 created(){
@@ -236,7 +198,7 @@ methods:{
     },
     listGts(){
         axios.get(`http://170.10.0.208:8080/idw/rest/injet/gts/monitorizacao`)
-        .then(gts => this.gts = gts.data.gts)
+        .then(gts => this.gts = gts.data.gts    )
         .catch(error => this.$route.push({name: 'error'}))
     },
     maquinasChange(){
@@ -263,27 +225,47 @@ methods:{
 
 }
 </script>
-<style lang="css">
-carrousel{
-    overflow: hidden;
+<style scoped>
+.titulo{
+    text-align: center;
+
+}
+.flex{
+    gap: 1vmax;
+    display: flex;
+    
 }
 
-.item{
-    float: left;
-    width: 100%;
-    position: absolute;
-    display: inline;
-    left: 100%;  
-}
-.active{
+.row{
     display: block;
-    left: 0;
+    width: 100%;
+    text-align: start;
 }
-.nav{
-    margin-top: 150px;
+.col.s12{
+    width: 100%;
+    display: block  ;
+    text-align: start;
+    margin: 1em 0;;
 }
-.red{
-    background: red;
+.select-grupo{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.select-grupo label{
+    position: relative;
+    position: absolute;
+    top: -1.8vmax;
+    font-size: 0.7vmax;
+}
+.select-grupo select{
+    font-size: 1.1vmax;
+    border-bottom: 1px solid rgb(187, 187, 187);
+
+}
+.select-grupo select:active{
+    transition: ease 1s;
 }
 * {
     box-sizing: border-box;
