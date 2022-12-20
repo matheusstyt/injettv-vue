@@ -34,7 +34,7 @@ export default {
         setInterval(() => {
             this.getParadas()
             this.sec++
-        }, 1000)
+        }, 10000)
     },
     methods:{
         async getParadas(){

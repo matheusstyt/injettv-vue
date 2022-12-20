@@ -106,7 +106,7 @@ export default{
         
         setInterval(() => {              
             // this.getProdutividade()
-        }, 1000)
+        }, 10000)
         setInterval(() =>{
             // this.getGauge();  
         }, 15000)

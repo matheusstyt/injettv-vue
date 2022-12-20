@@ -10,28 +10,36 @@
     {{ paradas }}
     
     <hr> -->
-    {{ info }}
-    {{ paradas }}
-    {{ produtividade }}
-    {{ maquinas }}
-    error :  {{ err }}
-    <div ref="produtividade" v-if="produtividade == 'true'" >   
-        <Produtividade 
-        :bi="bi"
-        :velocimetro="velocimetro" 
-        :oee="oee" 
-        :eficiencia="eficiencia" 
-        :refugo="refugo" 
-        :utilizacao="utilizacao" 
-    />
+
+    {{ carroseu }}
+    <div v-for="(index) in carroseu">
+        <div v-if="index.value == true && index.name == 'produtividade'">
+            <div ref="produtividade" v-if="produtividade == 'true'" >   
+                <Produtividade 
+                :bi="bi"
+                :velocimetro="velocimetro" 
+                :oee="oee" 
+                :eficiencia="eficiencia" 
+                :refugo="refugo" 
+                :utilizacao="utilizacao" 
+            />
+            </div>
+        </div>
+        <div v-if="index.value == true && index.name == 'maquinas'">
+            <div ref="maquinas" v-if="maquinas == 'true'" >   
+                <Maquinas :cd="cd" />
+            </div>
+        </div>
+        <div v-if="index.value == true && index.name == 'paradas'">
+            <div ref="paradas" v-if="paradas == 'true'" >   
+                <Paradas :cd="cd"/>
+            </div>
+        </div>
     </div>
-    <div ref="paradas" v-if="paradas == 'true'" >   
-        <Paradas :cd="cd"/>
-    </div>
-    <div ref="maquinas" v-if="maquinas == 'true'" >   
-      
-        <Maquinas :cd="cd" />
-    </div>
+    
+    
+    
+    
     
     
 </div>
@@ -49,19 +57,19 @@ export default {
 
     },
     created () {
-        if(this.maquinas){
-            this.carroseu.push({name: 'maquinas', value: true})
+        if(sessionStorage.getItem('maquinas') == 'true'){
+            this.carroseu.push({'name': 'maquinas', value: true})
         }
-        if(this.paradas){
-            this.carroseu.push({name: 'paradas', value: true})
+        if(sessionStorage.getItem('paradas') == 'true'){
+            this.carroseu.push({'name': 'paradas', value: true})
         }
-        if(this.produtividade){
-            this.carroseu.push({name: 'produtividade', value: true})
+        if(sessionStorage.getItem('produtividade') == 'true'){
+            this.carroseu.push({'name': 'produtividade', value: true})
         }
         this.err = this.carroseu
         this.getProdutividade()
         setInterval(() => {              
-            
+            this.carroseu = this.changePosition(this.carroseu, 0, this.carroseu.length-1);
         }, 15000)
         setInterval(() => {              
             this.getProdutividade()
@@ -108,7 +116,15 @@ export default {
     };
     },
     methods:{
-
+        changePosition(arr, from, to) {
+            arr.splice(to, 0, arr.splice(from, 1)[0]);
+            arr[0].value = true
+            arr[arr.length-1].value = !arr[arr.length-1].value
+            if(arr.length = 3){
+                arr[1].value = false
+            }
+            return arr;
+        },
         async getProdutividade (){
             var turnoAtualVar;
             const ip = 'http://170.10.0.208:8080'
@@ -173,11 +189,11 @@ export default {
             
                 }))
                 // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
-                .catch(errorBI => {this.$router.push({name:"error", params:{code_error: errorBI}})});
+                .catch(errorBI => {this.$router.push({name:"error"})});
 
             })
             //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
-            .catch(errorTurnoAtual => {this.$router.push({name:"error", params:{code_error: errorTurnoAtual}})});
+            .catch(errorTurnoAtual => {this.$router.push({name:"error"})});
         },
         async getMaquinas(){
         var contador = 0;

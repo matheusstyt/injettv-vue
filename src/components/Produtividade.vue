@@ -106,9 +106,12 @@ import axios from 'axios'
         utilizacao : Number,
     },
     created(){
-        // setInterval(() =>{
-        //     this.getGauge();  
-        // }, 15000)
+        setInterval(() =>{
+            this.getGauge();  
+        }, 15000)
+    },
+    mounted() {
+        this.getGauge();  
     },
     data() {
       return {
