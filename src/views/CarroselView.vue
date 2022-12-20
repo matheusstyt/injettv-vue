@@ -8,8 +8,15 @@
     <hr>
     <h2>  Paradas  </h2>
     {{ paradas }}
+    
     <hr> -->
-    <Produtividade 
+    {{ info }}
+    {{ paradas }}
+    {{ produtividade }}
+    {{ maquinas }}
+    error :  {{ err }}
+    <div ref="produtividade" v-if="produtividade == 'true'" >   
+        <Produtividade 
         :bi="bi"
         :velocimetro="velocimetro" 
         :oee="oee" 
@@ -17,13 +24,21 @@
         :refugo="refugo" 
         :utilizacao="utilizacao" 
     />
-    <Maquinas :pts="ptsMaquinas" :turno="turno"/>
-    <Paradas />
+    </div>
+    <div ref="paradas" v-if="paradas == 'true'" >   
+        <Paradas :cd="cd"/>
+    </div>
+    <div ref="maquinas" v-if="maquinas == 'true'" >   
+      
+        <Maquinas :cd="cd" />
+    </div>
+    
+    
 </div>
 </template>
 
 <script>
-
+import router from "@/router";
 import axios from 'axios'
 import Maquinas from '../components/Maquinas.vue'
 import Produtividade from '../components/Produtividade.vue'
@@ -34,31 +49,46 @@ export default {
 
     },
     created () {
-        try{
-            this.produtividade = this.$route.params.produtividade
-            this.maquinas = this.$route.params.maquinas
-            this.paradas = this.$route.params.paradas
-        }catch(err){
-            this.info = err
-        }   
+        if(this.maquinas){
+            this.carroseu.push({name: 'maquinas', value: true})
+        }
+        if(this.paradas){
+            this.carroseu.push({name: 'paradas', value: true})
+        }
+        if(this.produtividade){
+            this.carroseu.push({name: 'produtividade', value: true})
+        }
+        this.err = this.carroseu
         this.getProdutividade()
-        this.getMaquinas()
+        setInterval(() => {              
+            
+        }, 15000)
         setInterval(() => {              
             this.getProdutividade()
-        }, 10000)
-        setInterval(() => {              
             this.getMaquinas()
-        }, 3000)
+        }, 10000)
+        // setInterval(() => {              
+        //     this.getMaquinas()
+        // }, 3000)
 
         
+    },
+    mounted() {
+        if(!sessionStorage.getItem('galpao')){
+            router.push({ path: '/painel'})
+            this.info = 'sem gp'
+        }else{
+            this.cd = sessionStorage.getItem('galpao')
+            this.produtividade = sessionStorage.getItem('produtividade')
+            this.paradas = sessionStorage.getItem('paradas')
+            this.maquinas = sessionStorage.getItem('maquinas')
+ 
+        }
     },
     data() {
     return {
         errorCode : '',
-        display_produtividade: {display:'block'},
-        display_paradas : {display:'block'},
-        display_maquinas : {display:'block'},
-        cd: '000001',
+        carroseu: [],
         //PRODUTIVIDADE 
         bi : null,
         indicadores : null,
@@ -68,23 +98,17 @@ export default {
         refugo : null,  
         eficiencia : null,
         utilizacao : null,
-        // MAQUINAS
 
-        // PARADAS / MAQUINAS
-        ptsParadas: null,
-        // MAQUINAS
-        ptsMaquinas: null,
-        turno : null,
-
-        
+        err : null,
         info : null,
-
+        info1 : null,
         produtividade : null, 
         maquinas : null, 
         paradas : null
     };
     },
     methods:{
+
         async getProdutividade (){
             var turnoAtualVar;
             const ip = 'http://170.10.0.208:8080'
@@ -156,101 +180,101 @@ export default {
             .catch(errorTurnoAtual => {this.$router.push({name:"error", params:{code_error: errorTurnoAtual}})});
         },
         async getMaquinas(){
-            var contador = 0;
-            var ptsGlobal;
-            var ultimaAtualizacao;
-            var globalRequest;
+        var contador = 0;
+        var ptsGlobal;
+        var ultimaAtualizacao;
+        var globalRequest;
 
-            function getToday(){
-                var today = new Date();
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                var yyyy = today.getFullYear();
-                var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds()
-                
-                if(String(today.getHours()).length < 2){
-                    h = '0'+String(today.getHours())
-                }
-                if(String(today.getMinutes()).length < 2){
-                    m = '0'+String(today.getMinutes())
-                }
-                if(String(today.getSeconds()).length < 2){
-                    s = '0'+String(today.getSeconds())
-                }
-                today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
-                return today;
-            }
-            axios
-            .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
-            .then(turnoAtual => {
-            this.turno = turnoAtual.data.idTurno
-                axios.post(`http://170.10.0.208:8080/idw/rest/v2/injet/monitorizacao/postosativos`, {
-                    idTurno: turnoAtual.data.idTurno,
-                    filtroOp: 0,
-                    cdGt: "000001",
-                    turnoAtual: true,
-                    dtReferencia: "15/12/2022"
-                })
-                .then(res => {         
-                    ptsGlobal = res;
-                    
-                    ultimaAtualizacao = getToday()
-                    
-                    let abaixoMeta = [], semConexao = [], naMeta = [], parada = [], pts = [], pts_ = [];
-                    
-                    res.data.pts.forEach(pt => {
-                        if(pt.dsProduto !== undefined) {
-                            if(pt.dsProduto.indexOf('\n') !== -1)
-                                pt.dsProduto = pt.dsProduto.substring(0, pt.dsProduto.indexOf('\n'));
-                        }
-
-                        if(pt.icone.caminhoIcone.includes('AbaixoMeta')) {
-                            pt.icone.caminhoIcone = '#f1c40f';
-                            abaixoMeta.push(pt);
-                        }
-                        if(pt.icone.caminhoIcone.includes('SemConexao')) {
-                            pt.icone.caminhoIcone = '#7f8c8d';
-                            semConexao.push(pt);
-                        }
-                        if(pt.icone.caminhoIcone.includes('NaMeta')) {
-                            pt.icone.caminhoIcone = '#4cd137';
-                            naMeta.push(pt);
-                        }
-                        if(pt.icone.caminhoIcone.includes('Parada')) {
-                            pt.icone.caminhoIcone = '#c0392b';
-                            parada.push(pt);
-                        }
-                    });
-                    pts = pts.concat(naMeta, abaixoMeta, parada, semConexao);
+        function getToday(){
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds()
             
-                    if(typeof this.maquinas === 'string'  ){            
-                        if (this.maquinas) {
+            if(String(today.getHours()).length < 2){
+                h = '0'+String(today.getHours())
+            }
+            if(String(today.getMinutes()).length < 2){
+                m = '0'+String(today.getMinutes())
+            }
+            if(String(today.getSeconds()).length < 2){
+                s = '0'+String(today.getSeconds())
+            }
+            today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
+            return today;
+        }
+        axios
+        .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
+        .then(turnoAtual => {
+        this.turno = turnoAtual.data.idTurno
+            axios.post(`http://170.10.0.208:8080/idw/rest/v2/injet/monitorizacao/postosativos`, {
+                idTurno: turnoAtual.data.idTurno,
+                filtroOp: 0,
+                cdGt: "000001",
+                turnoAtual: true,
+                dtReferencia: "15/12/2022"
+            })
+            .then(res => {         
+                ptsGlobal = res;
+                
+                ultimaAtualizacao = getToday()
+                
+                let abaixoMeta = [], semConexao = [], naMeta = [], parada = [], pts = [], pts_ = [];
+                
+                res.data.pts.forEach(pt => {
+                    if(pt.dsProduto !== undefined) {
+                        if(pt.dsProduto.indexOf('\n') !== -1)
+                            pt.dsProduto = pt.dsProduto.substring(0, pt.dsProduto.indexOf('\n'));
+                    }
+
+                    if(pt.icone.caminhoIcone.includes('AbaixoMeta')) {
+                        pt.icone.caminhoIcone = '#f1c40f';
+                        abaixoMeta.push(pt);
+                    }
+                    if(pt.icone.caminhoIcone.includes('SemConexao')) {
+                        pt.icone.caminhoIcone = '#7f8c8d';
+                        semConexao.push(pt);
+                    }
+                    if(pt.icone.caminhoIcone.includes('NaMeta')) {
+                        pt.icone.caminhoIcone = '#4cd137';
+                        naMeta.push(pt);
+                    }
+                    if(pt.icone.caminhoIcone.includes('Parada')) {
+                        pt.icone.caminhoIcone = '#c0392b';
+                        parada.push(pt);
+                    }
+                });
+                pts = pts.concat(naMeta, abaixoMeta, parada, semConexao);
+        
+                if(typeof this.maquinas === 'string'  ){            
+                    if (this.maquinas) {
+                        pts_ = pts_.concat(pts.filter((pt) => {
+                            if (pt.cdPt === this.maquinas) 
+                            return pt;
+                        }));
+                        pts = pts_;
+                    }
+                }
+                if(typeof this.maquinas === 'undefined' || typeof this.maquinas === 'object'  ){            
+                    if (this.maquinas) {
+                        this.maquinas.forEach((maquina) => {
                             pts_ = pts_.concat(pts.filter((pt) => {
-                                if (pt.cdPt === this.maquinas) 
+                                if (pt.cdPt === maquina) 
                                 return pt;
                             }));
-                            pts = pts_;
-                        }
+                        });
+                        pts = pts_;
                     }
-                    if(typeof this.maquinas === 'undefined' || typeof this.maquinas === 'object'  ){            
-                        if (this.maquinas) {
-                            this.maquinas.forEach((maquina) => {
-                                pts_ = pts_.concat(pts.filter((pt) => {
-                                    if (pt.cdPt === maquina) 
-                                    return pt;
-                                }));
-                            });
-                            pts = pts_;
-                        }
-                    }
-                    this.ptsMaquinas = pts
-                    this.turno = res
-                    //console.log('mauina time : '+slideTransition)
-                })
-                .catch((error) => {this.$router.push({name:"error", params:{code_error: error}})});
+                }
+                this.ptsMaquinas = pts
+                this.turno = res
+                //console.log('mauina time : '+slideTransition)
             })
-            .catch(errorTurnoAtual => {this.$router.push({name:"error", params:{code_error: errorTurnoAtual}})});
-        },
+            .catch((error) => {this.turno = error});
+        })
+        .catch(errorTurnoAtual => this.info = errorTurnoAtual)
+    },
         async getParadas(){
             function getToday(){
                 var today = new Date();

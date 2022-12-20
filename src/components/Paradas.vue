@@ -1,7 +1,7 @@
 <template>
     <div class="paradas">
       <h1 class=center-align>Paradas | Alertas</h1>
-      {{ sec }}
+      {{ cd }}
         <div class="container">
             <table>
                 <tr>
@@ -26,15 +26,44 @@
   import axios from 'axios'
   export default {
       name: 'Maquinas',
-      components: {
+    components: {
           
-      },
-      created () {
-          setInterval(() => {
-              this.getParadas()
-              this.sec++
-          }, 1000)
-      },
+    },
+    props:{
+        cd : String || '000001'
+    },
+    created () {
+        setInterval(() => {
+            this.getParadas()
+            this.sec++
+        }, 1000)
+    },
+    data(){
+        return{
+            sec: 0,
+            color: 'color: ',
+            pts: null,
+            turno : null,
+            maquinas : undefined,
+            legendaColors1 : [
+                {nome:'Parada', color: '#c0392b'},
+                {nome:'Na Meta', color: '#4cd137'},
+                {nome:'Fora da Meta', color: '#f1c40f'},
+                {nome:'Offline', color: 'rgb(135, 135, 135)'}
+                    ],
+            legendaColors2 : [
+                {nome:'Em Alerta', color: '#f1c40f'},
+                {nome:'Sem Planejamento', color: 'blue'},
+                {nome:'90% Op Concluída', color: 'rgb(27, 26, 90)'},
+                {nome:'Planejamneto Concluído', color: 'rgb(45, 238, 235)'},
+                {nome:'Índice de Refugo Maior que 5%', color: 'rgb(142, 142, 142)'},
+                {nome:'Parada sem Peso na Eficiência', color: 'rgb(235, 23, 192)'},
+                {nome:'Parada não Informada', color: 'rgb(0, 0, 0)'},
+                {nome:'CIP(Controle Início Processo)', color: 'rgb(115, 239, 111)'},
+                {nome:'Sem Ocorrências', color: '#ffff'}
+            ]
+        }
+    },
       methods:{
           async getParadas(){
               function getToday(){
@@ -149,35 +178,11 @@
               .catch((error) => {this.pts = error});
           }
       },
-      data(){
-      return{
-          sec: 0,
-          color: 'color: ',
-          pts: null,
-          turno : null,
-          maquinas : undefined,
-          cd : '000001',
-          legendaColors1 : [
-              {nome:'Parada', color: '#c0392b'},
-              {nome:'Na Meta', color: '#4cd137'},
-              {nome:'Fora da Meta', color: '#f1c40f'},
-              {nome:'Offline', color: 'rgb(135, 135, 135)'}
-                  ],
-          legendaColors2 : [
-              {nome:'Em Alerta', color: '#f1c40f'},
-              {nome:'Sem Planejamento', color: 'blue'},
-              {nome:'90% Op Concluída', color: 'rgb(27, 26, 90)'},
-              {nome:'Planejamneto Concluído', color: 'rgb(45, 238, 235)'},
-              {nome:'Índice de Refugo Maior que 5%', color: 'rgb(142, 142, 142)'},
-              {nome:'Parada sem Peso na Eficiência', color: 'rgb(235, 23, 192)'},
-              {nome:'Parada não Informada', color: 'rgb(0, 0, 0)'},
-              {nome:'CIP(Controle Início Processo)', color: 'rgb(115, 239, 111)'},
-              {nome:'Sem Ocorrências', color: '#ffff'}
-          ]
+  
+    mounted () {
+      if(!sessionStorage.getItem('galpao')){
+        
       }
-    },
-    async mounted () {
-      
     }
   }
   </script>
@@ -236,7 +241,7 @@
       margin: 10px 8px;
   }
   tr{
-      font-size: 2em;
+      font-size: 1em;
   }
   td{
       text-shadow: 1px 0px var(--color-text);

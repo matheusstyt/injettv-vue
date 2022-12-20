@@ -20,13 +20,14 @@
 
   </template>
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
-import { isIntegerKey } from '@vue/shared'
+import router from "@/router";
 import axios from 'axios'
 export default {
     name: 'Maquinas',
     components: {
+        
+    },
+    props:{
         
     },
     created () {
@@ -152,11 +153,11 @@ export default {
     data(){
     return{
         sec: 0,
+        cd : String || '000001',
         color: 'color: ',
         pts: null,
         turno : null,
         maquinas : undefined,
-        cd : '000001',
         legendaColors1 : [
             {nome:'Parada', color: '#c0392b'},
             {nome:'Na Meta', color: '#4cd137'},
@@ -177,7 +178,9 @@ export default {
     }
   },
   async mounted () {
-    
+    if(sessionStorage.getItem('galpao')){
+        this.cd = sessionStorage.getItem('galpao')
+    }
   }
 }
 </script>
@@ -236,7 +239,7 @@ table{
     margin: 10px 8px;
 }
 tr{
-    font-size: 2em;
+ 
 }
 td{
     text-shadow: 1px 0px var(--color-text);

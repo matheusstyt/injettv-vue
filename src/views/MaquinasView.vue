@@ -55,8 +55,8 @@ export default {
   },
   created () {
         setInterval(() => {
-            // this.getMaquinas();
-        }, 1000)
+             this.getMaquinas();
+        }, 3000)
     },
   data(){
     return{

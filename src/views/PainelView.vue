@@ -3,17 +3,10 @@
         <header class="center">
             <span class="titulo">INJET TV - Painel de Controle</span>
             <img src="../assets/images/logo/logo.jpg" alt=Logo >
-            {{ grupo }}
-            {{ info }}
-            {{ pts }}
-        </header>   
-        <div>
-            <label class="typo__label">Simple select / dropdown</label>
-            <VueMultiselect v-model="value" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Pick some" label="dsPt" track-by="dsPt" :preselect-first="false">
-              <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
-            </VueMultiselect>
-            <pre class="language-json"><code>{{ value  }}</code></pre>
-          </div>
+            
+        </header>
+        {{ info }}
+        {{ info1 }}
       <main class=container>
         <form id="ok" >
             <div class=row>
@@ -49,19 +42,16 @@
                 </div>
                 <div class="input-field col xl5 select-grupo">
                     <input type="hidden" id="dsGt" name="dsGt" value="">
-                    <select class="browser-default" id=galpao name=galpao v-model="grupo">
-                        <option value="" disabled selected>Escolha o Grupo de Trabalho</option>                       
-                        <option v-for="gt in gts" :key="gt.idGt" :value="gt.cdGt" :name="gt.dsGt" >{{gt.dsGt}}</option> 
-                        
-                    </select>
-                    <label>Grupo de Máquinas</label>
+                    <label class="typo__label">Grupo de Máquinas</label>
+                    <VueMultiselect v-model="gt" :options="gts" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Escolha o grupo de trabalho" label="dsGt" track-by="dsGt" ></VueMultiselect>
                 </div>
    
                 <div class="input-field col xl5">
-                    <select id=maquinas name=maquinas multiple>
-                        <option value="" disabled>Escolha as Máquinas</option>
-                    </select>
-                    <label>Máquinas</label>
+                    <label class="typo__label">Máquinas</label>
+                    <VueMultiselect v-model="value" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Escolha as Máquinas" label="cdPt" track-by="cdPt" :preselect-first="false">
+                        <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                    </VueMultiselect>
+                    <!-- <label>Máquinas</label> -->
                 </div>
             </div>
             <div class=row>
@@ -104,6 +94,7 @@
 </template>
 
 <script>
+import router from "@/router";
 import axios from 'axios'
 import $ from 'jquery'
 import MM from 'materialize-css/dist/js/materialize.min'
@@ -117,12 +108,15 @@ data() {
   return {
     value: [],
     selected: null,
-      options: [],
-    info: 'a',
+    options: [],
+    maquinasList: [],
+    info: 'teste',
+    info1: 'teste1',
     produtividade : false,
-    paradas : true,
+    paradas : false,
     maquinas : false,
     gts : [],
+    gt: null,
     logo : '',
     grupo: null,
     pts: null
@@ -151,19 +145,6 @@ methods:{
         .then(response => {
             this.options = response.data.pts
             this.pts = response.data.pts
-            console.log("gt " + galpaoTemp)
-
-            // $('#preloader').fadeOut().toggleClass('hide');
-            
-            $('#maquinas').find('option').remove().end();      
-            
-            console.log("Galpao "  +$("#galpao option:selected").html())
-
-            $('#dsGt').val($("#galpao option:selected").html());
-
-            console.log("Valor do campo dsGt " + $("#dsGt").val())
-
-            response.data.pts.forEach(pt => $('#maquinas').append(`<option value='${pt.cdPt}'>${pt.cdPt}</option>`));
         })
         .catch(err => {
             this.info = err
@@ -228,20 +209,33 @@ methods:{
         this.paradas = !this.paradas
     },
     enviar(){
-        this.$router.push({ 
-                        name:"home", 
-                        params: {
-                            produtividade : this.produtividade, 
-                            maquinas : this.maquinas, 
-                            paradas : this.paradas
-                        }
+        if(this.value.length == 0 | this.value == null){
+            this.info = 'Selecione uma máquina!!'
+
+        }else{
+            this.value.forEach(element => {
+                this.maquinasList.push(element.cdPt)
+            })
+            sessionStorage.setItem("maquinasSelected", JSON.stringify(this.value));
+            sessionStorage.setItem("maquinasList", JSON.stringify(this.maquinasList));
+            sessionStorage.setItem("paradas", this.paradas);
+            sessionStorage.setItem("produtividade", this.produtividade);
+            sessionStorage.setItem("maquinas", this.maquinas);
+            sessionStorage.setItem("galpao", this.gt.cdGt)
+            this.info = 'Sucesso :)'+this.value.length
+            if(!this.produtividade & !this.paradas & !this.maquinas){
+                this.info1 = 'Porfavor, selecione pelo menos uma tela!'
+            }else{
+                router.push({ path: '/carrosel'})
+            }
         }
-        )
+    
+    
     }
 },
 watch:{
-    grupo(newValue){
-        this.changeMaquinas(newValue)
+    gt(newValue){
+        this.changeMaquinas(newValue.cdGt)
     }
 }
 
