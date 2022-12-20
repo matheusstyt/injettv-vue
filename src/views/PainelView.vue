@@ -3,8 +3,18 @@
         <header class="center">
             <span class="titulo">INJET TV - Painel de Controle</span>
             <img src="../assets/images/logo/logo.jpg" alt=Logo >
+            {{ grupo }}
+            {{ info }}
+            {{ pts }}
         </header>   
-        <main class=container>
+        <div>
+            <label class="typo__label">Simple select / dropdown</label>
+            <VueMultiselect v-model="value" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Pick some" label="dsPt" track-by="dsPt" :preselect-first="false">
+              <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+            </VueMultiselect>
+            <pre class="language-json"><code>{{ value  }}</code></pre>
+          </div>
+      <main class=container>
         <form id="ok" >
             <div class=row>
                 <div class="col s12">
@@ -38,8 +48,8 @@
                     <span>Mostrar Grupo / Máquinas</span>
                 </div>
                 <div class="input-field col xl5 select-grupo">
-                    <!-- <input type="hidden" id="dsGt" name="dsGt" value=""> -->
-                    <select class="browser-default" id=galpao name=galpao>
+                    <input type="hidden" id="dsGt" name="dsGt" value="">
+                    <select class="browser-default" id=galpao name=galpao v-model="grupo">
                         <option value="" disabled selected>Escolha o Grupo de Trabalho</option>                       
                         <option v-for="gt in gts" :key="gt.idGt" :value="gt.cdGt" :name="gt.dsGt" >{{gt.dsGt}}</option> 
                         
@@ -97,18 +107,26 @@
 import axios from 'axios'
 import $ from 'jquery'
 import MM from 'materialize-css/dist/js/materialize.min'
+import VueMultiselect from 'vue-multiselect'
+
 export default {
 components: {
-
+    VueMultiselect  
 },
 data() {
   return {
+    value: [],
+    selected: null,
+      options: [],
     info: 'a',
     produtividade : false,
     paradas : true,
     maquinas : false,
     gts : [],
-    logo : ''
+    logo : '',
+    grupo: null,
+    pts: null
+    
     
   };
 },
@@ -121,69 +139,68 @@ created(){
    //  this.Materizalize();
 },
 methods:{
-    Materizalize(){
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('select');
-            var instances = M.FormSelect.init(elems);
-        });
+    changeMaquinas(galpao){
+        console.log('chegou aqui')
+        var galpaoTemp = galpao
+        //$('#preloader').fadeIn().toggleClass('hide');
+        axios.get(`http://170.10.0.208:8080/idw/rest/injet/pts/ativoByGalpao`, {
+            params: {
+                gt:galpaoTemp
+            }
+        })
+        .then(response => {
+            this.options = response.data.pts
+            this.pts = response.data.pts
+            console.log("gt " + galpaoTemp)
+
+            // $('#preloader').fadeOut().toggleClass('hide');
+            
+            $('#maquinas').find('option').remove().end();      
+            
+            console.log("Galpao "  +$("#galpao option:selected").html())
+
+            $('#dsGt').val($("#galpao option:selected").html());
+
+            console.log("Valor do campo dsGt " + $("#dsGt").val())
+
+            response.data.pts.forEach(pt => $('#maquinas').append(`<option value='${pt.cdPt}'>${pt.cdPt}</option>`));
+        })
+        .catch(err => {
+            this.info = err
+        })
+        // $('#galpao').change(e => {
+        //     var galpaoTemp;
+        //     var produtividadeTemp;
+        //     var maquinasTemp;
+        //     var paradasTemp;
+
+            
+
+        //     var cliente = {
+        //         galpao: $("#galpao").val(),
+        //         produtividade: $('#painelProdutividade').is(':checked'),
+        //         maquinas: $('#painelMaquinas').is(':checked'),
+        //         paradas: $("#painelParadas").is(':checked'),
+        //         cor_fundo: '#ffffff',
+        //         path_logo: ''
+        //     };
+
+        //     // localStorage.setItem("galpao", $("#galpao").val());
+        //     // console.log(cliente);
+        //     return true;
+
+
+        //     });
+
+    },
+    getMaquinas(){
         $(document).ready(function() {
                     $(document).ready(function() {
             // Select - Single
             $('select:not([multiple])').material_select();
         });
 
-            $('#galpao').change(e => {
-            var galpaoTemp;
-            var produtividadeTemp;
-            var maquinasTemp;
-            var paradasTemp;
-
-            galpaoTemp = $('#galpao').val();
-            produtividadeTemp = $('#painelProdutividade').val();
-            maquinasTemp = $('#painelMaquinas').val();
-            paradasTemp = $('#painelParadas').val();
-
-            $('#preloader').fadeIn().toggleClass('hide');
-            axios.get(ip+`/idw/rest/injet/pts/ativoByGalpao`, {
-                params: {
-                    gt:galpaoTemp
-                }
-            })
-            .then(response => {
-                console.log("gt " + galpaoTemp)
-
-                $('#preloader').fadeOut().toggleClass('hide');
-                
-                $('#maquinas').find('option').remove().end();      
-                
-                console.log("Galpao "  +$("#galpao option:selected").html())
-
-                $('#dsGt').val($("#galpao option:selected").html());
-
-                console.log("Valor do campo dsGt " + $("#dsGt").val())
-
-                response.data.pts.forEach(pt => $('#maquinas').append(`<option value='${pt.cdPt}'>${pt.cdPt}</option>`));
-                $('select').formSelect();
-            })
-            .catch(err => {
-                M.toast({ html: 'Falha ao carregar máquinas, tente novamente mais tarde. ' + error, displayLength: 2000 })
-            })
-
-            var cliente = {
-                galpao: $("#galpao").val(),
-                produtividade: $('#painelProdutividade').is(':checked'),
-                maquinas: $('#painelMaquinas').is(':checked'),
-                paradas: $("#painelParadas").is(':checked'),
-                cor_fundo: '#ffffff',
-                path_logo: ''
-            };
-
-            // localStorage.setItem("galpao", $("#galpao").val());
-            // console.log(cliente);
-            return true;
-
-
-            });
+            
 
             $('#btn-cor').click(() => $('body').css('background-color', $('#cor_fundo').val()));
 
@@ -221,11 +238,20 @@ methods:{
         }
         )
     }
+},
+watch:{
+    grupo(newValue){
+        this.changeMaquinas(newValue)
+    }
 }
 
 }
+
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 <style scoped>
+
 .titulo{
     text-align: center;
 
