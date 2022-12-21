@@ -4,7 +4,10 @@
         <h1>Não há dados a apresentar :(</h1>  
         <h2 class="err">404</h2>
         <div class="box-err">
-          {{ error }}
+          <p v-bind:style="{
+            color: highlightColor, //..highlightColor deve ser uma propriedade da função data
+            'font-size' : pSize + 'rem' //..pSize deve ser uma propriedade da função data
+          }">Estilo inline usando um objeto!</p> 
         
         </div>
     </div>
@@ -17,7 +20,9 @@
     },
     data() {  
       return {
-        error: ''
+        error: '',
+        highlightColor: 'blue',
+        pSize : 3
       };
     },
     created(){

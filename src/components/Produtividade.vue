@@ -1,7 +1,7 @@
 <template>
-    <div class="produtividade">
-        
-      <h1 class=center-align>Produtividade <span id=galpao></span></h1>
+    <div class="produtividade">   
+        {{ info }}
+      <h1 class=center-align>Produtividade - {{  galpaoName }}<span id=galpao></span></h1>
       <div>
           <div class="row speedometer">
                           <div class="col l3">
@@ -11,7 +11,7 @@
                                   </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Eficiência (<span id=eficienciaValue>{{eficiencia}}</span>)</strong>
+                                  <strong>Eficiência (<span id=eficienciaValue>{{indicadores.eficiencia}}</span>)</strong>
                               </div>
                           </div>
                           <div class="col l3">
@@ -21,7 +21,7 @@
                                   </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>OEE (<span id=oeeValue>{{oee}}</span>)</strong>
+                                  <strong>OEE (<span id=oeeValue>{{indicadores.indOEE}}</span>)</strong>
                               </div>
                           </div>
                           <div class="col l3">
@@ -31,26 +31,27 @@
                                   </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Utilização (<span id=utilizacaoValue>{{utilizacao}}</span>)</strong>
+                                  <strong>Utilização (<span id=utilizacaoValue>{{indicadores.indUtilizacao}}</span>)</strong>
                               </div>
                           </div>
                           <div class="col l3">
                               <div class="row flex">
                                   <div class=canvas-container>
                                       <canvas class=Gauge id=refugo></canvas>
-                                  </div>
+                                      </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Refugo (<span id=refugoValue>{{refugo}}</span>)</strong>
+                                  <strong>Refugo (<span id=refugoValue>{{indicadores.indRef}}</span>)</strong>
                               </div>
                           </div>
           </div>
-           <thead>
-              <th></th>
-                  <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.dsTurno}}</th>
-              <th>Acumulado mês</th>
-          </thead>     
+             
           <table>
+            <thead>
+                <th></th>
+                    <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.dsTurno}}</th>
+                <th>Acumulado mês</th>
+            </thead>   
                   <tr>
                       <td>% Produtividade  OEE</td>
                       <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indOEE}}</th>
@@ -79,113 +80,180 @@
     </div>
   </template>
   <script>
-  import { numberLiteralTypeAnnotation } from '@babel/types';
-import axios from 'axios'
+  
+  import Velocimetros from '../components/Velocimetros.vue'
+  import axios from 'axios'
   import $ from 'jquery'
   export default{
-
+      components :{
+          Velocimetros,
+      },
+      mounted (){
+          this.getProdutividade()
+          
+          
+      },
+      created () {
+          
+          setInterval(() => {              
+              this.getProdutividade()  
+          }, 15000)
+          setInterval(() =>{
+               this.getGauge();  
+          }, 10000)
+      },
     props:{
-        bi: {
-        type: Object,
-        default(rawProps) {
-            return { message: 'hello' }}
-        },
-        indicadores: {
-        type: Object,
-        default(rawProps) {
-            return { message: 'hello' }}
-        },
-        velocimetro: {
-        type: Object,
-        default(rawProps) {
-            return { message: 'hello' }}
-        },
-        oee : Number,
-        eficiencia : Number,
-        refugo : Number,
-        utilizacao : Number,
+        cd : String || '000001'
     },
-    created(){
-        setInterval(() =>{
-            this.getGauge();  
-        }, 15000)
-    },
-    mounted() {
-        this.getGauge();  
-    },
-    data() {
-      return {
+      data() {
+          return {
+                galpaoName : sessionStorage.getItem('galpaoName'),
+                errorCode: '',
+                bi : null,
+                indicadores : {},
+                velocimetro : {}, 
+                turnos: null,
+                info: null,
+  
+          }
+      },
+      methods:{
+           getGauge(){
+             
+              $.fn.gauge = function (opts) {
+                  this.each(function () {
+                      var $this = $(this),
+                          data = $this.data();
+  
+                      if (data.gauge) {
+                          data.gauge.stop();
+                          delete data.gauge;
+                      }
+                      if (opts !== false) {
+                          data.gauge = new Gauge(this).setOptions(opts);
+                      }
+                  });
+                  return this;
+              };
+              var speeds = [
+                  {
+                      id: 'eficiencia',
+                      value: this.indicadores.eficiencia
+                  },
+                  {
+                      id: 'oee',
+                      value: this.indicadores.indOEE
+                  },
+                  {
+                      id: 'utilizacao',
+                      value: this.indicadores.indUtilizacao
+                  },
+                  {
+                      id: 'refugo',
+                      value: this.indicadores.indRef
+                  }
+              ];
+              $(function() {
+                  speeds.forEach(speed => {
+                  var opts = {
+                      angle: -0.10, // The span of the gauge arc
+                      lineWidth: 0.25, // The line thickness
+                      radiusScale: 0.9, // Relative radius
+                      limitMax: false,     // If false, max value increases automatically if value > maxValue
+                      limitMin: false,     // If true, the min value of the gauge will be fixed
+                      generateGradient: true,
+                      highDpiSupport: true,     // High resolution support
+                      percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+                      staticLabels: {
+                          font: '20px sans-serif',
+                          labels: [50, 100],
+                          color: '#fff'
+                      }
+                  };
+                  var target = document.getElementById(speed.id); // your canvas element
+                  var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                  gauge.maxValue = 100; // set max gauge value
+                  gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+                  gauge.animationSpeed = 33; // set animation speed (32 is default value)
+                  gauge.set(speed.value); // set actual value
+              });
+              });
+              
+              
+          },
+           getProdutividade (){
+              var turnoAtualVar;
+              const ip = 'http://170.10.0.208:8080'
+              const dataTeste = "2020-01-21";
+              var contador = 0;
+              var velocimetroGlobal;
+              var biGlobal;
+              var turnoGlobal;
+              var ultimaAtualizacao;
+              var globalRequest;
+              var count = 0;
+              axios
+              .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
+              .then(turnoAtual => {
+                  var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
+                  var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
+                  var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
+                  function formatDate(date, format) {
+                      const map = {
+                          mm: date.getMonth() + 1,
+                          dd: date.getDate(),
+                          aa: date.getFullYear().toString().slice(-2),
+                          aaaa: date.getFullYear()
+                      }
+                      return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
+                  }
+                  const today = new Date();
+                  var year = new Date().getFullYear()
+                  var mes = new Date().getMonth()+1
+                  var data = formatDate(today, 'aaaa-mm-dd')
+                  turnoAtualVar = turnoAtual.data.cdTurno
+                  axios
+                  .all([
+                      axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
+                          cdGalpao: this.cd,
+                          agrupamentoBI: 2,
+                          cdTurno: turnoAtual.data.cdTurno,
+                          dtIni: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
+                          dtFim: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
+                      }),
+                      axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
+                          anoIni: year,
+                          mesIni: mes,
+                          anoFim: year,
+                          mesFim: mes,
+                          cdGalpao: this.cd,
+                          agrupamentoBI: 1,
+                      }),
+                      axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
+                  ])
+                  .then(axios.spread((velocimetro, bi, turnos) => {  
+                      this.opts2 = { needleValue: 80, arcDelimiters:[80] }     
+                      this.bi = bi.data.indicadoresTurno
+                      this.indicadores = bi.data.indicadores
+                      this.velocimetro = velocimetro.data.indicadores
+                      this.turnos = turnos.data.turnos
+                    this.info = indicadores
+                      setTimeout(() => {              
+                          this.getGauge();  
+                      }, 300)
+                  }))
+                  // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
+                  .catch(errorBI => this.errorCOde = errorBI);
+  
+              })
+              //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
+              .catch(errorTurnoAtual => this.errorCOde = errorTurnoAtual);
       }
-    },
-    methods:{
-        async getGauge(){
-            $.fn.gauge = function (opts) {
-                this.each(function () {
-                    var $this = $(this),
-                        data = $this.data();
-
-                    if (data.gauge) {
-                        data.gauge.stop();
-                        delete data.gauge;
-                    }
-                    if (opts !== false) {
-                        data.gauge = new Gauge(this).setOptions(opts);
-                    }
-                });
-                return this;
-            };
-            var speeds = [
-                {
-                    id: 'eficiencia',
-                    value: this.eficiencia
-                },
-                {
-                    id: 'oee',
-                    value: this.oee
-                },
-                {
-                    id: 'utilizacao',
-                    value: this.utilizacao
-                },
-                {
-                    id: 'refugo',
-                    value: this.refugo
-                }
-            ];
-            speeds.forEach(speed => {
-                var opts = {
-                    angle: -0.10, // The span of the gauge arc
-                    lineWidth: 0.25, // The line thickness
-                    radiusScale: 0.9, // Relative radius
-                    limitMax: false,     // If false, max value increases automatically if value > maxValue
-                    limitMin: false,     // If true, the min value of the gauge will be fixed
-                    generateGradient: true,
-                    highDpiSupport: true,     // High resolution support
-                    percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
-                    staticLabels: {
-                        font: '20px sans-serif',
-                        labels: [50, 100],
-                        color: '#fff'
-                    }
-                };
-                var target = document.getElementById(speed.id); // your canvas element
-                var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-                gauge.maxValue = 100; // set max gauge value
-                gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-                gauge.animationSpeed = 33; // set animation speed (32 is default value)
-                gauge.set(speed.value); // set actual value
-            });
-        },
-    },
-    watch:{
-        oee(newValue){this.getGauge()},
-        eficiencia(newValue){this.getGauge()},
-        refugo(newValue){this.getGauge()},
-        utilizacao(newValue){this.getGauge()},
-    }
-}
+      },
+  }
+  
   </script>
-  <style scoped>
+  <style>
   html{
       --tema-padrao: #0077FF;
       --bg: #FCFCFC;

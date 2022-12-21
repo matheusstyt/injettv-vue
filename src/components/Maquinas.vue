@@ -1,7 +1,7 @@
 <template>
     <div class="maquinas">
-        {{ cd }}
-      <h1 align="center">Performance Máquinas</h1>
+        {{ info }}
+      <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
           <div class=container id="container">
   
             <div class="legends">
@@ -58,20 +58,21 @@
         cd : String || '000001'
     },
     created () {
+        
           setInterval(() => {
                this.getMaquinas();
-          }, 3000)
+          }, 15000)
       },
     data(){
       return{
-        as: ';',
+        info: null,
         color: 'color: ',
         back: 'background-color: ',
         border: ' border-bottom: 20px solid ',
         pts: null,
         turno : null,
         maquinas : undefined,
-        
+        galpaoName : sessionStorage.getItem('galpaoName'),
         legendaColors1 : [
           {nome:'Parada', style: '#c0392b'},
           {nome:'Na Meta', style: '#4cd137'},
@@ -117,16 +118,31 @@
               today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
               return today;
           }
+          function formatDate(date, format) {
+                    const map = {
+                        mm: date.getMonth() + 1,
+                        dd: date.getDate(),
+                        aa: date.getFullYear().toString().slice(-2),
+                        aaaa: date
+                    }
+                    return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
+                }
+                const today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var year = new Date().getFullYear()
+                var mes = new Date().getMonth()+1
+                var data = formatDate(today, 'dd/mm/aaaa')
           axios
           .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
           .then(turnoAtual => {
           this.turno = turnoAtual.data.idTurno
+          this.info = dd+'/'+mes+'/'+year
               axios.post(`http://170.10.0.208:8080/idw/rest/v2/injet/monitorizacao/postosativos`, {
                   idTurno: turnoAtual.data.idTurno,
                   filtroOp: 0,
                   cdGt: this.cd,
                   turnoAtual: true,
-                  dtReferencia: "15/12/2022"
+                  dtReferencia: dd+'/'+mes+'/'+year
               })
               .then(res => {         
                   ptsGlobal = res;
@@ -190,7 +206,7 @@
       }
     },
     mounted () {
-      
+        this.getMaquinas();
     }
   }
   </script>

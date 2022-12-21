@@ -1,18 +1,7 @@
 <template>
-  <div class="produtividade">
-    {{ errorCode }}
-    <!-- <component v-bind:is="display" 
-    :oee="oee" 
-    :eficiencia="16" 
-    :refugo="80" 
-    :utilizacao="100" ></component> -->
-
-    <!-- <Velocimetros 
-        :oee="7" 
-        :eficiencia="16" 
-        :refugo="80" 
-        :utilizacao="100" 
-        /> -->
+  <div class="produtividade"> 
+    <Preloader />
+    {{ info }}
     <h1 class=center-align>Produtividade <span id=galpao></span></h1>
     <div>
         <div class="row speedometer">
@@ -23,7 +12,7 @@
                                 </div>
                             </div>
                             <div class="row center-align">
-                                <strong>Eficiência (<span id=eficienciaValue>{{eficiencia}}</span>)</strong>
+                                <strong>Eficiência (<span id=eficienciaValue>{{indicadores.eficiencia}}</span>)</strong>
                             </div>
                         </div>
                         <div class="col l3">
@@ -33,7 +22,7 @@
                                 </div>
                             </div>
                             <div class="row center-align">
-                                <strong>OEE (<span id=oeeValue>{{oee}}</span>)</strong>
+                                <strong>OEE (<span id=oeeValue>{{indicadores.indOEE}}</span>)</strong>
                             </div>
                         </div>
                         <div class="col l3">
@@ -43,17 +32,17 @@
                                 </div>
                             </div>
                             <div class="row center-align">
-                                <strong>Utilização (<span id=utilizacaoValue>{{utilizacao}}</span>)</strong>
+                                <strong>Utilização (<span id=utilizacaoValue>{{indicadores.indUtilizacao}}</span>)</strong>
                             </div>
                         </div>
                         <div class="col l3">
                             <div class="row flex">
                                 <div class=canvas-container>
                                     <canvas class=Gauge id=refugo></canvas>
-                                </div>
+                                    </div>
                             </div>
                             <div class="row center-align">
-                                <strong>Refugo (<span id=refugoValue>{{refugo}}</span>)</strong>
+                                <strong>Refugo (<span id=refugoValue>{{indicadores.indRef}}</span>)</strong>
                             </div>
                         </div>
         </div>
@@ -91,25 +80,30 @@
   </div>
 </template>
 <script>
-
+const dataA = require('/public/js/date')
+import Preloader from '../components/Preloader.vue'
 import Velocimetros from '../components/Velocimetros.vue'
 import axios from 'axios'
 import $ from 'jquery'
 export default{
     components :{
-        Velocimetros,
+        Velocimetros, Preloader
     },
     mounted (){
-        // this.getGauge();  
+        this.cd = sessionStorage.getItem('galpao')
+        
+        
+        
     },
     created () {
-        
+        this.info = 2
+        this.getProdutividade()
         setInterval(() => {              
-            // this.getProdutividade()
-        }, 10000)
-        setInterval(() =>{
-            // this.getGauge();  
+            
         }, 15000)
+        setInterval(() =>{
+             this.getGauge();  
+        }, 10000)
     },
     data() {
         return {
@@ -120,28 +114,14 @@ export default{
             indicadores : {},
             velocimetro : {}, 
             turnos: null,
-            oee : null,
-            refugo : null,
-            eficiencia : null,
-            utilizacao : null,
-            opts1 : null,
-            opts2 : {
-            needleValue: 1,
-            arcDelimiters:[1]     
-            },
-            opts3 : {
-            needleValue: 1,
-            arcDelimiters:[1]     
-            },
-            opts4 : {
-            needleValue: 1,
-            arcDelimiters:[1]     
-            },
+            info : 0,
+            c : 1,
+
     
         }
     },
     methods:{
-        async getGauge(){
+         getGauge(){
             $.fn.gauge = function (opts) {
                 this.each(function () {
                     var $this = $(this),
@@ -160,22 +140,23 @@ export default{
             var speeds = [
                 {
                     id: 'eficiencia',
-                    value: this.eficiencia
+                    value: this.indicadores.eficiencia
                 },
                 {
                     id: 'oee',
-                    value: this.velocimetro.indOEE
+                    value: this.indicadores.indOEE
                 },
                 {
                     id: 'utilizacao',
-                    value: this.utilizacao
+                    value: this.indicadores.indUtilizacao
                 },
                 {
                     id: 'refugo',
-                    value: this.refugo
+                    value: this.indicadores.indRef
                 }
             ];
-            speeds.forEach(speed => {
+            $(function() {
+                speeds.forEach(speed => {
                 var opts = {
                     angle: -0.10, // The span of the gauge arc
                     lineWidth: 0.25, // The line thickness
@@ -198,8 +179,12 @@ export default{
                 gauge.animationSpeed = 33; // set animation speed (32 is default value)
                 gauge.set(speed.value); // set actual value
             });
+            });
+            
+            
         },
-        async getProdutividade (){
+         getProdutividade (){
+            this.info = this.c++;
             var turnoAtualVar;
             const ip = 'http://170.10.0.208:8080'
             const dataTeste = "2020-01-21";
@@ -210,12 +195,22 @@ export default{
             var ultimaAtualizacao;
             var globalRequest;
             var count = 0;
-            axios
-            .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
+            function getToday(){
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                today = mm + '/' + dd + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+                
+                return today;
+            }
+            axios.get('http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual')
             .then(turnoAtual => {
-                var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
-                var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
-                var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
+                // var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
+                // var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
+                // var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
+                this.info = this.c++;
                 function formatDate(date, format) {
                     const map = {
                         mm: date.getMonth() + 1,
@@ -226,18 +221,20 @@ export default{
                     return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
                 }
                 const today = new Date();
+                var dd = String(new Date().getDate()).padStart(2, '0');
                 var year = new Date().getFullYear()
                 var mes = new Date().getMonth()+1
                 var data = formatDate(today, 'aaaa-mm-dd')
                 turnoAtualVar = turnoAtual.data.cdTurno
+                this.info = this.c++;
                 axios
                 .all([
                     axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
                         cdGalpao: this.cd,
                         agrupamentoBI: 2,
                         cdTurno: turnoAtual.data.cdTurno,
-                        dtIni: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
-                        dtFim: anoReferencia + "-" + mesReferencia +  "-" + diaReferencia,
+                        dtIni: year + "-" + mes +  "-" + dd,
+                        dtFim: year + "-" + mes +  "-" + dd,
                     }),
                     axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
                         anoIni: year,
@@ -249,25 +246,23 @@ export default{
                     }),
                     axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
                 ])
-                .then(axios.spread((velocimetro, bi, turnos) => {  
-                    this.opts2 = { needleValue: 80, arcDelimiters:[80] }     
+                .then(axios.spread((velocimetro, bi, turnos) => {
+                      
+                    this.info = indicadores  
                     this.bi = bi.data.indicadoresTurno
                     this.indicadores = bi.data.indicadores
                     this.velocimetro = velocimetro.data.indicadores
                     this.turnos = turnos.data.turnos
-
-                    this.oee = parseFloat(this.velocimetro.indOEE)
-                    this.refugo = parseFloat(this.velocimetro.indRef)
-                    this.eficiencia = parseFloat(this.velocimetro.eficiencia)
-                    this.utilizacao = parseInt(this.velocimetro.indUtilizacao)
-            
+                    setTimeout(() => {              
+                        this.getGauge();  
+                    }, 100)
                 }))
                 // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
-                .catch(errorBI => this.errorCOde = errorBI);
+                .catch(errorBI => this.info = errorBI);
 
             })
             //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
-            .catch(errorTurnoAtual => this.errorCOde = errorTurnoAtual);
+            .catch(errorTurnoAtual => this.info = errorTurnoAtual);
     }
     },
 }

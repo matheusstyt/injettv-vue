@@ -120,9 +120,9 @@ export default {
             axios.post(`http://170.10.0.208:8080/idw/rest/v2/injet/monitorizacao/postosativos`, {
                 idTurno: turnoAtual.data.idTurno,
                 filtroOp: 0,
-                cdGt: "000001",
+                cdGt: this.cd,
                 turnoAtual: true,
-                dtReferencia: "15/12/2022"
+                dtReferencia: "21/12/2022"
             })
             .then(res => {         
                 ptsGlobal = res;
@@ -186,7 +186,7 @@ export default {
     }
   },
   mounted () {
-    
+    this.getMaquinas();
   }
 }
 </script>

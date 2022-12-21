@@ -5,8 +5,8 @@
             <img src="../assets/images/logo/logo.jpg" alt=Logo >
             
         </header>
-        {{ info }}
-        {{ info1 }}
+        <!-- {{ info }}
+        {{ info1 }} -->
       <main class=container>
         <form id="ok" >
             <div class=row>
@@ -195,6 +195,7 @@ methods:{
         });
     },
     listGts(){
+    
         axios.get(`http://170.10.0.208:8080/idw/rest/injet/gts/monitorizacao`)
         .then(gts => this.gts = gts.data.gts    )
         .catch(error => this.$route.push({name: 'error'}))
@@ -222,11 +223,13 @@ methods:{
             sessionStorage.setItem("produtividade", this.produtividade);
             sessionStorage.setItem("maquinas", this.maquinas);
             sessionStorage.setItem("galpao", this.gt.cdGt)
+            sessionStorage.setItem("galpaoName", this.gt.dsGt)
             this.info = 'Sucesso :)'+this.value.length
             if(!this.produtividade & !this.paradas & !this.maquinas){
                 this.info1 = 'Porfavor, selecione pelo menos uma tela!'
             }else{
-                router.push({ path: '/carrosel'})
+                // router.push({ path: '/carrosel'})
+                window.location.href = '/carrosel'
             }
         }
     

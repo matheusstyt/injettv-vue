@@ -1,7 +1,6 @@
 <template>
     <div class="paradas">
       <h1 class=center-align>Paradas | Alertas</h1>
-      {{ cd }}
         <div class="container">
             <table>
                 <tr>
@@ -36,7 +35,7 @@
         setInterval(() => {
             this.getParadas()
             this.sec++
-        }, 1000)
+        }, 15000)
     },
     data(){
         return{
@@ -180,9 +179,7 @@
       },
   
     mounted () {
-      if(!sessionStorage.getItem('galpao')){
-        
-      }
+        this.getParadas()
     }
   }
   </script>

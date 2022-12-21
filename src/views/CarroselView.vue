@@ -1,47 +1,25 @@
 <template>
-<div>  
-    <!-- <h2>  Produtividade  </h2>
-    {{ produtividade }}
-    <hr>
-    <h2>  Maquinas  </h2>
-    {{ maquinas }}
-    <hr>
-    <h2>  Paradas  </h2>
-    {{ paradas }}
-    
-    <hr> -->
-
-    {{ carroseu }}
-    <div v-for="(index) in carroseu">
-        <div v-if="index.value == true && index.name == 'produtividade'">
-            <div ref="produtividade" v-if="produtividade == 'true'" >   
-                <Produtividade 
-                :bi="bi"
-                :velocimetro="velocimetro" 
-                :oee="oee" 
-                :eficiencia="eficiencia" 
-                :refugo="refugo" 
-                :utilizacao="utilizacao" 
-            />
-            </div>
-        </div>
-        <div v-if="index.value == true && index.name == 'maquinas'">
-            <div ref="maquinas" v-if="maquinas == 'true'" >   
-                <Maquinas :cd="cd" />
-            </div>
-        </div>
-        <div v-if="index.value == true && index.name == 'paradas'">
-            <div ref="paradas" v-if="paradas == 'true'" >   
+<div> 
+    {{ info }}
+    {{  info1 }}
+    <div v-for="(index) in carroseuCheck">
+        
+        <div v-if="index.name == 'paradas'">
+            <div  v-bind:style="{ 'display' : paradasS }">
                 <Paradas :cd="cd"/>
             </div>
         </div>
-    </div>
-    
-    
-    
-    
-    
-    
+        <div v-if="index.name == 'maquinas'">
+            <div  v-bind:style="{ 'display' : maquinasS }">
+                <Maquinas :cd="cd" />
+            </div>
+        </div>
+        <div v-if="index.name == 'produtividade'">
+            <div v-bind:style="{ 'display' : produtividadeS }">
+                <Produtividade :cd="cd"/>
+            </div>
+        </div>
+    </div>   
 </div>
 </template>
 
@@ -58,23 +36,29 @@ export default {
     },
     created () {
         if(sessionStorage.getItem('maquinas') == 'true'){
-            this.carroseu.push({'name': 'maquinas', value: true})
+            this.carroseu.push({'name': 'maquinas', value: 'block', status: true})
+            this.carroseuCheck.push({'name': 'maquinas', value: 'block', status: true})
         }
         if(sessionStorage.getItem('paradas') == 'true'){
-            this.carroseu.push({'name': 'paradas', value: true})
+            this.carroseu.push({'name': 'paradas', value: 'block', status: true})
+            this.carroseuCheck.push({'name': 'paradas', value: 'block', status: true})
         }
         if(sessionStorage.getItem('produtividade') == 'true'){
-            this.carroseu.push({'name': 'produtividade', value: true})
+            this.carroseu.push({'name': 'produtividade', value: 'block', status: true})
+            this.carroseuCheck.push({'name': 'produtividade', value: 'block', status: true})
         }
         this.err = this.carroseu
         this.getProdutividade()
-        setInterval(() => {              
-            this.carroseu = this.changePosition(this.carroseu, 0, this.carroseu.length-1);
-        }, 15000)
-        setInterval(() => {              
-            this.getProdutividade()
-            this.getMaquinas()
-        }, 10000)
+        setInterval(() => {        
+            if(this.carroseu.length > 1){
+                this.carroseu = this.changePosition(this.carroseu, 0, this.carroseu.length-1);    
+            }else{
+            }  
+        }, 25000)
+        // setInterval(() => {              
+        //     this.getProdutividade()
+        //     this.getMaquinas()
+        // }, 15000)
         // setInterval(() => {              
         //     this.getMaquinas()
         // }, 3000)
@@ -90,13 +74,24 @@ export default {
             this.produtividade = sessionStorage.getItem('produtividade')
             this.paradas = sessionStorage.getItem('paradas')
             this.maquinas = sessionStorage.getItem('maquinas')
+            this.getProdutividade()
+            this.displayPrimary()
+           
+            
  
         }
     },
     data() {
     return {
+        cd : '000001',
+        paradasS: 'none',
+        maquinasS: 'none',
+        produtividadeS: 'none',
+        highlightColor: 'blue',
+        pSize : 3,
         errorCode : '',
         carroseu: [],
+        carroseuCheck: [],
         //PRODUTIVIDADE 
         bi : null,
         indicadores : null,
@@ -116,12 +111,67 @@ export default {
     };
     },
     methods:{
+        displayPrimary(){
+            var ma = false;
+            var pa = false;
+            var pro = false;
+            this.carroseu.forEach(element => {  
+                if(element.name == 'produtividade'){
+                    pro = true         
+                }
+                if(element.name == 'maquinas'){
+                    ma = true            
+                    }
+                if(element.name == 'paradas'){
+                    pa = true    
+                }        
+            });
+            
+            if(ma && pa && pro){
+                this.produtividadeS = 'block';
+                this.paradasS = 'none';
+                this.maquinasS = 'none';
+            }
+            if(ma && pa){
+                this.maquinasS = 'block';
+                this.paradasS = 'none';
+            }
+            if(ma && pro){
+                this.produtividadeS = 'block';  
+                this.maquinasS = 'none';
+            }
+            if(pa && pro){
+                this.produtividadeS = 'block';
+                this.maquinasS = 'none';  
+            }
+        },
         changePosition(arr, from, to) {
             arr.splice(to, 0, arr.splice(from, 1)[0]);
-            arr[0].value = true
-            arr[arr.length-1].value = !arr[arr.length-1].value
+            arr.forEach((element, index) => {
+                if(index == 0){
+                    if(element.name === 'paradas'){
+                        this.paradasS = 'block'
+                        this.maquinasS = 'none'
+                        this.produtividadeS = 'none'
+                    }
+                    if(element.name === 'produtividade'){
+                        this.produtividadeS = 'block'
+                        this.paradasS = 'none'
+                        this.maquinasS = 'none'
+                    }
+                    if(element.name === 'maquinas'){
+                        this.maquinasS = 'block'
+                        this.paradasS = 'none' 
+                        this.produtividadeS = 'none'
+                    }
+
+                }
+            });
+            
+            
+            arr[arr.length-1].value = 'none'
             if(arr.length = 3){
-                arr[1].value = false
+                arr[1].value = 'none'
             }
             return arr;
         },
@@ -189,11 +239,11 @@ export default {
             
                 }))
                 // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
-                .catch(errorBI => {this.$router.push({name:"error"})});
+                // .catch(errorBI => {this.$router.push({name:"error"})});
 
             })
             //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
-            .catch(errorTurnoAtual => {this.$router.push({name:"error"})});
+            // .catch(errorTurnoAtual => {this.$router.push({name:"error"})});
         },
         async getMaquinas(){
         var contador = 0;
@@ -227,9 +277,9 @@ export default {
             axios.post(`http://170.10.0.208:8080/idw/rest/v2/injet/monitorizacao/postosativos`, {
                 idTurno: turnoAtual.data.idTurno,
                 filtroOp: 0,
-                cdGt: "000001",
+                cdGt: this.cd,
                 turnoAtual: true,
-                dtReferencia: "15/12/2022"
+                dtReferencia: "21/12/2022"
             })
             .then(res => {         
                 ptsGlobal = res;
@@ -401,10 +451,17 @@ export default {
                 
                 this.ptsParadas = pts
             }))
-            .catch((error) => {this.$router.push({name:"error", query:{code_error: error}})});
+            // .catch((error) => {this.$router.push({name:"error"})});
         }
         
     }
 }
 
 </script>
+<style>
+.teste{
+    width: 200px;
+    height: 200px;
+    background-color: bisque;
+}
+</style>
