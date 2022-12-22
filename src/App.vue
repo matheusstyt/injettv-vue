@@ -71,22 +71,13 @@ methods :{
   background-color: rgba(0, 0, 0, 0.0);
   box-shadow: none;
   display: flex;
-  justify-content: start;
-  margin: 0.3em 0.4em;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-  padding: 0 0.5vmax;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+  justify-content: flex-start;
+  gap: 1em;
+  padding: 0.3em 2em;
 }
 .route{
   font-size: 1em;
-  color: rgb(182, 182, 182);
+  color: rgb(161, 161, 161);
   text-decoration:underline;
   
 }

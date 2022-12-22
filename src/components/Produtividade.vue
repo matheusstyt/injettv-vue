@@ -1,7 +1,7 @@
 <template>
     <div class="produtividade"> 
 
-      <h1 class=center-align>Produtividade {{ galpaoName }}<span id=galpao></span></h1>
+      <h1 class=center-align>Produtividade - {{ galpaoName }}<span id=galpao></span></h1>
       <div>
           <div class="row speedometer">
                           <div class="col l3">
