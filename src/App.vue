@@ -1,16 +1,21 @@
 <template>
-  <nav class="nav-1" >
-    <!-- <router-link to="/">Home</router-link> |
-    <router-link to="/painel">Painel</router-link> -->
-    <a class="route" href="/painel" >Painel</a>
-    <router-link to="/maquinas" v-bind:style="{ 'display' : maquinas }">Maquinas</router-link>
-    <!-- <router-link to="/produtividade">Produtividade</router-link> -->
-    <a class="route" href="/produtividade"  v-bind:style="{ 'display' : produtividade }">Produtividade</a>
-    <router-link to="/parada" v-bind:style="{ 'display' : paradas }">Paradas</router-link>
-    <!-- <router-link to="/carrosel">Carrosel</router-link> -->
-    <a class="route" href="/carrosel" v-bind:style="{ 'display' : galpao }">Carrosel</a>
-  </nav>
-  <router-view/>
+  <div class="geral">
+    <nav class="nav-1" >
+      <!-- <router-link to="/">Home</router-link> |
+      <router-link to="/painel">Painel</router-link> -->
+      <a class="route" href="/painel" >Painel</a>
+      <!-- <router-link to="/maquinas" v-bind:style="{ 'display' : maquinas }">Maquinas</router-link> -->
+      <a class="route" href="/maquinas" v-bind:style="{ 'display' : maquinas }">Maquinas</a>
+      <!-- <router-link to="/produtividade">Produtividade</router-link> -->
+      <a class="route" href="/produtividade"  v-bind:style="{ 'display' : produtividade }">Produtividade</a>
+      <!-- <router-link to="/parada" v-bind:style="{ 'display' : paradas }">Paradas</router-link> -->
+      <a class="route" href="/parada" v-bind:style="{ 'display' : paradas }">Paradas</a>
+      <!-- <router-link to="/carrosel">Carrosel</router-link> -->
+      <a class="route carrosel" href="/carrosel" v-bind:style="{ 'display' : galpao }">Carrosel</a>
+    </nav>
+    <router-view/>
+  </div>
+  
 </template>
 <script>
 import M from 'materialize-css'
@@ -48,6 +53,9 @@ methods :{
 }
 </script>
 <style>
+.geral{
+  margin-top: 2vmax;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -57,22 +65,45 @@ methods :{
 }
 
 .nav-1 {
-  background-color: rgb(105, 105, 196);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.0);
+  box-shadow: none;
   display: flex;
-  justify-content: center;
+  justify-content: start;
+  margin: 0.3em 0.4em;
 }
 
 nav a {
   font-weight: bold;
   color: #2c3e50;
-  padding: 0 1vmax;
+  padding: 0 0.5vmax;
 }
 
 nav a.router-link-exact-active {
   color: #42b983;
 }
-.route :active {
-  color: #42b983;
+.route{
+  font-size: 1em;
+  color: rgb(182, 182, 182);
+  text-decoration:underline;
+  
+}
+.route:hover{
+  color: rgb(41, 41, 41);
+  text-decoration:none;
+}
+.carrosel{
+  color: rgb(32, 101, 148);
+  position: absolute;
+  right: 2em;
+  top: 0;
+}
+.carrosel:hover{
+  color: rgb(25, 81, 119);
+  border-radius: 10px;
+  background-color: rgb(220, 235, 245);
 }
 @import'~bootstrap/dist/css/bootstrap.css'
 </style>

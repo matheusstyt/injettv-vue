@@ -1,7 +1,6 @@
 <template>
     <div class="maquinas">
-        {{ info }}
-      <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
+          <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
           <div class=container id="container">
   
             <div class="legends">

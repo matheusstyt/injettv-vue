@@ -1,7 +1,7 @@
 <template>
     <div class="paradas">
-      <h1 class=center-align>Paradas | Alertas</h1>
-      {{ cd }}
+      <h1 class=center-align>Paradas | Alertas - {{ galpaoName }}</h1>
+
         <div class="container">
             <table>
                 <tr>
@@ -29,9 +29,6 @@
     components: {
           
     },
-    props:{
-        cd : String || '000001'
-    },
     created () {
         setInterval(() => {
             this.getParadas()
@@ -39,7 +36,8 @@
     },
     data(){
         return{
-            sec: 0,
+            galpaoName : sessionStorage.getItem('galpaoName'),
+            cd :'000001',
             color: 'color: ',
             pts: null,
             turno : null,
@@ -179,6 +177,7 @@
       },
   
     mounted () {
+        this.cd = sessionStorage.getItem('galpao')
         this.getParadas()
     }
   }

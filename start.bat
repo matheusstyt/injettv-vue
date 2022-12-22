@@ -1,2 +1,2 @@
 
-sc create myService binpath=C:\Users\simone\Documents\desenvolvimento\injettv-vue\servidor.bat
+cd C:\Users\simone\Documents\desenvolvimento\injettv-vue\nssm.exe

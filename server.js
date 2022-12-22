@@ -1,11 +1,16 @@
-// optional: allow environment to specify port
-const port = process.env.PORT || 8080
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const app = express();
 
-// wire up the module
-const express = require('express') 
-// create server instance
-const app = express() 
-// bind the request to an absolute path or relative to the CWD
-app.use(express.static('dist'))
-// start the server
-app.listen(port, () => console.log(`Listening on port ${port}`))
+// Middlewares
+app.use(express.static(__dirname + '/dist'));
+
+// Start Server
+app.listen(8080, 'localhost', function(err) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  console.log(`Listening on localhost:8080`);
+});

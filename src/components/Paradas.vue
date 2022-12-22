@@ -1,6 +1,6 @@
 <template>
     <div class="paradas">
-      <h1 class=center-align>Paradas | Alertas</h1>
+      <h1 class=center-align>Paradas | Alertas - {{ galpaoName }}</h1>
         <div class="container">
             <table>
                 <tr>
@@ -39,7 +39,7 @@
     },
     data(){
         return{
-            sec: 0,
+            galpaoName : sessionStorage.getItem('galpaoName'),
             color: 'color: ',
             pts: null,
             turno : null,

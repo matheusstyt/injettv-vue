@@ -131,7 +131,7 @@ mounted (){
 created(){
     this.listGts()
    //  this.Materizalize();
-},
+},  
 methods:{
     changeMaquinas(galpao){
         console.log('chegou aqui')

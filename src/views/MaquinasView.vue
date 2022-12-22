@@ -1,6 +1,7 @@
 <template>
   <div class="maquinas">
-    <h1 align="center">Performance Máquinas</h1>
+
+    <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
         <div class=container id="container">
 
           <div class="legends">
@@ -45,29 +46,29 @@
 
   </template>
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
-import { isIntegerKey } from '@vue/shared'
+import Preloader from '../components/Preloader.vue'
 import axios from 'axios'
 export default {
   name: 'Maquinas',
   components: {
+    Preloader
   },
   created () {
         setInterval(() => {
              this.getMaquinas();
-        }, 10000)
+        }, 15000)
     },
   data(){
     return{
-      as: ';',
+        galpaoName : sessionStorage.getItem('galpaoName'),
+      cd: '000001',
+      info: null,
       color: 'color: ',
       back: 'background-color: ',
       border: ' border-bottom: 20px solid ',
       pts: null,
       turno : null,
       maquinas : undefined,
-      cd : '000001',
       legendaColors1 : [
         {nome:'Parada', style: '#c0392b'},
         {nome:'Na Meta', style: '#4cd137'},
@@ -88,7 +89,7 @@ export default {
     }
   },
   methods:{
-    async getMaquinas(){
+    getMaquinas(){
         var contador = 0;
         var ptsGlobal;
         var ultimaAtualizacao;
@@ -113,6 +114,11 @@ export default {
             today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
             return today;
         }
+            const today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var year = new Date().getFullYear()
+            var mes = new Date().getMonth()+1
+            this.info = `${dd}/${mes}/${year}`
         axios
         .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
         .then(turnoAtual => {
@@ -122,7 +128,7 @@ export default {
                 filtroOp: 0,
                 cdGt: this.cd,
                 turnoAtual: true,
-                dtReferencia: "21/12/2022"
+                dtReferencia: `${dd}/${mes}/${year}`
             })
             .then(res => {         
                 ptsGlobal = res;
@@ -176,9 +182,10 @@ export default {
                         pts = pts_;
                     }
                 }
+                
                 this.pts = pts
                 this.turno = res
-                //console.log('mauina time : '+slideTransition)
+                
             })
             .catch((error) => {this.turno = error});
         })
@@ -186,7 +193,9 @@ export default {
     }
   },
   mounted () {
+    this.cd = sessionStorage.getItem('galpao')
     this.getMaquinas();
+    
   }
 }
 </script>
@@ -321,7 +330,7 @@ table{
     margin: 10px 8px;
 }
 tr{
-    font-size: 2em;
+    font-size: 1em;
    
 }
 td{

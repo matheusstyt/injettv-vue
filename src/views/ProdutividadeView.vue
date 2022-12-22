@@ -1,8 +1,7 @@
 <template>
   <div class="produtividade"> 
     <Preloader />
-    {{ info }}
-    <h1 class=center-align>Produtividade <span id=galpao></span></h1>
+    <h1 class=center-align>Produtividade - {{ galpaoName }}<span id=galpao></span></h1>
     <div>
         <div class="row speedometer">
                         <div class="col l3">
@@ -46,12 +45,13 @@
                             </div>
                         </div>
         </div>
-         <thead>
-            <th></th>
-                <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.dsTurno}}</th>
-            <th>Acumulado mês</th>
-        </thead>     
+         
         <table>
+            <thead>
+                <th></th>
+                    <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.dsTurno}}</th>
+                <th>ACUMULADO MÊS   </th>
+            </thead>     
                 <tr>
                     <td>% Produtividade  OEE</td>
                     <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indOEE}}</th>
@@ -90,24 +90,20 @@ export default{
         Velocimetros, Preloader
     },
     mounted (){
-        this.cd = sessionStorage.getItem('galpao')
-        
+        this.cd = sessionStorage.getItem('galpao');
         
         
     },
     created () {
-        this.info = 2
-        this.getProdutividade()
-        setInterval(() => {              
-            
-        }, 15000)
+        this.getFirstProdutividade();
         setInterval(() =>{
-             this.getGauge();  
-        }, 10000)
+            
+             this.getProdutividade();  
+        }, 20000)
     },
     data() {
         return {
-            component : Velocimetros,
+            galpaoName : sessionStorage.getItem('galpaoName'),
             errorCode: '',
             cd: '000001',
             bi : null,
@@ -116,7 +112,6 @@ export default{
             turnos: null,
             info : 0,
             c : 1,
-
     
         }
     },
@@ -248,14 +243,13 @@ export default{
                 ])
                 .then(axios.spread((velocimetro, bi, turnos) => {
                       
-                    this.info = indicadores  
+                    this.info = bi.data.indicadores  
                     this.bi = bi.data.indicadoresTurno
                     this.indicadores = bi.data.indicadores
                     this.velocimetro = velocimetro.data.indicadores
                     this.turnos = turnos.data.turnos
-                    setTimeout(() => {              
-                        this.getGauge();  
-                    }, 100)
+                    this.getGauge();  
+
                 }))
                 // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
                 .catch(errorBI => this.info = errorBI);
@@ -263,7 +257,88 @@ export default{
             })
             //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
             .catch(errorTurnoAtual => this.info = errorTurnoAtual);
-    }
+        },
+         getFirstProdutividade (){
+            this.info = this.c++;
+            var turnoAtualVar;
+            const ip = 'http://170.10.0.208:8080'
+            const dataTeste = "2020-01-21";
+            var contador = 0;
+            var velocimetroGlobal;
+            var biGlobal;
+            var turnoGlobal;
+            var ultimaAtualizacao;
+            var globalRequest;
+            var count = 0;
+            function getToday(){
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                today = mm + '/' + dd + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+                
+                return today;
+            }
+            axios.get('http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual')
+            .then(turnoAtual => {
+                // var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
+                // var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
+                // var anoReferencia = turnoAtual.data.dtReferencia.slice(6, 10);
+                this.info = this.c++;
+                function formatDate(date, format) {
+                    const map = {
+                        mm: date.getMonth() + 1,
+                        dd: date.getDate(),
+                        aa: date.getFullYear().toString().slice(-2),
+                        aaaa: date.getFullYear()
+                    }
+                    return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
+                }
+                const today = new Date();
+                var dd = String(new Date().getDate()).padStart(2, '0');
+                var year = new Date().getFullYear()
+                var mes = new Date().getMonth()+1
+                var data = formatDate(today, 'aaaa-mm-dd')
+                turnoAtualVar = turnoAtual.data.cdTurno
+                this.info = this.c++;
+                axios
+                .all([
+                    axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
+                        cdGalpao: this.cd,
+                        agrupamentoBI: 2,
+                        cdTurno: turnoAtual.data.cdTurno,
+                        dtIni: year + "-" + mes +  "-" + dd,
+                        dtFim: year + "-" + mes +  "-" + dd,
+                    }),
+                    axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
+                        anoIni: year,
+                        mesIni: mes,
+                        anoFim: year,
+                        mesFim: mes,
+                        cdGalpao: this.cd,
+                        agrupamentoBI: 1,
+                    }),
+                    axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
+                ])
+                .then(axios.spread((velocimetro, bi, turnos) => {
+                      
+                    this.info = bi.data.indicadores  
+                    this.bi = bi.data.indicadoresTurno
+                    this.indicadores = bi.data.indicadores
+                    this.velocimetro = velocimetro.data.indicadores
+                    this.turnos = turnos.data.turnos
+                    $('#preloader').fadeIn().toggleClass('hide');           
+                        this.getGauge();  
+   
+                }))
+                // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
+                .catch(errorBI => this.info = errorBI);
+
+            })
+            //.catch(errorTurnoAtual => response.status(500).render('error', {error: errorTurnoAtual}));
+            .catch(errorTurnoAtual => this.info = errorTurnoAtual);
+        }
     },
 }
 
