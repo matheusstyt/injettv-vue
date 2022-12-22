@@ -50,6 +50,7 @@ export default {
             if(this.carroseu.length > 1){
                 this.carroseu = this.changePosition(this.carroseu, 0, this.carroseu.length-1);    
             }else{
+                this.info = 'uai'
             }  
         }, 25000)
 
@@ -65,6 +66,7 @@ export default {
             this.produtividade = sessionStorage.getItem('produtividade')
             this.paradas = sessionStorage.getItem('paradas')
             this.maquinas = sessionStorage.getItem('maquinas')
+            
             this.displayPrimary()
  
         }
@@ -102,7 +104,7 @@ export default {
         displayPrimary(){
             var ma = false;
             var pa = false;
-            var pro = false;
+            var pro = false;           
             this.carroseu.forEach(element => {  
                 if(element.name == 'produtividade'){
                     pro = true         
@@ -131,6 +133,16 @@ export default {
             if(pa && pro){
                 this.produtividadeS = 'block';
                 this.maquinasS = 'none';  
+            }
+            if(pa){
+                this.paradasS = 'block';
+            }
+            if(ma){
+                this.maquinasS = 'block';
+            }
+            if(pro){
+                this.info
+                this.produtividadeS = 'block'
             }
         },
         changePosition(arr, from, to) {
