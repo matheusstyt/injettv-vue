@@ -101,6 +101,7 @@
         },
         data() {
             return {
+                ip : require('/src/config/config.env').API_URL,
                 galpaoName : sessionStorage.getItem('galpaoName'),
                 errorCode: '',
                 bi : null,
@@ -178,7 +179,6 @@
             getProdutividade (){
                 this.info = this.c++;
                 var turnoAtualVar;
-                const ip = 'http://170.10.0.208:8080'
                 const dataTeste = "2020-01-21";
                 var contador = 0;
                 var velocimetroGlobal;
@@ -197,7 +197,7 @@
                     
                     return today;
                 }
-                axios.get('http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual')
+                axios.get(`${this.ip}/idw/rest/injet/monitorizacao/turnoAtual`)
                 .then(turnoAtual => {
                     // var diaReferencia = turnoAtual.data.dtReferencia.slice(0, 2);
                     // var mesReferencia = turnoAtual.data.dtReferencia.slice(3, 5);
@@ -221,14 +221,14 @@
                     this.info = this.c++;
                     axios
                     .all([
-                        axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {
+                        axios.post(`${this.ip}/idw/rest/injet/bi/resumoBI`, {
                             cdGalpao: this.cd,
                             agrupamentoBI: 2,
                             cdTurno: turnoAtual.data.cdTurno,
                             dtIni: year + "-" + mes +  "-" + dd,
                             dtFim: year + "-" + mes +  "-" + dd,
                         }),
-                        axios.post(`http://170.10.0.208:8080/idw/rest/injet/bi/resumoBI`, {                
+                        axios.post(`${this.ip}/idw/rest/injet/bi/resumoBI`, {                
                             anoIni: year,
                             mesIni: mes,
                             anoFim: year,
@@ -236,7 +236,7 @@
                             cdGalpao: this.cd,
                             agrupamentoBI: 1,
                         }),
-                        axios.get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnos`)
+                        axios.get(`${this.ip}/idw/rest/injet/monitorizacao/turnos`)
                     ])
                     .then(axios.spread((velocimetro, bi, turnos) => {
                             

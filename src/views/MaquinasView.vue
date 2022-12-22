@@ -60,32 +60,33 @@ export default {
     },
   data(){
     return{
+        ip : require('/src/config/config.env').API_URL,
         galpaoName : sessionStorage.getItem('galpaoName'),
-      cd: '000001',
-      info: null,
-      color: 'color: ',
-      back: 'background-color: ',
-      border: ' border-bottom: 20px solid ',
-      pts: null,
-      turno : null,
-      maquinas : undefined,
-      legendaColors1 : [
-        {nome:'Parada', style: '#c0392b'},
-        {nome:'Na Meta', style: '#4cd137'},
-        {nome:'Fora da Meta', style: '#f1c40f'},
-        {nome:'Offline', style: 'rgb(135, 135, 135)'}
-            ],
-      legendaColors2: [
-        {nome:'Em Alerta', style: '#f1c40f'},
-        {nome:'Sem Planejamento', style: 'blue'},
-        {nome:'90% Op Concluída', style: 'rgb(27, 26, 90)'},
-        {nome:'Planejamneto Concluído', style: 'rgb(45, 238, 235)'},
-        {nome:'Índice de Refugo Maior que 5%', style: 'rgb(142, 142, 142)'},
-        {nome:'Parada sem Peso na Eficiência', style: 'rgb(235, 23, 192)'},
-        {nome:'Parada não Informada', style: 'rgb(0, 0, 0)'},
-        {nome:'CIP(Controle Início Processo)', style: 'rgb(115, 239, 111)'},
-        {nome:'Sem Ocorrências', style: '#ffff'}
-    ]
+        cd: '000001',
+        info: null,
+        color: 'color: ',
+        back: 'background-color: ',
+        border: ' border-bottom: 20px solid ',
+        pts: null,
+        turno : null,
+        maquinas : undefined,
+        legendaColors1 : [
+            {nome:'Parada', style: '#c0392b'},
+            {nome:'Na Meta', style: '#4cd137'},
+            {nome:'Fora da Meta', style: '#f1c40f'},
+            {nome:'Offline', style: 'rgb(135, 135, 135)'}
+                ],
+        legendaColors2: [
+            {nome:'Em Alerta', style: '#f1c40f'},
+            {nome:'Sem Planejamento', style: 'blue'},
+            {nome:'90% Op Concluída', style: 'rgb(27, 26, 90)'},
+            {nome:'Planejamneto Concluído', style: 'rgb(45, 238, 235)'},
+            {nome:'Índice de Refugo Maior que 5%', style: 'rgb(142, 142, 142)'},
+            {nome:'Parada sem Peso na Eficiência', style: 'rgb(235, 23, 192)'},
+            {nome:'Parada não Informada', style: 'rgb(0, 0, 0)'},
+            {nome:'CIP(Controle Início Processo)', style: 'rgb(115, 239, 111)'},
+            {nome:'Sem Ocorrências', style: '#ffff'}
+        ]
     }
   },
   methods:{
@@ -120,10 +121,10 @@ export default {
             var mes = new Date().getMonth()+1
             this.info = `${dd}/${mes}/${year}`
         axios
-        .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
+        .get(`${this.ip}/idw/rest/injet/monitorizacao/turnoAtual`)
         .then(turnoAtual => {
         this.turno = turnoAtual.data.idTurno
-            axios.post(`http://170.10.0.208:8080/idw/rest/v2/injet/monitorizacao/postosativos`, {
+            axios.post(`${this.ip}/idw/rest/v2/injet/monitorizacao/postosativos`, {
                 idTurno: turnoAtual.data.idTurno,
                 filtroOp: 0,
                 cdGt: this.cd,

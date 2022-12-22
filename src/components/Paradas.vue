@@ -39,6 +39,7 @@
     },
     data(){
         return{
+            ip : require('/src/config/config.env').API_URL,
             galpaoName : sessionStorage.getItem('galpaoName'),
             color: 'color: ',
             pts: null,
@@ -85,8 +86,8 @@
                   return today;
               }
               await axios.all([        
-                  axios.get(`http://170.10.0.208:8080/idw/rest/injet/paradas/pesquisaParadasByGalpao` ,{params: {cdGalpao:this.cd}}),
-                  axios.get(`http://170.10.0.208:8080/idw/rest/injet/alertas/pesquisaAlertasByGalpao`,{params: {cdGalpao:this.cd}})
+                  axios.get(`${this.ip}/idw/rest/injet/paradas/pesquisaParadasByGalpao` ,{params: {cdGalpao:this.cd}}),
+                  axios.get(`${this.ip}/idw/rest/injet/alertas/pesquisaAlertasByGalpao`,{params: {cdGalpao:this.cd}})
               ])
               .then(
                   axios.spread((paradas, alertas) => {

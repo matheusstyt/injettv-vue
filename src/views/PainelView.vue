@@ -5,8 +5,7 @@
             <img src="../assets/images/logo/logo.jpg" alt=Logo >
             
         </header>
-        <!-- {{ info }}
-        {{ info1 }} -->
+       {{ ip }}
       <main class=container>
         <form id="ok" >
             <div class=row>
@@ -94,7 +93,7 @@
 </template>
 
 <script>
-import router from "@/router";
+
 import axios from 'axios'
 import $ from 'jquery'
 import MM from 'materialize-css/dist/js/materialize.min'
@@ -106,6 +105,7 @@ components: {
 },
 data() {
   return {
+    ip : require('/src/config/config.env').API_URL,
     value: [],
     selected: null,
     options: [],
@@ -126,7 +126,7 @@ data() {
 },
 mounted (){
     MM.AutoInit()
-   
+    
 },
 created(){
     this.listGts()
@@ -137,7 +137,7 @@ methods:{
         console.log('chegou aqui')
         var galpaoTemp = galpao
         //$('#preloader').fadeIn().toggleClass('hide');
-        axios.get(`http://170.10.0.208:8080/idw/rest/injet/pts/ativoByGalpao`, {
+        axios.get(`${this.ip}/idw/rest/injet/pts/ativoByGalpao`, {
             params: {
                 gt:galpaoTemp
             }
@@ -149,30 +149,6 @@ methods:{
         .catch(err => {
             this.info = err
         })
-        // $('#galpao').change(e => {
-        //     var galpaoTemp;
-        //     var produtividadeTemp;
-        //     var maquinasTemp;
-        //     var paradasTemp;
-
-            
-
-        //     var cliente = {
-        //         galpao: $("#galpao").val(),
-        //         produtividade: $('#painelProdutividade').is(':checked'),
-        //         maquinas: $('#painelMaquinas').is(':checked'),
-        //         paradas: $("#painelParadas").is(':checked'),
-        //         cor_fundo: '#ffffff',
-        //         path_logo: ''
-        //     };
-
-        //     // localStorage.setItem("galpao", $("#galpao").val());
-        //     // console.log(cliente);
-        //     return true;
-
-
-        //     });
-
     },
     getMaquinas(){
         $(document).ready(function() {
@@ -180,8 +156,6 @@ methods:{
             // Select - Single
             $('select:not([multiple])').material_select();
         });
-
-            
 
             $('#btn-cor').click(() => $('body').css('background-color', $('#cor_fundo').val()));
 
@@ -196,7 +170,7 @@ methods:{
     },
     listGts(){
     
-        axios.get(`http://170.10.0.208:8080/idw/rest/injet/gts/monitorizacao`)
+        axios.get(`${this.ip}/idw/rest/injet/gts/monitorizacao`)
         .then(gts => this.gts = gts.data.gts    )
         .catch(error => this.$route.push({name: 'error'}))
     },

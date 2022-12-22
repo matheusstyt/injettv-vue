@@ -122,28 +122,31 @@ export default {
                 this.paradasS = 'none';
                 this.maquinasS = 'none';
             }
-            if(ma && pa){
+            if(ma && pa || pa && ma){
                 this.maquinasS = 'block';
                 this.paradasS = 'none';
             }
-            if(ma && pro){
+            if(ma && pro || pro && ma){
                 this.produtividadeS = 'block';  
                 this.maquinasS = 'none';
             }
-            if(pa && pro){
+            if(pa && pro || pro && pa){
                 this.produtividadeS = 'block';
                 this.maquinasS = 'none';  
             }
-            if(pa){
-                this.paradasS = 'block';
+            if(this.carroseu.length == 1){
+                if(pa){
+                    this.paradasS = 'block';
+                }
+                if(ma){
+                    this.maquinasS = 'block';
+                }
+                if(pro){
+                    this.info
+                    this.produtividadeS = 'block'
+                }
             }
-            if(ma){
-                this.maquinasS = 'block';
-            }
-            if(pro){
-                this.info
-                this.produtividadeS = 'block'
-            }
+            
         },
         changePosition(arr, from, to) {
             arr.splice(to, 0, arr.splice(from, 1)[0]);

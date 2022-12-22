@@ -64,6 +64,7 @@
       },
     data(){
       return{
+        ip : require('/src/config/config.env').API_URL,
         info: null,
         color: 'color: ',
         back: 'background-color: ',
@@ -132,11 +133,11 @@
                 var mes = new Date().getMonth()+1
                 var data = formatDate(today, 'dd/mm/aaaa')
           axios
-          .get(`http://170.10.0.208:8080/idw/rest/injet/monitorizacao/turnoAtual`)
+          .get(`${this.ip}/idw/rest/injet/monitorizacao/turnoAtual`)
           .then(turnoAtual => {
           this.turno = turnoAtual.data.idTurno
           this.info = dd+'/'+mes+'/'+year
-              axios.post(`http://170.10.0.208:8080/idw/rest/v2/injet/monitorizacao/postosativos`, {
+              axios.post(`${this.ip}/idw/rest/v2/injet/monitorizacao/postosativos`, {
                   idTurno: turnoAtual.data.idTurno,
                   filtroOp: 0,
                   cdGt: this.cd,
