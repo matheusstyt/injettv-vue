@@ -75,12 +75,11 @@
             </tr>
         </table>
     </div>
-    <!-- {{indicadores}}
-    -->
+    <h2 class="ultima-atualizacao">Ultima atualizacão: {{ ultimaAtualizacao }}</h2>
+
   </div>
 </template>
 <script>
-const dataA = require('/public/js/date')
 import Preloader from '../components/Preloader.vue'
 import Velocimetros from '../components/Velocimetros.vue'
 import axios from 'axios'
@@ -103,6 +102,7 @@ export default{
     },
     data() {
         return {
+            ultimaAtualizacao : null,
             ip : require('/src/config/config.env').API_URL,
             galpaoName : sessionStorage.getItem('galpaoName'),
             errorCode: '',
@@ -117,6 +117,16 @@ export default{
         }
     },
     methods:{
+        getToday(){
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = mm + '/' + dd + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+            
+            return today;
+        },
          getGauge(){
             $.fn.gauge = function (opts) {
                 this.each(function () {
@@ -180,17 +190,9 @@ export default{
             
         },
          getProdutividade (){
-            this.info = this.c++;
-            var turnoAtualVar;
-            const ip = '${this.ip}'
-            const dataTeste = "2020-01-21";
-            var contador = 0;
-            var velocimetroGlobal;
-            var biGlobal;
-            var turnoGlobal;
+            this.ultimaAtualizacao = this.getToday()
+            var turnoAtualVar;      
             var ultimaAtualizacao;
-            var globalRequest;
-            var count = 0;
             function getToday(){
                 var today = new Date();
                 var dd = String(today.getDate()).padStart(2, '0');
@@ -260,17 +262,9 @@ export default{
             .catch(errorTurnoAtual => this.info = errorTurnoAtual);
         },
          getFirstProdutividade (){
-            this.info = this.c++;
-            var turnoAtualVar;
-            const ip = '${this.ip}'
-            const dataTeste = "2020-01-21";
-            var contador = 0;
-            var velocimetroGlobal;
-            var biGlobal;
-            var turnoGlobal;
+            this.ultimaAtualizacao = this.getToday()
+            var turnoAtualVar;      
             var ultimaAtualizacao;
-            var globalRequest;
-            var count = 0;
             function getToday(){
                 var today = new Date();
                 var dd = String(today.getDate()).padStart(2, '0');
@@ -362,7 +356,14 @@ body{
 h1, h2, h3, h4, h5, h6, p, label, tr, td, th{
     color: var(--color-text);
 }
-
+.ultima-atualizacao{
+    text-align: start;
+    position: relative; 
+    bottom: 1%; 
+    left: 1%;
+    color: #1d1d1d;
+    font-size: 2.4vmax;
+  }
 .flex {
     display: flex;
     

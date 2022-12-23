@@ -4,7 +4,7 @@
     <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
         <div class=container id="container">
 
-          <div class="legends">
+          <!-- <div class="legends">
             <div id="legenda-box">
                 <h6><b>Cor da 1° Coluna</b></h6>
                 <div v-for="(cor1, index) in legendaColors1" class="color-conteiner"> 
@@ -20,7 +20,7 @@
               </div>
             </div>
   
-        </div>
+        </div> -->
         <div class="col l12" style="display:inline-block; margin: 0 auto;">
           <table>
               <tr>
@@ -41,7 +41,7 @@
           </table>
       </div>
     </div>
-   
+    <h2 class="ultima-atualizacao">Ultima atualizacão: {{ ultimaAtualizacao }}</h2>
   </div>
 
   </template>
@@ -60,6 +60,7 @@ export default {
     },
   data(){
     return{
+        ultimaAtualizacao : null,
         ip : require('/src/config/config.env').API_URL,
         galpaoName : sessionStorage.getItem('galpaoName'),
         cd: '000001',
@@ -90,12 +91,22 @@ export default {
     }
   },
   methods:{
+    getToday(){
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+        
+        return today;
+    },
     getMaquinas(){
         var contador = 0;
         var ptsGlobal;
         var ultimaAtualizacao;
         var globalRequest;
-
+        this.ultimaAtualizacao = this.getToday()
         function getToday(){
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
@@ -220,7 +231,13 @@ body{
 h1, h2, h3, h4, h5, h6, p, label, th{
     color: var(--color-text);
 }
-
+.ultima-atualizacao{
+    position: absolute; 
+    bottom: 1%; 
+    left: 1%;
+    color: #1d1d1d;
+    font-size: 2.4vmax;
+  }
 .flex, .descricao {
     display: flex;
 }
@@ -325,10 +342,14 @@ h5{
     flex:1;
 }
 
-table{
-    background-color: rgba(0, 0, 0, 0.04);
+table{ 
     border-radius: 5px;
-    margin: 10px 8px;
+    width: auto;
+    margin: 0 auto;
+    margin-top:2vmax;
+}
+th{
+    background-color: rgba(0, 0, 0, 0.03);
 }
 tr{
     font-size: 1em;
@@ -339,12 +360,12 @@ td{
     
 }
 th, td{
+    padding: 1vmax 2vmax;
     font-family: 'Arial';
-    text-align: center;
-    
+    text-align: center;   
 }
 tr:hover{
-    background-color: rgba(0, 0, 0, 0.04);
+    background-color: rgba(0, 0, 0, 0.01);
 }
   .material-icons {
     font-family: 'Material Icons';

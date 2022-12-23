@@ -15,6 +15,7 @@
                 </tr>
             </table>
           </div>
+          <h2 class="ultima-atualizacao">Ultima atualizacão: {{ ultimaAtualizacao }}</h2>
     </div>
   
     </template>
@@ -39,6 +40,7 @@
     },
     data(){
         return{
+            ultimaAtualizacao : null,
             ip : require('/src/config/config.env').API_URL,
             galpaoName : sessionStorage.getItem('galpaoName'),
             color: 'color: ',
@@ -65,7 +67,18 @@
         }
     },
       methods:{
+        getToday(){
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = mm + '/' + dd + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+            
+            return today;
+        },
           async getParadas(){
+            this.ultimaAtualizacao = this.getToday()
               function getToday(){
                   var today = new Date();
                   var dd = String(today.getDate()).padStart(2, '0');
@@ -202,7 +215,13 @@
   h1, h2, h3, h4, h5, h6, p, label, th{
       color: var(--color-text);
   }
-  
+  .ultima-atualizacao{
+    position: absolute; 
+    bottom: 1%; 
+    left: 1%;
+    color: #1d1d1d;
+    font-size: 2.4vmax;
+  }
   .flex, .descricao {
       display: flex;
   }

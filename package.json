@@ -14,7 +14,6 @@
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
     "cors": "^2.8.5",
-    "create-jqwidgets-vue-app": "^1.0.0",
     "jquery": "^3.6.2",
     "materialize-css": "^1.0.0-rc.2",
     "moment": "^2.29.4",
@@ -22,12 +21,9 @@
     "os-browserify": "^0.3.0",
     "path": "^0.12.7",
     "vue": "^3.2.45",
-    "vue-carousel": "^0.18.0",
     "vue-flux": "^6.4.0",
     "vue-multiselect": "^3.0.0-alpha.2",
-    "vue-router": "^4.0.3",
-    "vue-ssr-carousel": "^1.9.0",
-    "vue-svg-gauge": "^1.2.1"
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",

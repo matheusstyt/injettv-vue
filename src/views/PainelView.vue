@@ -2,10 +2,8 @@
     <div>
         <header class="center">
             <span class="titulo">INJET TV - Painel de Controle</span>
-            <img src="../assets/images/logo/logo.jpg" alt=Logo >
-            
+            <img src="../assets/images/logo/logo.jpg" alt=Logo >   
         </header>
-       {{ ip }}
       <main class=container>
         <form id="ok" >
             <div class=row>

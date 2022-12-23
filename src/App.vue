@@ -14,6 +14,9 @@
       <a class="route carrosel" href="/carrosel" v-bind:style="{ 'display' : galpao }">Carrosel</a>
     </nav>
     <router-view/>
+    <div>
+
+    </div>
   </div>
   
 </template>
@@ -53,6 +56,12 @@ methods :{
 }
 </script>
 <style>
+.ultima-atualizacao{
+  position: absolute; 
+  bottom: 1%; 
+  left: 1%;
+  color: #1d1d1d;
+}
 .geral{
   margin-top: 2vmax;
 }
@@ -86,6 +95,7 @@ methods :{
   text-decoration:none;
 }
 .carrosel{
+  padding: 0 1em;
   color: rgb(32, 101, 148);
   position: absolute;
   right: 2em;

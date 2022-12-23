@@ -14,7 +14,7 @@
         </div>
         <div v-if="index.name == 'produtividade'">
             <div v-bind:style="{ 'display' : produtividadeS }">
-                <Produtividade :cd="cd"/>
+                <Produtividade />
             </div>
         </div>
     </div>   
