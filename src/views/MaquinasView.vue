@@ -190,12 +190,8 @@ export default {
                      });
                      this.info = pts_
                     pts = pts_;
+                };
                 
-                }
-                function onlyUnique(value, index, self) {
-                    return self.indexOf(value) === index;
-                }
-                pts =  pts.filter(onlyUnique);
                 this.pts = pts
                 this.turno = res
                 

@@ -192,6 +192,10 @@ methods:{
                 this.value.forEach(element => {
                     this.maquinasList.push(element.cdPt)
                 });
+                function onlyUnique(value, index, self) {
+                    return self.indexOf(value) === index;
+                }
+                this.maquinasList =  this.maquinasList.filter(onlyUnique);
                 sessionStorage.setItem("maquinasList", JSON.stringify(this.maquinasList));
             }else{
                 sessionStorage.setItem("maquinasList", null);

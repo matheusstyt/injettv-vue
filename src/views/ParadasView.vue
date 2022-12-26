@@ -39,6 +39,10 @@
     },
     data(){
         return{
+            errorF(error){
+                sessionStorage.setItem('error', error)
+                window.location.href = '/error'
+            },
             ultimaAtualizacao : null,
             ip : require('/src/config/config.env').API_URL,
             galpaoName : sessionStorage.getItem('galpaoName'),
@@ -161,34 +165,20 @@
   
                   pts = pts.concat(parada, alerta);
   
-                  if(typeof this.maquinas === 'string'  ){            
-                      if (this.maquinas) {
-                          //console.log("maquina: " + " " + this.maquinas)
-                              pts_ = pts_.concat(pts.filter((pt) => {
-                                  //console.log("cdInjetora: " + " " + pt.cdPt + " == " + this.maquinas )
-                                  if (pt.cdPt === this.maquinas)                             
-                                  return pt;
-                              }));
-                          pts = pts_;
-                      }
-                  }
-                  if(typeof this.maquinas === 'undefined' || typeof this.maquinas === 'object'  ){            
-                      if (this.maquinas) {
-                          this.maquinas.forEach((maquina) => {
-                              //console.log("maquina: " + " " + maquina)
-                              pts_ = pts_.concat(pts.filter((pt) => {
-                                  //console.log("cdInjetora: " + " " + pt.cdPt + " == " + maquina )
-                                  if (pt.cdPt === maquina)                             
-                                  return pt;
-                              }));
-                          });
-                          pts = pts_;
-                      }
-                  }
-                  
+                  if(sessionStorage.getItem('maquinasList') != 'null'){   
+                    var maquinas = JSON.parse(sessionStorage.getItem('maquinasList'))
+                     maquinas.forEach((maquina) => {
+                        pts.forEach((pt) =>{
+                            if (pt.cdPt == maquina) 
+                                pts_.push(pt)
+                        })
+                     });
+                     this.info = pts_
+                    pts = pts_;
+                };      
                   this.pts = pts
               }))
-              .catch((error) => {this.pts = error});
+              .catch(error => this.errorF(error));
           }
       },
   

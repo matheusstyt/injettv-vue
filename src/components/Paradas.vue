@@ -1,6 +1,7 @@
 <template>
     <div class="paradas">
       <h1 class=center-align>Paradas | Alertas - {{ galpaoName }}</h1>
+
         <div class="container">
             <table>
                 <tr>
@@ -15,7 +16,9 @@
                 </tr>
             </table>
           </div>
-          <h2 class="ultima-atualizacao">Ultima atualizacão: {{ ultimaAtualizacao }}</h2>
+          <div >
+            <h2 class="ultima-atualizacao">Ultima atualizacão: {{ ultimaAtualizacao }}</h2>
+          </div>
     </div>
   
     </template>
@@ -29,20 +32,21 @@
     components: {
           
     },
-    props:{
-        cd : String || '000001'
-    },
     created () {
         setInterval(() => {
-            this.getParadas()
-            this.sec++
+            this.getParadas()      
         }, 15000)
     },
     data(){
         return{
+            errorF(error){
+                sessionStorage.setItem('error', error)
+                window.location.href = '/error'
+            },
             ultimaAtualizacao : null,
             ip : require('/src/config/config.env').API_URL,
             galpaoName : sessionStorage.getItem('galpaoName'),
+            cd :'000001',
             color: 'color: ',
             pts: null,
             turno : null,
@@ -78,7 +82,6 @@
             return today;
         },
           async getParadas(){
-            this.ultimaAtualizacao = this.getToday()
               function getToday(){
                   var today = new Date();
                   var dd = String(today.getDate()).padStart(2, '0');
@@ -98,6 +101,7 @@
                   today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
                   return today;
               }
+              this.ultimaAtualizacao = this.getToday()
               await axios.all([        
                   axios.get(`${this.ip}/idw/rest/injet/paradas/pesquisaParadasByGalpao` ,{params: {cdGalpao:this.cd}}),
                   axios.get(`${this.ip}/idw/rest/injet/alertas/pesquisaAlertasByGalpao`,{params: {cdGalpao:this.cd}})
@@ -161,38 +165,25 @@
   
                   pts = pts.concat(parada, alerta);
   
-                  if(typeof this.maquinas === 'string'  ){            
-                      if (this.maquinas) {
-                          //console.log("maquina: " + " " + this.maquinas)
-                              pts_ = pts_.concat(pts.filter((pt) => {
-                                  //console.log("cdInjetora: " + " " + pt.cdPt + " == " + this.maquinas )
-                                  if (pt.cdPt === this.maquinas)                             
-                                  return pt;
-                              }));
-                          pts = pts_;
-                      }
-                  }
-                  if(typeof this.maquinas === 'undefined' || typeof this.maquinas === 'object'  ){            
-                      if (this.maquinas) {
-                          this.maquinas.forEach((maquina) => {
-                              //console.log("maquina: " + " " + maquina)
-                              pts_ = pts_.concat(pts.filter((pt) => {
-                                  //console.log("cdInjetora: " + " " + pt.cdPt + " == " + maquina )
-                                  if (pt.cdPt === maquina)                             
-                                  return pt;
-                              }));
-                          });
-                          pts = pts_;
-                      }
-                  }
-                  
+                  if(sessionStorage.getItem('maquinasList') != 'null'){   
+                    var maquinas = JSON.parse(sessionStorage.getItem('maquinasList'))
+                     maquinas.forEach((maquina) => {
+                        pts.forEach((pt) =>{
+                            if (pt.cdPt == maquina) 
+                                pts_.push(pt)
+                        })
+                     });
+                     this.info = pts_
+                    pts = pts_;
+                };      
                   this.pts = pts
               }))
-              .catch((error) => {this.pts = error});
+              .catch(error => this.errorF(error));
           }
       },
   
     mounted () {
+        this.cd = sessionStorage.getItem('galpao')
         this.getParadas()
     }
   }
@@ -253,9 +244,11 @@
       font-weight: bold;
   }
   table{
+    width: auto;
       background-color: rgba(0, 0, 0, 0.01);
       border-radius: 5px;
-      margin: 10px 8px;
+      margin: 2vmax auto;
+      
   }
   tr{
       font-size: 1em;
@@ -265,8 +258,10 @@
       
   }
   th, td{
-      font-family: 'Arial';
-      text-align: center;
+    padding: 1vmax;
+    
+    font-family: 'Arial';
+    text-align: center;
   }
   tr:hover{
       background-color: rgba(0, 0, 0, 0.04);
