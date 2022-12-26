@@ -1,6 +1,5 @@
 <template>
   <div class="maquinas">
-
     <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
         <div class=container id="container">
 
@@ -57,6 +56,9 @@ export default {
         setInterval(() => {
              this.getMaquinas();
         }, 15000)
+     
+       
+        
     },
   data(){
     return{
@@ -91,6 +93,10 @@ export default {
     }
   },
   methods:{
+    errorF(error){
+        sessionStorage.setItem('error', error)
+        window.location.href = '/error'
+    },
     getToday(){
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
@@ -130,7 +136,7 @@ export default {
             var dd = String(today.getDate()).padStart(2, '0');
             var year = new Date().getFullYear()
             var mes = new Date().getMonth()+1
-            this.info = `${dd}/${mes}/${year}`
+       
         axios
         .get(`${this.ip}/idw/rest/injet/monitorizacao/turnoAtual`)
         .then(turnoAtual => {
@@ -172,36 +178,31 @@ export default {
                         parada.push(pt);
                     }
                 });
-                pts = pts.concat(naMeta, abaixoMeta, parada, semConexao);
-        
-                if(typeof this.maquinas === 'string'  ){            
-                    if (this.maquinas) {
-                        pts_ = pts_.concat(pts.filter((pt) => {
-                            if (pt.cdPt === this.maquinas) 
-                            return pt;
-                        }));
-                        pts = pts_;
-                    }
-                }
-                if(typeof this.maquinas === 'undefined' || typeof this.maquinas === 'object'  ){            
-                    if (this.maquinas) {
-                        this.maquinas.forEach((maquina) => {
-                            pts_ = pts_.concat(pts.filter((pt) => {
-                                if (pt.cdPt === maquina) 
-                                return pt;
-                            }));
-                        });
-                        pts = pts_;
-                    }
-                }
+                pts = pts.concat(naMeta, abaixoMeta, parada,    semConexao);
                 
+                if(sessionStorage.getItem('maquinasList') != 'null'){   
+                    var maquinas = JSON.parse(sessionStorage.getItem('maquinasList'))
+                     maquinas.forEach((maquina) => {
+                        pts.forEach((pt) =>{
+                            if (pt.cdPt == maquina) 
+                                pts_.push(pt)
+                        })
+                     });
+                     this.info = pts_
+                    pts = pts_;
+                
+                }
+                function onlyUnique(value, index, self) {
+                    return self.indexOf(value) === index;
+                }
+                pts =  pts.filter(onlyUnique);
                 this.pts = pts
                 this.turno = res
                 
             })
-            .catch((error) => {this.turno = error});
+            .catch((error) => this.errorF(error));
         })
-        .catch(errorTurnoAtual => this.info = errorTurnoAtual)
+        .catch(errorTurnoAtual => this.errorF(errorTurnoAtual))
     }
   },
   mounted () {

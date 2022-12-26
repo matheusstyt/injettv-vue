@@ -1,14 +1,11 @@
 <template>
     <div class="container-err">
-      <h3>Geralmente esse erro ocorre devido a ausência de dados do IDW, ou seja, algum problema no iDW.</h3>
+      <p>Código : {{ error }}</p>
+      <h3>Dificuldade ao carregar os Dados.</h3>
         <h1>Não há dados a apresentar :(</h1>  
         <h2 class="err">404</h2>
         <div class="box-err">
-          <p v-bind:style="{
-            color: highlightColor, //..highlightColor deve ser uma propriedade da função data
-            'font-size' : pSize + 'rem' //..pSize deve ser uma propriedade da função data
-          }">Estilo inline usando um objeto!</p> 
-        
+
         </div>
     </div>
     </template>
@@ -26,7 +23,10 @@
       };
     },
     created(){
-        this.error = this.$route.query.code_error
+        this.error = sessionStorage.getItem('error')
+        setInterval(() => {
+          window.location.href = '/painel'
+        }, 10000)
     }
   }
     </script>

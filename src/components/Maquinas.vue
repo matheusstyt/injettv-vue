@@ -1,6 +1,6 @@
 <template>
     <div class="maquinas">
-          <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
+      <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
           <div class=container id="container">
   
             <!-- <div class="legends">
@@ -45,67 +45,74 @@
   
     </template>
   <script>
-  // @ is an alias to /src
-  // import HelloWorld from '@/components/HelloWorld.vue'
-  import { isIntegerKey } from '@vue/shared'
+  import Preloader from '../components/Preloader.vue'
   import axios from 'axios'
   export default {
     name: 'Maquinas',
     components: {
-    },
-    props:{
-        cd : String || '000001'
+      Preloader
     },
     created () {
-        
           setInterval(() => {
                this.getMaquinas();
           }, 15000)
+       
+         
+          
       },
     data(){
       return{
-        ultimaAtualizacao : null,
-        ip : require('/src/config/config.env').API_URL,
-        info: null,
-        color: 'color: ',
-        back: 'background-color: ',
-        border: ' border-bottom: 20px solid ',
-        pts: null,
-        turno : null,
-        maquinas : undefined,
-        galpaoName : sessionStorage.getItem('galpaoName'),
-        legendaColors1 : [
-          {nome:'Parada', style: '#c0392b'},
-          {nome:'Na Meta', style: '#4cd137'},
-          {nome:'Fora da Meta', style: '#f1c40f'},
-          {nome:'Offline', style: 'rgb(135, 135, 135)'}
-              ],
-        legendaColors2: [
-          {nome:'Em Alerta', style: '#f1c40f'},
-          {nome:'Sem Planejamento', style: 'blue'},
-          {nome:'90% Op Concluída', style: 'rgb(27, 26, 90)'},
-          {nome:'Planejamneto Concluído', style: 'rgb(45, 238, 235)'},
-          {nome:'Índice de Refugo Maior que 5%', style: 'rgb(142, 142, 142)'},
-          {nome:'Parada sem Peso na Eficiência', style: 'rgb(235, 23, 192)'},
-          {nome:'Parada não Informada', style: 'rgb(0, 0, 0)'},
-          {nome:'CIP(Controle Início Processo)', style: 'rgb(115, 239, 111)'},
-          {nome:'Sem Ocorrências', style: '#ffff'}
-      ]
+          ultimaAtualizacao : null,
+          ip : require('/src/config/config.env').API_URL,
+          galpaoName : sessionStorage.getItem('galpaoName'),
+          cd: '000001',
+          info: null,
+          color: 'color: ',
+          back: 'background-color: ',
+          border: ' border-bottom: 20px solid ',
+          pts: null,
+          turno : null,
+          maquinas : undefined,
+          legendaColors1 : [
+              {nome:'Parada', style: '#c0392b'},
+              {nome:'Na Meta', style: '#4cd137'},
+              {nome:'Fora da Meta', style: '#f1c40f'},
+              {nome:'Offline', style: 'rgb(135, 135, 135)'}
+                  ],
+          legendaColors2: [
+              {nome:'Em Alerta', style: '#f1c40f'},
+              {nome:'Sem Planejamento', style: 'blue'},
+              {nome:'90% Op Concluída', style: 'rgb(27, 26, 90)'},
+              {nome:'Planejamneto Concluído', style: 'rgb(45, 238, 235)'},
+              {nome:'Índice de Refugo Maior que 5%', style: 'rgb(142, 142, 142)'},
+              {nome:'Parada sem Peso na Eficiência', style: 'rgb(235, 23, 192)'},
+              {nome:'Parada não Informada', style: 'rgb(0, 0, 0)'},
+              {nome:'CIP(Controle Início Processo)', style: 'rgb(115, 239, 111)'},
+              {nome:'Sem Ocorrências', style: '#ffff'}
+          ]
       }
     },
     methods:{
-        getToday(){
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
-
-            today = mm + '/' + dd + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
-            
-            return today;
-        },
-      async getMaquinas(){
-        this.ultimaAtualizacao = this.getToday()
+      errorF(error){
+          sessionStorage.setItem('error', error)
+          window.location.href = '/error'
+      },
+      getToday(){
+          var today = new Date();
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+          var yyyy = today.getFullYear();
+  
+          today = mm + '/' + dd + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+          
+          return today;
+      },
+      getMaquinas(){
+          var contador = 0;
+          var ptsGlobal;
+          var ultimaAtualizacao;
+          var globalRequest;
+          this.ultimaAtualizacao = this.getToday()
           function getToday(){
               var today = new Date();
               var dd = String(today.getDate()).padStart(2, '0');
@@ -125,34 +132,27 @@
               today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
               return today;
           }
-          function formatDate(date, format) {
-                    const map = {
-                        mm: date.getMonth() + 1,
-                        dd: date.getDate(),
-                        aa: date.getFullYear().toString().slice(-2),
-                        aaaa: date
-                    }
-                    return format.replace(/mm|dd|aa|aaaa/gi, matched => map[matched])
-                }
-                const today = new Date();
-                var dd = String(today.getDate()).padStart(2, '0');
-                var year = new Date().getFullYear()
-                var mes = new Date().getMonth()+1
-                var data = formatDate(today, 'dd/mm/aaaa')
+              const today = new Date();
+              var dd = String(today.getDate()).padStart(2, '0');
+              var year = new Date().getFullYear()
+              var mes = new Date().getMonth()+1
+         
           axios
           .get(`${this.ip}/idw/rest/injet/monitorizacao/turnoAtual`)
           .then(turnoAtual => {
           this.turno = turnoAtual.data.idTurno
-          this.info = dd+'/'+mes+'/'+year
               axios.post(`${this.ip}/idw/rest/v2/injet/monitorizacao/postosativos`, {
                   idTurno: turnoAtual.data.idTurno,
                   filtroOp: 0,
                   cdGt: this.cd,
                   turnoAtual: true,
-                  dtReferencia: dd+'/'+mes+'/'+year
+                  dtReferencia: `${dd}/${mes}/${year}`
               })
               .then(res => {         
-                          
+                  ptsGlobal = res;
+                  
+                  ultimaAtualizacao = getToday()
+                  
                   let abaixoMeta = [], semConexao = [], naMeta = [], parada = [], pts = [], pts_ = [];
                   
                   res.data.pts.forEach(pt => {
@@ -178,39 +178,37 @@
                           parada.push(pt);
                       }
                   });
-                  pts = pts.concat(naMeta, abaixoMeta, parada, semConexao);
-          
-                  if(typeof this.maquinas === 'string'  ){            
-                      if (this.maquinas) {
-                          pts_ = pts_.concat(pts.filter((pt) => {
-                              if (pt.cdPt === this.maquinas) 
-                              return pt;
-                          }));
-                          pts = pts_;
-                      }
+                  pts = pts.concat(naMeta, abaixoMeta, parada,    semConexao);
+                  
+                  if(sessionStorage.getItem('maquinasList') != 'null'){   
+                      var maquinas = JSON.parse(sessionStorage.getItem('maquinasList'))
+                       maquinas.forEach((maquina) => {
+                          pts.forEach((pt) =>{
+                              if (pt.cdPt == maquina) 
+                                  pts_.push(pt)
+                          })
+                       });
+                       this.info = pts_
+                      pts = pts_;
+                  
                   }
-                  if(typeof this.maquinas === 'undefined' || typeof this.maquinas === 'object'  ){            
-                      if (this.maquinas) {
-                          this.maquinas.forEach((maquina) => {
-                              pts_ = pts_.concat(pts.filter((pt) => {
-                                  if (pt.cdPt === maquina) 
-                                  return pt;
-                              }));
-                          });
-                          pts = pts_;
-                      }
+                  function onlyUnique(value, index, self) {
+                      return self.indexOf(value) === index;
                   }
+                  pts =  pts.filter(onlyUnique);
                   this.pts = pts
                   this.turno = res
-                  //console.log('mauina time : '+slideTransition)
+                  
               })
-              .catch((error) => {this.turno = error});
+              .catch((error) => this.errorF(error));
           })
-          .catch(errorTurnoAtual => this.info = errorTurnoAtual)
+          .catch(errorTurnoAtual => this.errorF(errorTurnoAtual))
       }
     },
     mounted () {
-        this.getMaquinas();
+      this.cd = sessionStorage.getItem('galpao')
+      this.getMaquinas();
+      
     }
   }
   </script>
@@ -235,12 +233,12 @@
       color: var(--color-text);
   }
   .ultima-atualizacao{
-    position: absolute; 
-    bottom: 1%; 
-    left: 1%;
-    color: #1d1d1d;
-    font-size: 2.4vmax;
-  }
+      position: absolute; 
+      bottom: 1%; 
+      left: 1%;
+      color: #1d1d1d;
+      font-size: 2.4vmax;
+    }
   .flex, .descricao {
       display: flex;
   }
@@ -344,31 +342,32 @@
   .row-g{
       flex:1;
   }
-table{ 
-    border-radius: 5px;
-    width: auto;
-    margin: 0 auto;
-    margin-top:2vmax;
-}
-th{
-    background-color: rgba(0, 0, 0, 0.03);
-}
-tr{
-    font-size: 1em;
-   
-}
-td{
-    text-shadow: 1px 0px var(--color-text);
-    
-}
-th, td{
-    padding: 1vmax 2vmax;
-    font-family: 'Arial';
-    text-align: center;   
-}
-tr:hover{
-    background-color: rgba(0, 0, 0, 0.01);
-}
+  
+  table{ 
+      border-radius: 5px;
+      width: auto;
+      margin: 0 auto;
+      margin-top:2vmax;
+  }
+  th{
+      background-color: rgba(0, 0, 0, 0.03);
+  }
+  tr{
+      font-size: 1em;
+     
+  }
+  td{
+      text-shadow: 1px 0px var(--color-text);
+      
+  }
+  th, td{
+      padding: 1vmax 2vmax;
+      font-family: 'Arial';
+      text-align: center;   
+  }
+  tr:hover{
+      background-color: rgba(0, 0, 0, 0.01);
+  }
     .material-icons {
       font-family: 'Material Icons';
       font-weight: normal;

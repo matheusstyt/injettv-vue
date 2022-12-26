@@ -4,6 +4,9 @@
             <span class="titulo">INJET TV - Painel de Controle</span>
             <img src="../assets/images/logo/logo.jpg" alt=Logo >   
         </header>
+        <div class="msg">
+            <h2>{{ info }}</h2>
+        </div>
       <main class=container>
         <form id="ok" >
             <div class=row>
@@ -108,7 +111,7 @@ data() {
     selected: null,
     options: [],
     maquinasList: [],
-    info: 'teste',
+    info: '',
     info1: 'teste1',
     produtividade : false,
     paradas : false,
@@ -128,7 +131,7 @@ mounted (){
 },
 created(){
     this.listGts()
-   //  this.Materizalize();
+   setInterval
 },  
 methods:{
     changeMaquinas(galpao){
@@ -144,9 +147,7 @@ methods:{
             this.options = response.data.pts
             this.pts = response.data.pts
         })
-        .catch(err => {
-            this.info = err
-        })
+        .catch((error) => this.errorF(error));
     },
     getMaquinas(){
         $(document).ready(function() {
@@ -170,7 +171,7 @@ methods:{
     
         axios.get(`${this.ip}/idw/rest/injet/gts/monitorizacao`)
         .then(gts => this.gts = gts.data.gts    )
-        .catch(error => this.$route.push({name: 'error'}))
+        .catch((error) => this.errorF(error));
     },
     maquinasChange(){
         this.maquinas = !this.maquinas
@@ -182,30 +183,36 @@ methods:{
         this.paradas = !this.paradas
     },
     enviar(){
-        if(this.value.length == 0 | this.value == null){
-            this.info = 'Selecione uma máquina!!'
+        if(this.gt == null){
+            this.info = 'Selecione uma grupo de trabalho!!'
 
         }else{
-            this.value.forEach(element => {
-                this.maquinasList.push(element.cdPt)
-            })
-            sessionStorage.setItem("maquinasSelected", JSON.stringify(this.value));
-            sessionStorage.setItem("maquinasList", JSON.stringify(this.maquinasList));
+            if(this.value.length > 0){
+                this.info = this.value.length
+                this.value.forEach(element => {
+                    this.maquinasList.push(element.cdPt)
+                });
+                sessionStorage.setItem("maquinasList", JSON.stringify(this.maquinasList));
+            }else{
+                sessionStorage.setItem("maquinasList", null);
+            }
             sessionStorage.setItem("paradas", this.paradas);
             sessionStorage.setItem("produtividade", this.produtividade);
             sessionStorage.setItem("maquinas", this.maquinas);
             sessionStorage.setItem("galpao", this.gt.cdGt)
             sessionStorage.setItem("galpaoName", this.gt.dsGt)
-            this.info = 'Sucesso :)'+this.value.length
+            this.info = 'Sucesso :)'
             if(!this.produtividade & !this.paradas & !this.maquinas){
-                this.info1 = 'Porfavor, selecione pelo menos uma tela!'
+                this.info = 'Porfavor, selecione pelo menos uma tela!'
             }else{
                 // router.push({ path: '/carrosel'})
                 window.location.href = '/carrosel'
             }
         }
-    
-    
+    },
+    errorF(error){
+        sessionStorage.setItem('error', error)
+        window.location.href = '/error'
     }
 },
 watch:{
@@ -220,7 +227,11 @@ watch:{
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 <style scoped>
-
+.msg h2{
+    color: rgb(199, 78, 78);
+    font-family: 'Consolas';
+    font-size: 1.5em;
+}
 .titulo{
     text-align: center;
 
