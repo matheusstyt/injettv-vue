@@ -1,6 +1,6 @@
 <template>
     <div class="produtividade"> 
-      <Preloader />
+
       <h1 class=center-align>Produtividade - {{ galpaoName }}<span id=galpao></span></h1>
       <div>
           <div class="row speedometer">
@@ -80,23 +80,20 @@
     </div>
   </template>
   <script>
-  import Preloader from '../components/Preloader.vue'
+
   import Velocimetros from '../components/Velocimetros.vue'
   import axios from 'axios'
   import $ from 'jquery'
   export default{
       components :{
-          Velocimetros, Preloader
+          Velocimetros
       },
       mounted (){
           this.cd = sessionStorage.getItem('galpao');
-          
-          
       },
       created () {
           this.getFirstProdutividade();
           setInterval(() =>{
-              
                this.getProdutividade();  
           }, 20000)
       },
@@ -244,14 +241,13 @@
                       }),
                       axios.get(`${this.ip}/idw/rest/injet/monitorizacao/turnos`)
                   ])
-                  .then(axios.spread((velocimetro, bi, turnos) => {
-                        
-                      this.info = bi.data.indicadores  
-                      this.bi = bi.data.indicadoresTurno
+                  .then(axios.spread((velocimetro, bi, turnos) => {                   
                       this.indicadores = bi.data.indicadores
+                      this.getGauge();  
+                      this.bi = bi.data.indicadoresTurno
+                     
                       this.velocimetro = velocimetro.data.indicadores
                       this.turnos = turnos.data.turnos
-                      this.getGauge();  
   
                   }))
                   // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
@@ -322,9 +318,8 @@
                       this.bi = bi.data.indicadoresTurno
                       this.indicadores = bi.data.indicadores
                       this.velocimetro = velocimetro.data.indicadores
-                      this.turnos = turnos.data.turnos
-                      $('#preloader').fadeIn().toggleClass('hide');           
-                          this.getGauge();  
+                      this.turnos = turnos.data.turnos       
+                      
      
                   }))
                   // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));

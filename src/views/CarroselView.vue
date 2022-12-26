@@ -53,7 +53,9 @@ export default {
                 this.info = 'uai'
             }  
         }, 25000)
-
+        // setInterval(() => {
+        //     window.location.reload();
+        // }, 75000);
 
         
     },

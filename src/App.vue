@@ -3,15 +3,15 @@
     <nav class="nav-1" >
       <!-- <router-link to="/">Home</router-link> |
       <router-link to="/painel">Painel</router-link> -->
-      <a class="route" href="/painel" >Painel</a>
+      <a class="route painel" href="/painel" >Painel</a>
       <!-- <router-link to="/maquinas" v-bind:style="{ 'display' : maquinas }">Maquinas</router-link> -->
-      <a class="route" href="/maquinas" v-bind:style="{ 'display' : maquinas }">Maquinas</a>
+      <a class="route maquinas-css" href="/maquinas" v-bind:style="{ 'display' : maquinas }">Maquinas</a>
       <!-- <router-link to="/produtividade">Produtividade</router-link> -->
-      <a class="route" href="/produtividade"  v-bind:style="{ 'display' : produtividade }">Produtividade</a>
+      <a class="route produtividade-css" href="/produtividade"  v-bind:style="{ 'display' : produtividade }">Produtividade</a>
       <!-- <router-link to="/parada" v-bind:style="{ 'display' : paradas }">Paradas</router-link> -->
-      <a class="route" href="/parada" v-bind:style="{ 'display' : paradas }">Paradas</a>
+      <a class="route paradas-css" href="/parada" v-bind:style="{ 'display' : paradas }">Paradas</a>
       <!-- <router-link to="/carrosel">Carrosel</router-link> -->
-      <a class="route carrosel" href="/carrosel" v-bind:style="{ 'display' : galpao }">Carrosel</a>
+      <!-- <a class="route carrosel" href="/carrosel" v-bind:style="{ 'display' : galpao }">Carrosel</a> -->
     </nav>
     <router-view/>
     <div>
@@ -80,7 +80,7 @@ methods :{
   background-color: rgba(0, 0, 0, 0.0);
   box-shadow: none;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 1em;
   padding: 0.3em 2em;
 }
@@ -94,14 +94,14 @@ methods :{
   color: rgb(41, 41, 41);
   text-decoration:none;
 }
-.carrosel{
+.painel{
   padding: 0 1em;
   color: rgb(32, 101, 148);
   position: absolute;
-  right: 2em;
+  left: 2em;
   top: 0;
 }
-.carrosel:hover{
+.painel:hover{
   color: rgb(25, 81, 119);
   border-radius: 10px;
   background-color: rgb(220, 235, 245);

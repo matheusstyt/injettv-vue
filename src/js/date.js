@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('node_modules/moment/moment');
 
 module.exports = {
     getYear: data => new Date(data).getFullYear(),

@@ -90,13 +90,18 @@ export default{
     },
     mounted (){
         this.cd = sessionStorage.getItem('galpao');
-        
+        document.title = `Produtividade Planta - ${sessionStorage.getItem('galpaoName')}`
         
     },
     created () {
         this.getFirstProdutividade();
         setInterval(() =>{
-            
+            if(sessionStorage.getItem('maquinas') == 'true'){
+                window.location.href = '/maquinas'
+            }
+            if(sessionStorage.getItem('paradas') == 'true'){
+                window.location.href = '/parada'
+            }
              this.getProdutividade();  
         }, 20000)
     },
@@ -355,6 +360,18 @@ body{
 }
 h1, h2, h3, h4, h5, h6, p, label, tr, td, th{
     color: var(--color-text);
+}
+.produtividade-css{
+    color: #0b0525;
+    font-weight: 600;
+}
+.maquinas-css{
+    color: rgb(161, 161, 161);
+    font-weight:400;
+}
+.paradas-css{
+    color: rgb(161, 161, 161);
+    font-weight:400;
 }
 .ultima-atualizacao{
     text-align: start;

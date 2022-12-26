@@ -3,16 +3,16 @@
       <h1 class=center-align>Paradas | Alertas - {{ galpaoName }}</h1>
 
         <div class="container">
-            <table>
+            <table class="flex">
                 <tr>
                     <th>MÁQUINA</th>
                     <th>DESCRIÇÃO</th>
                     <th>DURAÇÃO (HH:MM:SS)</th>
                 </tr>
-                <tr v-for="(pt, index) in pts" class="teste" id="circle1">
-                    <td :style=color+pt.cor><b>{{ pt.cdPt}}</b></td>
-                    <td :style=color+pt.cor><b>{{ pt.descricao}}</b></td>
-                    <td :style=color+pt.cor><b>{{ pt.tempo}}</b></td>
+                <tr class="teste" id="circle1" v-for="(pt, index) in pts" >
+                    <td class="item flex-item-1"  :style=color+pt.cor><b>{{ pt.cdPt}}</b></td>
+                    <td class="item flex-item-1"  :style=color+pt.cor><b>{{ pt.descricao}}</b></td>
+                    <td class="item flex-item-1"  :style=color+pt.cor><b>{{ pt.tempo}}</b></td>
                 </tr>
             </table>
           </div>
@@ -23,9 +23,7 @@
   
     </template>
   <script>
-  // @ is an alias to /src
-  // import HelloWorld from '@/components/HelloWorld.vue'
-  import { isIntegerKey } from '@vue/shared'
+  import $ from 'jquery'
   import axios from 'axios'
   export default {
       name: 'Maquinas',
@@ -33,7 +31,15 @@
           
     },
     created () {
+        //this.carousel()
         setInterval(() => {
+            if(sessionStorage.getItem('produtividade') == 'true'){
+                window.location.href = '/produtividade'
+            }
+            if(sessionStorage.getItem('maquinas') == 'true'){
+                window.location.href = '/maquinas'
+            }
+            
             this.getParadas()      
         }, 15000)
     },
@@ -71,6 +77,51 @@
         }
     },
       methods:{
+        carousel(){
+            
+            const maquinas = $('.teste');
+            const itemsPerView = 5;
+            let index = 0;
+            console.log('teeste: '+maquinas.length )
+            for (let i = 0; i < maquinas.length; i++) {
+                console.log(i)
+                $(maquinas[i]).css('display', 'none');
+            }
+            for (let i = index; i < (index + itemsPerView); i++) {
+                $(maquinas[i]).css('display', 'flex');
+            }
+            index += itemsPerView;
+
+            setInterval(function() {
+                if (index < maquinas.length) {
+                    for (let i = 0; i < maquinas.length; i++) {
+                        $(maquinas[i]).css('display', 'none');
+                    }
+                    for (let i = index; i < (index + itemsPerView); i++) {
+                        $(maquinas[i]).css('display', 'flex');
+                    }
+                    index += itemsPerView;
+                } else {
+                    index = 0;
+                    if(sessionStorage.getItem('produtividade') == 'true'){
+                        window.location.href = '/produtividade'
+                    }
+                    if(sessionStorage.getItem('maquinas') == 'true'){
+                        window.location.href = '/maquinas'
+                    }
+                }
+            }, 15000);
+            $('form').submit(e => e.preventDefault());
+            $('#circle').change(e => {
+                var valor = $("input[name='group1']:checked").val();
+                console.log(valor)
+                if(valor == 0){
+                    $('#circle1').attr(`
+                    `)
+                }
+            });
+
+        },
         getToday(){
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
@@ -184,11 +235,12 @@
   
     mounted () {
         this.cd = sessionStorage.getItem('galpao')
+        document.title = `Paradas - ${sessionStorage.getItem('galpaoName')}`
         this.getParadas()
     }
   }
   </script>
-  <style scoped>
+  <style>
   html{
       --tema-padrao: #0077FF;
       --bg: #FCFCFC;
@@ -206,6 +258,19 @@
   h1, h2, h3, h4, h5, h6, p, label, th{
       color: var(--color-text);
   }
+    .paradas-css{
+        color: #0b0525;
+        font-weight: 600;
+    }
+    .produtividade-css{
+        color: rgb(161, 161, 161);
+        font-weight: 400;
+    }
+    .maquinas-css{
+        color: rgb(161, 161, 161);
+        font-weight:400;
+    }
+
   .ultima-atualizacao{
     position: absolute; 
     bottom: 1%; 
@@ -214,11 +279,10 @@
     font-size: 2.4vmax;
   }
   .flex, .descricao {
-      display: flex;
+        display: table;
   }
       .item {
           margin: 5px;
-          background: tomato;
           text-align: center;
           font-size: 2.0em;
           flex: 1;

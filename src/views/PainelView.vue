@@ -209,14 +209,22 @@ methods:{
             if(!this.produtividade & !this.paradas & !this.maquinas){
                 this.info = 'Porfavor, selecione pelo menos uma tela!'
             }else{
-                // router.push({ path: '/carrosel'})
-                window.location.href = '/carrosel'
+                if(sessionStorage.getItem('produtividade') == 'true'){
+                    window.location.href = '/produtividade'
+                }
+                if(sessionStorage.getItem('maquinas') == 'true'){
+                window.location.href = '/maquinas'
+                }
+                if(sessionStorage.getItem('paradas') == 'true'){
+                    window.location.href = '/parada'
+                }    
             }
         }
     },
     errorF(error){
         sessionStorage.setItem('error', error)
         window.location.href = '/error'
+        
     }
 },
 watch:{
