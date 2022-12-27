@@ -10,9 +10,9 @@
                     <th>DURAÇÃO (HH:MM:SS)</th>
                 </tr>
                 <tr class="teste" id="circle1" v-for="(pt, index) in pts" >
-                    <td class="item flex-item-1"  :style=color+pt.cor><b>{{ pt.cdPt}}</b></td>
-                    <td class="item flex-item-1"  :style=color+pt.cor><b>{{ pt.descricao}}</b></td>
-                    <td class="item flex-item-1"  :style=color+pt.cor><b>{{ pt.tempo}}</b></td>
+                    <td :style=color+pt.cor><b>{{ pt.cdPt}}</b></td>
+                    <td :style=color+pt.cor><b>{{ pt.descricao}}</b></td>
+                    <td :style=color+pt.cor><b>{{ pt.tempo}}</b></td>
                 </tr>
             </table>
           </div>
@@ -32,16 +32,16 @@
     },
     created () {
         //this.carousel()
-        setInterval(() => {
-            if(sessionStorage.getItem('produtividade') == 'true'){
-                window.location.href = '/produtividade'
-            }
-            if(sessionStorage.getItem('maquinas') == 'true'){
-                window.location.href = '/maquinas'
-            }
+        // setInterval(() => {
+        //     if(sessionStorage.getItem('produtividade') == 'true'){
+        //         window.location.href = '/produtividade'
+        //     }
+        //     if(sessionStorage.getItem('maquinas') == 'true'){
+        //         window.location.href = '/maquinas'
+        //     }
             
-            this.getParadas()      
-        }, 15000)
+        //     this.getParadas()      
+        // }, 15000)
     },
     data(){
         return{
@@ -77,51 +77,7 @@
         }
     },
       methods:{
-        carousel(){
-            
-            const maquinas = $('.teste');
-            const itemsPerView = 5;
-            let index = 0;
-            console.log('teeste: '+maquinas.length )
-            for (let i = 0; i < maquinas.length; i++) {
-                console.log(i)
-                $(maquinas[i]).css('display', 'none');
-            }
-            for (let i = index; i < (index + itemsPerView); i++) {
-                $(maquinas[i]).css('display', 'flex');
-            }
-            index += itemsPerView;
 
-            setInterval(function() {
-                if (index < maquinas.length) {
-                    for (let i = 0; i < maquinas.length; i++) {
-                        $(maquinas[i]).css('display', 'none');
-                    }
-                    for (let i = index; i < (index + itemsPerView); i++) {
-                        $(maquinas[i]).css('display', 'flex');
-                    }
-                    index += itemsPerView;
-                } else {
-                    index = 0;
-                    if(sessionStorage.getItem('produtividade') == 'true'){
-                        window.location.href = '/produtividade'
-                    }
-                    if(sessionStorage.getItem('maquinas') == 'true'){
-                        window.location.href = '/maquinas'
-                    }
-                }
-            }, 15000);
-            $('form').submit(e => e.preventDefault());
-            $('#circle').change(e => {
-                var valor = $("input[name='group1']:checked").val();
-                console.log(valor)
-                if(valor == 0){
-                    $('#circle1').attr(`
-                    `)
-                }
-            });
-
-        },
         getToday(){
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
@@ -227,7 +183,31 @@
                      this.info = pts_
                     pts = pts_;
                 };      
-                  this.pts = pts
+                    // BLOCO DE LÓGICA, QUE FAZ  LOOP DA TABELA
+                    var itemsPerView = 4;
+                    var view_atual;
+                    var view_max = itemsPerView;
+                    var init = 0;
+                    view_atual = pts.filter((item, index) => index >= init && index < view_max);
+                    this.pts = view_atual
+                    setInterval(() => {
+                        view_atual = pts.filter((item, index) => index >= init && index < view_max);
+                        view_max += itemsPerView;
+                        init += itemsPerView;
+                        
+                        if(view_atual.length === 0){
+                            if(sessionStorage.getItem('produtividade') == 'true'){
+                                window.location.href = '/produtividade'
+                            }
+                            if(sessionStorage.getItem('maquinas') == 'true'){
+                                window.location.href = '/maquinas'
+                            }
+                        }else{
+                            this.pts = view_atual
+                        }
+                    }, 15000);
+                    // FIM DO BLOCO
+     
               }))
               .catch(error => this.errorF(error));
           }

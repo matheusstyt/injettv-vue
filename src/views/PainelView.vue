@@ -238,7 +238,19 @@ watch:{
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
-<style scoped>
+<style >
+.paradas-css{
+    color: rgb(161, 161, 161);
+    font-weight: 400;
+}
+.produtividade-css{
+    color: rgb(161, 161, 161);
+    font-weight: 400;
+}
+.maquinas-css{
+    color: rgb(161, 161, 161);
+    font-weight:400;
+}
 .msg h2{
     color: rgb(199, 78, 78);
     font-family: 'Consolas';

@@ -3,7 +3,7 @@
 
     <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
         <div class=container id="container">
-            
+     
           <!-- <div class="legends">
             <div id="legenda-box">
                 <h6><b>Cor da 1° Coluna</b></h6>
@@ -22,7 +22,7 @@
   
         </div> -->
         <div class="col l12" style="display:inline-block; margin: 0 auto;">
-          <table>
+          <table class="tes" name="testee">
               <tr>
                   <th>1ª Coluna</th>
                   <th>2ª Coluna</th>
@@ -48,43 +48,14 @@
 <script>
     import $ from 'jquery'
     import axios from 'axios'
+import { init } from 'events';
     export default {
     name: 'Maquinas',
     components: {
         
     },
     created () {
-            const maquinas = $('.teste');
-            const itemsPerView = 5;
-            let index = 0;
-
-            for (let i = 0; i < maquinas.length; i++) {
-                $(maquinas[i]).css('display', 'none');
-            }
-            for (let i = index; i < (index + itemsPerView); i++) {
-                $(maquinas[i]).css('display', 'flex');
-            }
-            index += itemsPerView;
-
-            setInterval(function() {
-                if (index < maquinas.length) {
-                    for (let i = 0; i < maquinas.length; i++) {
-                        $(maquinas[i]).css('display', 'none');
-                    }
-                    for (let i = index; i < (index + itemsPerView); i++) {
-                        $(maquinas[i]).css('display', 'flex');
-                    }
-                    index += itemsPerView;
-                } else {
-                    index = 0;
-                    if(sessionStorage.getItem('paradas') == 'true'){
-                    window.location.href = '/paradas'
-                    }
-                    if(sessionStorage.getItem('produtividade') == 'true'){
-                        window.location.href = '/produtividade'
-                    }
-                }
-            }, 15000);
+    
             // setInterval(() => {
             //     this.info = sessionStorage.getItem('paradas')
             //     if(sessionStorage.getItem('paradas') == 'true'){
@@ -94,9 +65,7 @@
             //         window.location.href = '/produtividade'
             //     }
             //      this.getMaquinas();
-            // }, 15000)
-        
-        
+            // }, 15000)    
             
         },
     data(){
@@ -132,34 +101,6 @@
         }
     },
     methods:{
-        carousel(){
-            const maquinas = $('.flex');
-            const itemsPerView = 5;
-            let index = 0;
-
-            for (let i = 0; i < maquinas.length; i++) {
-                $(maquinas[i]).css('display', 'none');
-            }
-            for (let i = index; i < (index + itemsPerView); i++) {
-                $(maquinas[i]).css('display', 'flex');
-            }
-            index += itemsPerView;
-
-            setInterval(function() {
-                if (index < maquinas.length) {
-                    for (let i = 0; i < maquinas.length; i++) {
-                        $(maquinas[i]).css('display', 'none');
-                    }
-                    for (let i = index; i < (index + itemsPerView); i++) {
-                        $(maquinas[i]).css('display', 'flex');
-                    }
-                    index += itemsPerView;
-                } else {
-                    index = 0;
-                    window.location.replace(`/${nextPage}`);
-                }
-            }, 15000);
-        },
         errorF(error){
             sessionStorage.setItem('error', error)
             window.location.href = '/error'
@@ -180,25 +121,7 @@
             var ultimaAtualizacao;
             var globalRequest;
             this.ultimaAtualizacao = this.getToday()
-            function getToday(){
-                var today = new Date();
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                var yyyy = today.getFullYear();
-                var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds()
-                
-                if(String(today.getHours()).length < 2){
-                    h = '0'+String(today.getHours())
-                }
-                if(String(today.getMinutes()).length < 2){
-                    m = '0'+String(today.getMinutes())
-                }
-                if(String(today.getSeconds()).length < 2){
-                    s = '0'+String(today.getSeconds())
-                }
-                today = mm + '/' + dd + '/' + yyyy + "  " + h+":"+m+":"+s
-                return today;
-            }
+         
                 const today = new Date();
                 var dd = String(today.getDate()).padStart(2, '0');
                 var year = new Date().getFullYear()
@@ -217,8 +140,6 @@
                 })
                 .then(res => {         
                     ptsGlobal = res;
-                    
-                    ultimaAtualizacao = getToday()
                     
                     let abaixoMeta = [], semConexao = [], naMeta = [], parada = [], pts = [], pts_ = [];
                     
@@ -258,10 +179,32 @@
                         this.info = pts_
                         pts = pts_;
                     };
-                    
-                    this.pts = pts
+                   
+                    // BLOCO DE LÓGICA, QUE FAZ  LOOP DA TABELA
+                    var itemsPerView = 4;
+                    var view_atual;
+                    var view_max = itemsPerView;
+                    var init = 0;
+                    view_atual = pts.filter((item, index) => index >= init && index < view_max);
+                    this.pts = view_atual
+                    setInterval(() => {
+                        view_atual = pts.filter((item, index) => index >= init && index < view_max);
+                        view_max += itemsPerView;
+                        init += itemsPerView;
+                        
+                        if(view_atual.length === 0){
+                            if(sessionStorage.getItem('paradas') == 'true'){
+                                window.location.href = '/parada'
+                            }
+                            if(sessionStorage.getItem('produtividade') == 'true'){
+                                window.location.href = '/produtividade'
+                            }
+                        }else{
+                            this.pts = view_atual
+                        }
+                    }, 15000);
+                    // FIM DO BLOCO
                     this.turno = res
-                    
                 })
                 .catch((error) => this.errorF(error));
             })
