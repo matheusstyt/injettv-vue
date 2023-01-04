@@ -4,7 +4,7 @@
     <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
         <div class=container id="container">
      
-          <!-- <div class="legends">
+          <div class="legends">
             <div id="legenda-box">
                 <h6><b>Cor da 1° Coluna</b></h6>
                 <div v-for="(cor1, index) in legendaColors1" class="color-conteiner"> 
@@ -15,12 +15,12 @@
             <div id="legenda-box">
             <h6><b>Cor da 2° Coluna</b></h6>
             <div v-for="(cor2, index) in legendaColors2" class="color-conteiner"> 
-              <div class="cor-p1" :style=back+cor2.style+as+border+cor2.style+as ></div>
+              <div class="cor-p" :style=back+cor2.style></div>
                 <p>{{cor2.nome}} </p>
               </div>
             </div>
   
-        </div> -->
+        </div>
         <div class="col l12" style="display:inline-block; margin: 0 auto;">
           <table class="tes" name="testee">
               <tr>

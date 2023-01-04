@@ -46,11 +46,11 @@
                         </div>
         </div>
          
-        <table>
+        <table class="tabela_p">
             <thead>
-                <th></th>
+                <th>*</th>
                     <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.dsTurno}}</th>
-                <th>ACUMULADO MÊS   </th>
+                <th>ACUMULADO MÊS</th>
             </thead>     
                 <tr>
                     <td>% Produtividade  OEE</td>
@@ -225,9 +225,11 @@ export default{
                 }
                 const today = new Date();
                 var dd = String(new Date().getDate()).padStart(2, '0');
-                var year = new Date().getFullYear()
-                var mes = new Date().getMonth()+1
-                var data = formatDate(today, 'aaaa-mm-dd')
+                var year = String(new Date().getFullYear());
+                var mes = String(new Date().getMonth()+1);
+                if(mes.length == 1){
+                    mes = "0"+mes;
+                }
                 turnoAtualVar = turnoAtual.data.cdTurno
                 this.info = this.c++;
                 axios
@@ -297,8 +299,11 @@ export default{
                 }
                 const today = new Date();
                 var dd = String(new Date().getDate()).padStart(2, '0');
-                var year = new Date().getFullYear()
-                var mes = new Date().getMonth()+1
+                var year = String(new Date().getFullYear());
+                var mes = String(new Date().getMonth()+1);
+                if(mes.length == 1){
+                    mes = "0"+mes;
+                }
                 var data = formatDate(today, 'aaaa-mm-dd')
                 turnoAtualVar = turnoAtual.data.cdTurno
                 this.info = this.c++;
@@ -422,15 +427,18 @@ strong {
 }
 table {
     font-size: 1.4em;
+    text-align: center;
 }
 #updateProduction{
     font-size: 2.5em;
     position: relative;
     margin: 0;}
-
+.tabela_p tr td{
+    text-align: center;
+}
 th {
     font-size:1.1em;
-    text-align: center;
+    
 }
 td {
     font-size:1.4em;
