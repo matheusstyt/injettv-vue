@@ -199,13 +199,13 @@ methods:{
             if(!this.produtividade & !this.paradas & !this.maquinas){
                 this.info = 'Porfavor, selecione pelo menos uma tela!'
             }else{
-                if(sessionStorage.getItem('produtividade') == 'true'){
-                    window.location.href = '/produtividade'
-                }
                 if(sessionStorage.getItem('maquinas') == 'true'){
-                window.location.href = '/maquinas'
+                    window.location.href = '/maquinas'
                 }
-                if(sessionStorage.getItem('paradas') == 'true'){
+                else if(sessionStorage.getItem('produtividade') == 'true'){
+                window.location.href = '/produtividade'
+                }
+                else if(sessionStorage.getItem('paradas') == 'true'){
                     window.location.href = '/parada'
                 }    
             }

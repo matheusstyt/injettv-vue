@@ -2,7 +2,7 @@
   <div class="maquinas">
 
     <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
-        <div class=container id="container">
+        <div class=container-g id="container">
      
           <div class="legends">
             <div id="legenda-box">
@@ -21,7 +21,7 @@
             </div>
   
         </div>
-        <div class="col l12" style="display:inline-block; margin: 0 auto;">
+        <div class="maquinas-g col l12" >
           <table class="tes" name="testee">
               <tr>
                   <th>1ª Coluna</th>
@@ -239,9 +239,6 @@ html{
 body{
     background-color: var(--bg);
 }
-h1, h2, h3, h4, h5, h6, p, label, th{
-    color: var(--color-text);
-}
 .paradas-css{
     color: rgb(161, 161, 161);
     font-weight: 400;
@@ -261,40 +258,19 @@ h1, h2, h3, h4, h5, h6, p, label, th{
     color: #1d1d1d;
     font-size: 2.4vmax;
   }
-.flex, .descricao {
+
+.container-g{
+    margin: 0 auto;
+    width: 90%;
     display: flex;
+    align-items:flex-start;
+    justify-content: space-evenly;
+    flex-flow: row;
 }
-    .item {
-        margin: 0;
-        text-align: center;
-        font-size: 2.0em;
-        flex: 1;
-        text-shadow: 1px 0px rgb(24, 24, 24);
-
-    }
-    .descricao {
-        align-items: center;
-        flex:2;        
-    }
-    .grow0 {
-        flex-grow: 0;
-    }
-    .grow1 {
-        flex-grow: 1;
-    }
-
-.container {
-    font-size: .85vw;
-    
-    display:flex;
-}
-span {
-    font-size: 21px;
-    color: black;
-    font-weight: bold;
+h1, h2, h3, h4, h5, h6, p, label, th{
+    color: var(--color-text);
 }
 .legends{
-    display:inline-block;
     width:25%;
 }
 #legenda-box{
@@ -304,6 +280,16 @@ span {
     margin: 0 auto;
     padding: 10px;
     margin-top: 10px;
+}
+#legenda-box h6{
+    margin: 10 0;
+    font-size: 1.3em;
+}
+#legenda-box p{
+    font-size: 1.2em;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
 }
 .color-conteiner{
     display: flex;
@@ -316,15 +302,6 @@ span {
     box-shadow: 1px 1px rgb(37, 37, 37);
     
 } 
-
-h6{
-    margin: 10 0;
-}
-p{
-    font-size: 1.2em;
-    margin: 0;
-    padding: 0;
-}
 h2{
     font-size: 3em;
 }
@@ -346,13 +323,6 @@ h5{
     box-shadow: 1px 1px var(--color-text);
     margin: 0 auto;
 }
-.row{
-    margin:10px;
-    padding: 10px 1px;
-}
-.row-g{
-    flex:1;
-}
 
 table{ 
     border-radius: 5px;
@@ -365,7 +335,9 @@ th{
 }
 tr{
     font-size: 1em;
-   
+}
+tr:hover{
+    background-color: rgba(0, 0, 0, 0.1);
 }
 td{
     text-shadow: 1px 0px var(--color-text);
@@ -376,9 +348,7 @@ th, td{
     font-family: 'Arial';
     text-align: center;   
 }
-tr:hover{
-    background-color: rgba(0, 0, 0, 0.01);
-}
+
   .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;

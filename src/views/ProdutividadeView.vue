@@ -102,7 +102,7 @@ export default{
             if(sessionStorage.getItem('paradas') == 'true'){
                 window.location.href = '/parada'
             }
-             this.getProdutividade();  
+            window.location.reload();
         }, 20000)
     },
     data() {
@@ -420,8 +420,9 @@ canvas {
     padding: 10px;
 }
 .speedometer {
-    background-color: var(--tema-padrao);
-    color: white; 
+    background: rgb(0,106,255);
+    background: radial-gradient(circle, rgba(0,106,255,1) 0%, rgba(0,84,255,1) 15%, rgba(21,91,245,1) 29%, rgba(0,106,255,1) 47%, rgba(19,120,255,1) 58%, rgba(21,130,255,1) 70%, rgba(50,145,255,1) 83%, rgba(42,141,255,1) 95%);
+color: white; 
 }
 strong {
     font-size: 40px;
