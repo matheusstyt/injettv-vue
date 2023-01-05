@@ -48,7 +48,7 @@
    
                 <div class="input-field col xl5">
                     <label class="typo__label">Máquinas</label>
-                    <VueMultiselect v-model="value" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Escolha as Máquinas" label="cdPt" track-by="cdPt" :preselect-first="false">
+                    <VueMultiselect v-model="value" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Todas as Máquinas" label="cdPt" track-by="cdPt" :preselect-first="false">
                         <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                     </VueMultiselect>
                     <!-- <label>Máquinas</label> -->
@@ -58,39 +58,29 @@
                 <div class="input-field col xl12">
                     <span>Cor de Fundo</span>
                     <input type=color id=cor_fundo value=#ffffff name=cor_fundo>
-                    <button id=btn-cor type=button class="light-blue darken-2 right btn">Aplicar</button>
+                    <div class="light-blue darken-2 right btn waves-effect waves-light">
+                        <h6>Aplicar</h6>
+                     
+                    </div>
                 </div>
             </div>
             <div class="col s12"><span>Carregar Logo da Empresa</span></div>
             <div class="file-field input-field">
                 <div class="light-blue darken-2 right btn waves-effect waves-light">
                     <h6>Carregar</h6>
-                    <input name=imagem id=imagem type=file>
+                    <!-- <input name=imagem id=imagem type=file> -->
                 </div>
                 <div class=file-path-wrapper>
                     <input id=path_logo name=path_logo placeholder="Carregar logo da empresa." class="file-path validate" type=text>
                 </div>
             </div>
         </form>
-        <button class="light-blue darken-2 right btn waves-effect waves-light" id=enviar name=enviar @click="enviar()"><h6>Continuar</h6></button>
+        <button class="light-blue darken-2 right btn waves-effect waves-light" id=enviar name=enviar @click="enviar()">
+            <h6>Continuar</h6>
+        </button>
 
     </main>
     </div>
-<!-- <div class="carrousel">
-    <div class="item active" id="about">
-        <p class="red">Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui Primeiro aqui </p>
-        <a href="#" id="for_a">Ir para Artistas</a>
-    </div>
-    <div class="item" id="artists">
-        <p>Conteudo aqui Conteudo aqui Conteudo aqui Conteudo aqui Conteudo aqui Conteudo aqui Conteudo aqui Conteudo aqui Conteudo aqui Conteudo aqui </p>
-        <a href="#" id="for_b">Ir para About</a>
-    </div>
-    <div class="item" id="paradas">
-        <p>TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui TERCEIRO aqui </p>
-        <a href="#" id="for_b">Ir para About</a>
-    </div>
-</div> -->
-
 </template>
 
 <script>
@@ -337,16 +327,21 @@ header .list .inline-list {
     box-shadow: 0 1px 0 0 #000 !important;
 }
 h6 {
-    font-size: 14px;
-    margin-left: -6.5px;
+    font-size: 1.1em;
+    color: #fff;
 }
-button h6 {
-    margin-left: -12.5px;
+.light-blue.darken-2.right.btn.waves-effect.waves-light h6{
+    color: #fff;
 }
 .light-blue.darken-2.right.btn.waves-effect.waves-light {
-    width: 88.77px;
-    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 } 
+.light-blue h6{
+    color: #fff;
+}
   .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
