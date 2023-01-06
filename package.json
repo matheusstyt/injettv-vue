@@ -14,6 +14,7 @@
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
     "cors": "^2.8.5",
+    "http-commons": "^1.2.0",
     "jquery": "^3.6.2",
     "materialize-css": "^1.0.0-rc.2",
     "moment": "^2.29.4",
@@ -22,6 +23,7 @@
     "path": "^0.12.7",
     "vue": "^3.2.45",
     "vue-flux": "^6.4.0",
+    "vue-image-crop-upload": "^3.0.3",
     "vue-multiselect": "^3.0.0-alpha.2",
     "vue-router": "^4.0.3"
   },

@@ -2,7 +2,7 @@
     <div>
         <header class="center">
             <span class="titulo">INJET TV - Painel de Controle</span>
-            <img src="../assets/images/logo/logo.jpg" alt=Logo >   
+            <img class="logo-container" id="logo" src="../assets/images/logo.jpg" alt=Logo >   
         </header>
         <div class="msg">
             <h2>{{ info }}</h2>
@@ -64,11 +64,29 @@
                     </div>
                 </div>
             </div>
+            <div id="app">
+                <a class="btn" @click="toggleShow">set avatar</a>
+                <my-upload field="img"
+                    @crop-success="cropSuccess"
+                 
+                    v-model="show"
+                    :width="300"
+                    :height="300"
+                   
+                    url="http://localhost:5000/upload"
+                    langType="pt-br"
+                    noCircle="true"
+                    :params="params"
+                    :headers="headers"
+                    img-format="png">
+                </my-upload>
+            </div>
+
             <div class="col s12"><span>Carregar Logo da Empresa</span></div>
             <div class="file-field input-field">
                 <div class="light-blue darken-2 right btn waves-effect waves-light">
                     <h6>Carregar</h6>
-                    <!-- <input name=imagem id=imagem type=file> -->
+                    <input name=imagem id=imagem type=file> 
                 </div>
                 <div class=file-path-wrapper>
                     <input id=path_logo name=path_logo placeholder="Carregar logo da empresa." class="file-path validate" type=text>
@@ -85,17 +103,32 @@
 
 <script>
 
+import myUpload from 'vue-image-crop-upload';
 import axios from 'axios'
 import $ from 'jquery'
 import MM from 'materialize-css/dist/js/materialize.min'
 import VueMultiselect from 'vue-multiselect'
-
+import UploadService from "../services/UploadFilesService";
 export default {
 components: {
-    VueMultiselect  
+    VueMultiselect, 'my-upload': myUpload
 },
 data() {
   return {
+    imgPadrao :'../assets/images/logo.jpg',
+    fileSelected: null,
+    file:"",
+    message:"",
+    show: true,
+    params: {
+        token: '123456798',
+        name: 'avatar'
+    },
+    headers: {
+        smail: 'POST'
+    },
+    imgDataUrl: '',
+
     ip : require('/src/config/config.env').API_URL,
     value: [],
     selected: null,
@@ -117,13 +150,54 @@ data() {
 },
 mounted (){
     MM.AutoInit()
-    
+    if(localStorage.getItem('logo') != null){
+        document.getElementById('logo').src = localStorage.getItem('logo');
+    }
 },
 created(){
     this.listGts()
    setInterval
 },  
 methods:{
+    getPhoto() {
+        return '../assets/images/logo.jpg';
+    }, 
+    toggleShow() {
+        this.show = !this.show;
+    },
+    /**
+     * crop success
+     *
+     * [param] imgDataUrl
+     * [param] field
+     */
+    cropSuccess(imgDataUrl, field){
+        console.log('-------- crop success --------');
+        this.imgDataUrl = imgDataUrl;	
+	    localStorage.setItem('logo', imgDataUrl);
+    },
+    /**
+     * upload success
+     *
+     * [param] jsonData  server api return data, already json encode
+     * [param] field
+     */
+    cropUploadSuccess(jsonData, field){
+        console.log('-------- upload success --------');
+        console.log(jsonData);
+        console.log('field: ' + field);
+    },
+    /**
+     * upload fail
+     *
+     * [param] status    server api return error status, like 500
+     * [param] field
+     */
+    cropUploadFail(status, field){
+        console.log('-------- upload fail --------');
+        console.log(status);
+        console.log('field: ' + field);
+    },
     changeMaquinas(galpao){
         console.log('chegou aqui')
         var galpaoTemp = galpao
@@ -356,5 +430,9 @@ h6 {
     direction: ltr;
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
+  }
+  .logo-container{
+    width: 150px;
+    height: 150px;
   }
 </style>

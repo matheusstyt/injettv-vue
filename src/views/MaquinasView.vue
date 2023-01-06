@@ -110,8 +110,19 @@ import { init } from 'events';
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
             var yyyy = today.getFullYear();
-
-            today = dd + '/' + mm + '/' + yyyy + "  " + today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+            var h = String(today.getHours());
+            var m = String(today.getMinutes());
+            var s = String(today.getSeconds());
+            if(h.length == 1){
+                h = '0'+h;
+            }
+            if(m.length == 1){
+                m = '0'+m;
+            }
+            if(s.length == 1){
+                s = '0'+s;
+            }
+            today = dd + '/' + mm + '/' + yyyy + "  " + h+":"+m+":"+s;
             
             return today;
         },
