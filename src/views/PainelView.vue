@@ -42,16 +42,17 @@
                 </div>
                 <div class="input-field col xl5 select-grupo">
                     <input type="hidden" id="dsGt" name="dsGt" value="">
-                    <label class="typo__label">Grupo de Máquinas</label>
+                    <!-- <label class="typo__label">Grupo de Máquinas</label> -->
                     <VueMultiselect v-model="gt" :options="gts" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Escolha o grupo de trabalho" label="dsGt" track-by="dsGt" ></VueMultiselect>
                 </div>
    
                 <div class="input-field col xl5">
-                    <label class="typo__label">Máquinas</label>
+                    <!-- <label class="typo__label">Máquinas</label> -->
+                    
                     <VueMultiselect v-model="value" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Todas as Máquinas" label="cdPt" track-by="cdPt" :preselect-first="false">
                         <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                     </VueMultiselect>
-                    <!-- <label>Máquinas</label> -->
+
                 </div>
             </div>
             <div class=row>
@@ -64,30 +65,24 @@
                     </div>
                 </div>
             </div>
-            <div id="app">
-                <a class="btn" @click="toggleShow">set avatar</a>
+
+            <div class="col s12"><span>Carregar Logo da Empresa</span></div>
+            <div class="file-field input-field">
+                <button class="btn light-blue darken-2 right btn waves-effect waves-light" id=carregar name=carregar @click="toggleShow">
+                    <h6>Carregar</h6>
+                </button>
                 <my-upload field="img"
                     @crop-success="cropSuccess"
-                 
                     v-model="show"
                     :width="300"
                     :height="300"
-                   
-                    url="http://localhost:5000/upload"
                     langType="pt-br"
                     noCircle="true"
                     :params="params"
                     :headers="headers"
                     img-format="png">
                 </my-upload>
-            </div>
-
-            <div class="col s12"><span>Carregar Logo da Empresa</span></div>
-            <div class="file-field input-field">
-                <div class="light-blue darken-2 right btn waves-effect waves-light">
-                    <h6>Carregar</h6>
-                    <input name=imagem id=imagem type=file> 
-                </div>
+                
                 <div class=file-path-wrapper>
                     <input id=path_logo name=path_logo placeholder="Carregar logo da empresa." class="file-path validate" type=text>
                 </div>
@@ -119,7 +114,7 @@ data() {
     fileSelected: null,
     file:"",
     message:"",
-    show: true,
+    show: false,
     params: {
         token: '123456798',
         name: 'avatar'
@@ -151,7 +146,7 @@ data() {
 mounted (){
     MM.AutoInit()
     if(localStorage.getItem('logo') != null){
-        document.getElementById('logo').src = localStorage.getItem('logo');
+        this.getPhoto();
     }
 },
 created(){
@@ -160,9 +155,11 @@ created(){
 },  
 methods:{
     getPhoto() {
-        return '../assets/images/logo.jpg';
+        document.getElementById('logo').src = localStorage.getItem('logo');
     }, 
-    toggleShow() {
+    toggleShow(e) {
+        e.preventDefault();
+        
         this.show = !this.show;
     },
     /**
@@ -172,31 +169,11 @@ methods:{
      * [param] field
      */
     cropSuccess(imgDataUrl, field){
+        console.log(field)
         console.log('-------- crop success --------');
         this.imgDataUrl = imgDataUrl;	
 	    localStorage.setItem('logo', imgDataUrl);
-    },
-    /**
-     * upload success
-     *
-     * [param] jsonData  server api return data, already json encode
-     * [param] field
-     */
-    cropUploadSuccess(jsonData, field){
-        console.log('-------- upload success --------');
-        console.log(jsonData);
-        console.log('field: ' + field);
-    },
-    /**
-     * upload fail
-     *
-     * [param] status    server api return error status, like 500
-     * [param] field
-     */
-    cropUploadFail(status, field){
-        console.log('-------- upload fail --------');
-        console.log(status);
-        console.log('field: ' + field);
+        this.getPhoto();
     },
     changeMaquinas(galpao){
         console.log('chegou aqui')
@@ -287,7 +264,7 @@ methods:{
     },
     errorF(error){
         sessionStorage.setItem('error', error)
-        window.location.href = '/error'
+       // window.location.href = '/error'
         
     }
 },
