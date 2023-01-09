@@ -1,7 +1,7 @@
 <template>
     <div class="paradas">
       <h1 class=center-align>Paradas | Alertas - {{ galpaoName }}</h1>
-
+        <!-- {{ info }} -->
         <div class="container">
             <table class="flex">
                 <tr>
@@ -55,6 +55,7 @@
             cd :'000001',
             color: 'color: ',
             pts: null,
+            info: null,
             turno : null,
             maquinas : undefined,
             legendaColors1 : [
@@ -108,102 +109,103 @@
                   axios.get(`${this.ip}/idw/rest/injet/alertas/pesquisaAlertasByGalpao`,{params: {cdGalpao:this.cd}})
               ])
               .then(
-                  axios.spread((paradas, alertas) => {
-  
-                  let alerta = [], parada = [], pts = [], pts_ = [];
-                  
-                  // FORMATANDO O HORÁRIO
-                  let formatado = ''
-                  for (var par = 0; par < paradas.data.paradasGalpao.length;par++ ){
-                      
-                      let tempoFormatado = paradas.data.paradasGalpao[par].tempoParado.split(":");
-  
-                      if( tempoFormatado[0].length < 2 ){
-                          tempoFormatado[0] = '0'+tempoFormatado[0]
-                      }
-                      if( tempoFormatado[1].length < 2 ){
-                          tempoFormatado[1] = '0'+tempoFormatado[1]
-                      }
-                      if( tempoFormatado[2].length < 2 ){
-                          tempoFormatado[2] = '0'+tempoFormatado[2]
-                      }
-  
-                      formatado = tempoFormatado[0]+':'+tempoFormatado[1]+':'+tempoFormatado[2]
-                  
-                      parada.push({
-                          cdPt: paradas.data.paradasGalpao[par].cdInjetora,
-                          tempo: formatado,
-                          descricao: paradas.data.paradasGalpao[par].dsParada,
-                          cor: '#ff0000'
-                      });
-                  }
-  
-                  for (var ale = 0; ale < alertas.data.alertasGalpao.length;ale++ ){
-                      
-                      let alertaFormatado = alertas.data.alertasGalpao[ale].tempoAlerta.split(":");
-                      //console.log('opa : '+alertas.data.alertasGalpao[ale].tempoAlerta)
-                      if( alertaFormatado[0].length < 2 ){
-                          alertaFormatado[0] = '0'+alertaFormatado[0]
-                      }
-                      if( alertaFormatado[1].length < 2 ){
-                          alertaFormatado[1] = '0'+alertaFormatado[1]
-                      }
-                      if( alertaFormatado[2].length < 2 ){
-                          alertaFormatado[2] = '0'+alertaFormatado[2]
-                      }
-  
-                      formatado = alertaFormatado[0]+':'+alertaFormatado[1]+':'+alertaFormatado[2]
-                      //console.log('formatado : '+formatado)
-                      alerta.push({
-                          cdPt: alertas.data.alertasGalpao[ale].cdInjetora,
-                          tempo: formatado,
-                          descricao: alertas.data.alertasGalpao[ale].dsAlerta,
-                          cor: '#ff8b16'
-                      });
-                      //console.log(alertas.data[ale])
-                  }
-                  //console.log("3")
-  
-                  pts = pts.concat(parada, alerta);
-  
-                  if(sessionStorage.getItem('maquinasList') != 'null'){   
+                    axios.spread((paradas, alertas) => {
+
+                    let alerta = [], parada = [], pts = [], pts_ = [];
+                    
+                    // FORMATANDO O HORÁRIO
+                    let formatado = ''
+                    for (var par = 0; par < paradas.data.paradasGalpao.length;par++ ){
+                        
+                        let tempoFormatado = paradas.data.paradasGalpao[par].tempoParado.split(":");
+
+                        if( tempoFormatado[0].length < 2 ){
+                            tempoFormatado[0] = '0'+tempoFormatado[0]
+                        }
+                        if( tempoFormatado[1].length < 2 ){
+                            tempoFormatado[1] = '0'+tempoFormatado[1]
+                        }
+                        if( tempoFormatado[2].length < 2 ){
+                            tempoFormatado[2] = '0'+tempoFormatado[2]
+                        }
+
+                        formatado = tempoFormatado[0]+':'+tempoFormatado[1]+':'+tempoFormatado[2]
+                    
+                        parada.push({
+                            cdPt: paradas.data.paradasGalpao[par].cdInjetora,
+                            tempo: formatado,
+                            descricao: paradas.data.paradasGalpao[par].dsParada,
+                            cor: '#ff0000'
+                        });
+                    }
+
+                    for (var ale = 0; ale < alertas.data.alertasGalpao.length;ale++ ){
+                        
+                        let alertaFormatado = alertas.data.alertasGalpao[ale].tempoAlerta.split(":");
+                        //console.log('opa : '+alertas.data.alertasGalpao[ale].tempoAlerta)
+                        if( alertaFormatado[0].length < 2 ){
+                            alertaFormatado[0] = '0'+alertaFormatado[0]
+                        }
+                        if( alertaFormatado[1].length < 2 ){
+                            alertaFormatado[1] = '0'+alertaFormatado[1]
+                        }
+                        if( alertaFormatado[2].length < 2 ){
+                            alertaFormatado[2] = '0'+alertaFormatado[2]
+                        }
+
+                        formatado = alertaFormatado[0]+':'+alertaFormatado[1]+':'+alertaFormatado[2]
+                        //console.log('formatado : '+formatado)
+                        alerta.push({
+                            cdPt: alertas.data.alertasGalpao[ale].cdInjetora,
+                            tempo: formatado,
+                            descricao: alertas.data.alertasGalpao[ale].dsAlerta,
+                            cor: '#ff8b16'
+                        });
+                        //console.log(alertas.data[ale])
+                    }
+                    //console.log("3")
+
+                    pts = pts.concat(parada, alerta);
+
+                    if(sessionStorage.getItem('maquinasList') != 'null'){   
                     var maquinas = JSON.parse(sessionStorage.getItem('maquinasList'))
-                     maquinas.forEach((maquina) => {
+                        maquinas.forEach((maquina) => {
                         pts.forEach((pt) =>{
                             if (pt.cdPt == maquina) 
                                 pts_.push(pt)
                         })
-                     });
-                     this.info = pts_
+                        });
+                        this.info = pts_
                     pts = pts_;
                 };      
-                    // BLOCO DE LÓGICA, QUE FAZ  LOOP DA TABELA
-                    var itemsPerView = 4;
-                    var view_atual;
-                    var view_max = itemsPerView;
-                    var init = 0;
+                console.log(pts)
+                // BLOCO DE LÓGICA, QUE FAZ  LOOP DA TABELA
+                var itemsPerView = 5;
+                var view_atual;
+                var view_max = itemsPerView;
+                var init = 0;
+                view_atual = pts.filter((item, index) => index >= init && index < view_max);
+                this.pts = view_atual
+                setInterval(() => {
                     view_atual = pts.filter((item, index) => index >= init && index < view_max);
-                    this.pts = view_atual
-                    setInterval(() => {
-                        view_atual = pts.filter((item, index) => index >= init && index < view_max);
-                        view_max += itemsPerView;
-                        init += itemsPerView;
-                        
-                        if(view_atual.length === 0){
-                            if(sessionStorage.getItem('produtividade') == 'true'){
-                                window.location.href = '/produtividade'
-                            }
-                            else if(sessionStorage.getItem('maquinas') == 'true'){
-                                window.location.href = '/maquinas'
-                            }
-                            else{
-                                window.location.reload();
-                            }
-                        }else{
-                            this.pts = view_atual
+                    view_max += itemsPerView;
+                    init += itemsPerView;
+                    
+                    if(view_atual.length === 0){
+                        if(sessionStorage.getItem('produtividade') == 'true'){
+                            window.location.href = '/produtividade'
                         }
-                    }, 15000);
-                    // FIM DO BLOCO
+                        else if(sessionStorage.getItem('maquinas') == 'true'){
+                            window.location.href = '/maquinas'
+                        }
+                        else{
+                            window.location.reload();
+                        }
+                    }else{
+                        this.pts = view_atual
+                    }
+                }, 15000);
+                // FIM DO BLOCO
      
               }))
               .catch(error => this.errorF(error));
@@ -218,91 +220,83 @@
   }
   </script>
   <style>
-  html{
-      --tema-padrao: #0077FF;
-      --bg: #FCFCFC;
-      --bg-panel: #EBEBEB;
-      --bg-container: rgba(0, 0, 0, 0.1);
-      --secundary-color: #FCFCFC;
-      --color: rgba(0, 0, 0, 0.8);
-      --color-headings: #0077FF;
-      --color-text: #333333;
-      --color-title: #262626;
-  }
-  body{
-      background-color: var(--bg);
-  }
-  h1, h2, h3, h4, h5, h6, p, label, th{
-      color: var(--color-text);
-  }
-    .paradas-css{
-        color: #0b0525;
-        font-weight: 600;
-    }
-    .produtividade-css{
-        color: rgb(161, 161, 161);
-        font-weight: 400;
-    }
-    .maquinas-css{
-        color: rgb(161, 161, 161);
-        font-weight:400;
-    }
-
-  .ultima-atualizacao{
+html{
+    --tema-padrao: #0077FF;
+    --bg: #FCFCFC;
+    --bg-panel: #EBEBEB;
+    --bg-container: rgba(0, 0, 0, 0.1);
+    --secundary-color: #FCFCFC;
+    --color: rgba(0, 0, 0, 0.8);
+    --color-headings: #0077FF;
+    --color-text: #333333;
+    --color-title: #262626;
+}
+body{
+    background-color: var(--bg);
+}
+h1, h2, h3, h4, h5, h6, p, label, th{
+    color: var(--color-text);
+}
+.paradas-css{
+    color: #0b0525;
+    font-weight: 600;
+}
+.produtividade-css{
+    color: rgb(161, 161, 161);
+    font-weight: 400;
+}
+.maquinas-css{
+    color: rgb(161, 161, 161);
+    font-weight:400;
+}
+.ultima-atualizacao{
     position: absolute; 
     bottom: 1%; 
     left: 1%;
     color: #1d1d1d;
     font-size: 2.4vmax;
-  }
-  .flex, .descricao {
-        display: table;
-  }
-      .item {
-          margin: 5px;
-          text-align: center;
-          font-size: 2.0em;
-          flex: 1;
-          text-shadow: 1px 0px 0px black, 
-          -1px 0px 0px black, 
-          0px 1px 0px black, 
-          0px -1px 0px black;
-      }
-      .grow0 {
-          flex-grow: 0;
-      }
-      .grow1 {
-          flex-grow: 1;
-      }
+}
+.flex, .descricao {
+    display: table;
+}
+.item {
+    margin: 5px;
+    text-align: center;
+    font-size: 2.0em;
+    flex: 1;
+    text-shadow: 1px 0px 0px black, 
+    -1px 0px 0px black, 
+    0px 1px 0px black, 
+    0px -1px 0px black;
+}
+.grow0 {
+    flex-grow: 0;
+}
+.grow1 {
+    flex-grow: 1;
+}
   
   
-  .container {
-      font-size: .85vw;
-  }
-  span {
-      font-size: 21px;
-      color: black;
-      font-weight: bold;
-  }
-  table{
+.container {
+    font-size: .85vw;
+}
+table{
     width: auto;
       background-color: rgba(0, 0, 0, 0.01);
       border-radius: 5px;
-      margin: 2vmax auto;
-      
-  }
-  tr{
-      font-size: 1em;
-  }
-  td{
-      text-shadow: 1px 0px var(--color-text);
-      
+      margin: 2vmax auto;   
   }
   th, td{
-    padding: 1vmax;
-    
+    padding: 1.8vmax;
     font-family: 'Arial';
     text-align: center;
+  }
+  td, th{
+    text-shadow: 1px 0px var(--color-text);
+    border-bottom: 0.02vmax solid rgba(0, 0, 0, 0.2);
+  }
+  th{
+    border-top: 0.02vmax solid rgba(0, 0, 0, 0.2);
   }
   tr:hover{
       background-color: rgba(0, 0, 0, 0.04);

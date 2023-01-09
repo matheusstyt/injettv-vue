@@ -43,7 +43,7 @@
                 <div class="input-field col xl5 select-grupo">
                     <input type="hidden" id="dsGt" name="dsGt" value="">
                     <!-- <label class="typo__label">Grupo de Máquinas</label> -->
-                    <VueMultiselect v-model="gt" :options="gts" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Escolha o grupo de trabalho" label="dsGt" track-by="dsGt" ></VueMultiselect>
+                    <VueMultiselect @change="teste" v-model="gt" :options="gts" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Escolha o grupo de trabalho" label="dsGt" track-by="dsGt" ></VueMultiselect>
                 </div>
    
                 <div class="input-field col xl5">
@@ -77,7 +77,7 @@
                     :width="300"
                     :height="300"
                     langType="pt-br"
-                    noCircle="true"
+                    noCircle=true
                     :params="params"
                     :headers="headers"
                     img-format="png">
@@ -103,7 +103,6 @@ import axios from 'axios'
 import $ from 'jquery'
 import MM from 'materialize-css/dist/js/materialize.min'
 import VueMultiselect from 'vue-multiselect'
-import UploadService from "../services/UploadFilesService";
 export default {
 components: {
     VueMultiselect, 'my-upload': myUpload
@@ -154,6 +153,9 @@ created(){
    setInterval
 },  
 methods:{
+    teste(){
+        console.log('aa')
+    },
     getPhoto() {
         document.getElementById('logo').src = localStorage.getItem('logo');
     }, 
@@ -176,7 +178,7 @@ methods:{
         this.getPhoto();
     },
     changeMaquinas(galpao){
-        console.log('chegou aqui')
+        this.value = []
         var galpaoTemp = galpao
         //$('#preloader').fadeIn().toggleClass('hide');
         axios.get(`${this.ip}/idw/rest/injet/pts/ativoByGalpao`, {

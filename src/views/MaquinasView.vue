@@ -2,6 +2,7 @@
   <div class="maquinas">
 
     <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
+    <!-- {{ info }} -->
         <div class=container-g id="container">
      
           <div class="legends">
@@ -192,7 +193,7 @@ import { init } from 'events';
                     };
                    
                     // BLOCO DE LÓGICA, QUE FAZ  LOOP DA TABELA
-                    var itemsPerView = 4;
+                    var itemsPerView = 5;
                     var view_atual;
                     var view_max = itemsPerView;
                     var init = 0;
