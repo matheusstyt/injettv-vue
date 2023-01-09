@@ -1,10 +1,8 @@
 <template>
-  <div class="maquinas">
-
-    <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
+    <div class="maquinas">
+        <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
     <!-- {{ info }} -->
         <div class=container-g id="container">
-     
           <div class="legends">
             <div id="legenda-box">
                 <h6><b>Cor da 1° Coluna</b></h6>
@@ -20,7 +18,6 @@
                 <p>{{cor2.nome}} </p>
               </div>
             </div>
-  
         </div>
         <div class="maquinas-g col l12" >
           <table class="tes" name="testee">
@@ -37,38 +34,18 @@
                     <td :style=color+pt.icone.caminhoIcone>{{ pt.cdPt}}</td>
                     <td :style=color+pt.icone.caminhoIcone>{{ pt.dsProduto}}</td>
                     <td :style=color+pt.icone.caminhoIcone>{{ pt.indicadores.indiceProdutividadeOEE}}%</td>
-                </tr>
-              
+                </tr>     
           </table>
       </div>
     </div>
     <h2 class="ultima-atualizacao">Ultima atualizacão: {{ ultimaAtualizacao }}</h2>
-  </div>
-
-  </template>
+</div>
+</template>
 <script>
-    import $ from 'jquery'
+    import '../css/maquinas.css'
     import axios from 'axios'
-import { init } from 'events';
     export default {
     name: 'Maquinas',
-    components: {
-        
-    },
-    created () {
-    
-            // setInterval(() => {
-            //     this.info = sessionStorage.getItem('paradas')
-            //     if(sessionStorage.getItem('paradas') == 'true'){
-            //         window.location.href = '/paradas'
-            //     }
-            //     if(sessionStorage.getItem('produtividade') == 'true'){
-            //         window.location.href = '/produtividade'
-            //     }
-            //      this.getMaquinas();
-            // }, 15000)    
-            
-        },
     data(){
         return{
             ultimaAtualizacao : null,
@@ -191,7 +168,6 @@ import { init } from 'events';
                         this.info = pts_
                         pts = pts_;
                     };
-                   
                     // BLOCO DE LÓGICA, QUE FAZ  LOOP DA TABELA
                     var itemsPerView = 5;
                     var view_atual;
@@ -202,16 +178,13 @@ import { init } from 'events';
                     setInterval(() => {
                         view_atual = pts.filter((item, index) => index >= init && index < view_max);
                         view_max += itemsPerView;
-                        init += itemsPerView;
-                        
+                        init += itemsPerView;                       
                         if(view_atual.length === 0){
                             if(sessionStorage.getItem('paradas') == 'true'){
                                 window.location.href = '/parada'
-                            }
-                            else if(sessionStorage.getItem('produtividade') == 'true'){
+                            }else if(sessionStorage.getItem('produtividade') == 'true'){
                                 window.location.href = '/produtividade'
-                            }
-                            else{
+                            }else{
                                 window.location.reload();
                             }
                         }else{
@@ -230,272 +203,6 @@ import { init } from 'events';
         document.title = `Performance Máquinas - ${sessionStorage.getItem('galpaoName')}`
         this.cd = sessionStorage.getItem('galpao')
         this.getMaquinas();
-        
     }
-    }
+}
 </script>
-
-<style >
-
-html{
-    --tema-padrao: #0077FF;
-    --bg: #FCFCFC;
-    --bg-panel: #EBEBEB;
-    --bg-container: rgba(0, 0, 0, 0.1);
-    --secundary-color: #FCFCFC;
-    --color: rgba(0, 0, 0, 0.8);
-    --color-headings: #0077FF;
-    --color-text: #333333;
-    --color-title: #262626;
-}
-body{
-    background-color: var(--bg);
-}
-.paradas-css{
-    color: rgb(161, 161, 161);
-    font-weight: 400;
-}
-.produtividade-css{
-    color: rgb(161, 161, 161);
-    font-weight: 400;
-}
-.maquinas-css{
-    color: #0b0525;
-    font-weight: 600;
-}
-.ultima-atualizacao{
-    position: absolute; 
-    bottom: 1%; 
-    left: 1%;
-    color: #1d1d1d;
-    font-size: 2.4vmax;
-  }
-
-.container-g{
-    margin: 0 auto;
-    width: 90%;
-    display: flex;
-    align-items:flex-start;
-    justify-content: space-evenly;
-    flex-flow: row;
-}
-h1, h2, h3, h4, h5, h6, p, label, th{
-    color: var(--color-text);
-}
-.legends{
-    width:25%;
-}
-#legenda-box{
-    background-color: rgba(0, 0, 0, 0.1);
-    width:100%;
-    border-radius: 5px;
-    margin: 0 auto;
-    padding: 10px;
-    margin-top: 10px;
-}
-#legenda-box h6{
-    margin: 10 0;
-    font-size: 1.3em;
-}
-#legenda-box p{
-    font-size: 1.2em;
-    font-weight: 400;
-    margin: 0;
-    padding: 0;
-}
-.color-conteiner{
-    display: flex;
-    margin-bottom: 5px;
-}
-.cor-p{
-    width: 20px;
-    height: 20px;
-    margin: 0 10px;
-    box-shadow: 1px 1px rgb(37, 37, 37);
-    
-} 
-h2{
-    font-size: 3em;
-}
-h3{
-    font-size:2.5em;
-}
-h5{
-    font-size: 0.9em;
-}
-
-#updateMachine{
-    position: absolute;
-    bottom: 0.056%;
-    left:  1%;
-}
-.quadrado-icons{
-    width: 30px;
-    height: 30px;
-    box-shadow: 1px 1px var(--color-text);
-    margin: 0 auto;
-}
-
-table{ 
-    border-radius: 5px;
-    width: auto;
-    margin: 0 auto;
-    margin-top:2vmax;
-}
-th{
-    background-color: rgba(0, 0, 0, 0.03);
-}
-tr{
-    font-size: 1em;
-}
-tr:hover{
-    background-color: rgba(0, 0, 0, 0.1);
-}
-td{
-    text-shadow: 1px 0px var(--color-text);
-    
-}
-th, td{
-    padding: 1vmax 2vmax;
-    font-family: 'Arial';
-    text-align: center;   
-}
-
-  .material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 65px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-  }
-@media(max-height: 480px) and (max-width:640px){
-    img{
-        width: 50px;
-        height: 50px;
-    }
-    span{
-        font-size: 14px;
-    }
-    h3{
-        font-size: 16px;
-        
-    }
-    .material-icons{
-        font-size:30px;
-    }
-    div.item.flex-item-1{
-        font-size:11px;
-        margin-right: 55px;
-        margin-bottom: -10px;
-    }
-    div.item.flex-item-1 i {
-        margin-right: -40px;
-    }
-}
-@media(min-width: 641px)and(max-width: 800px ){
-    img{
-        width: 75px;
-        height: 75px;
-    }
-    span{
-        font-size: 14px;
-    }
-    h3{
-        font-size: 17px;
-        margin-bottom: 0;
-        
-    }
-    .material-icons{
-        font-size:35px;
-    }
-    div.item.flex-item-1{
-        font-size:14px;
-        margin-right: 85px;
-        margin-bottom: -20px;
-    }
-    div.item.flex-item-1 i {
-        margin-right: -40px;
-    }
-}
-@media(min-width: 801px)and(max-width: 854px ){
-    img{
-        width: 75px;
-        height: 75px;
-    }
-    span{
-        font-size: 14px;
-    }
-    h3{
-        font-size: 17px;
-        margin-bottom: 0;
-        
-    }
-    .material-icons{
-        font-size:40px;
-    }
-    div.item.flex-item-1{
-        font-size:14px;
-        margin-right: 85px;
-        margin-bottom: -20px;
-    }
-    div.item.flex-item-1 i {
-        margin-right: -40px;
-    } 
-}
-@media(min-height: 481px)and(max-height: 640px ){
-    img{
-        width: 75px;
-        height: 75px;
-    }
-    span{
-        font-size: 16px;
-    }
-    h3{
-        font-size: 20px;
-        margin-bottom: -10;        
-    }
-    .material-icons{
-        font-size:45px;
-    }
-    div.item.flex-item-1{
-        font-size:25px;
-        margin-right: 85px;
-        margin-bottom: -20px;
-    }
-    div.item.flex-item-1 i {
-        margin-right: -40px;
-    } 
-}
-@media(min-height: 641px)and(max-height: 750px ){
-    img{
-        width: 85px;
-        height: 85px;
-    }
-    span{
-        font-size: 16px;
-    }
-    h3{
-        font-size: 25px;
-        margin-bottom: -10;        
-    }
-    .material-icons{
-        font-size:50px;
-    }
-    div.item.flex-item-1{
-        font-size:20px;
-        margin-right: 85px;
-        margin-bottom: -20px;
-    }
-    div.item.flex-item-1 i {
-        margin-right: -40px;
-    } 
-}
-</style>

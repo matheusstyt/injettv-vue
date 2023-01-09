@@ -55,6 +55,7 @@ methods :{
 }
 }
 </script>
+
 <style>
 .ultima-atualizacao{
   position: absolute; 
