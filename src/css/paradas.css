@@ -65,7 +65,7 @@ table{
     margin: 2vmax auto;   
   }
   td, th{
-    padding: 1.8vmax;
+    padding: 1.5vmax;
     font-family: 'Arial';
     text-align: center;
     text-shadow: 1px 0px var(--color-text);
@@ -73,7 +73,7 @@ table{
   }
   th{
     border-top: 0.02vmax solid rgba(0, 0, 0, 0.2);
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: rgba(0, 0, 0, 0.05);
   }
   tr:hover{
       background-color: rgba(0, 0, 0, 0.04);
