@@ -396,7 +396,7 @@
       color: white; 
   }
   strong {
-      font-size: 40px;
+      font-size: 1.7em;
   }
   table {
       font-size: 1.4em;

@@ -190,6 +190,7 @@
             .then(response => {
                 this.options = response.data.pts
                 this.pts = response.data.pts
+
             })
             .catch((error) => this.errorF(error));
         },
@@ -216,6 +217,7 @@
             axios.get(`${this.ip}/idw/rest/injet/gts/monitorizacao`)
             .then(gts => this.gts = gts.data.gts    )
             .catch((error) => this.errorF(error));
+            
         },
         maquinasChange(){
             this.maquinas = !this.maquinas

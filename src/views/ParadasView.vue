@@ -48,7 +48,7 @@
         return{
             errorF(error){
                 sessionStorage.setItem('error', error)
-                window.location.href = '/error'
+                //window.location.href = '/error'
             },
             ultimaAtualizacao : null,
             ip : require('/src/config/config.env').API_URL,
@@ -115,22 +115,46 @@
                     let alerta = [], parada = [], pts = [], pts_ = [];
                     
                     // FORMATANDO O HORÁRIO
-                    let formatado = ''
+                    let formatado = '';
+                    let hora;
                     for (var par = 0; par < paradas.data.paradasGalpao.length;par++ ){
-                        
                         let tempoFormatado = paradas.data.paradasGalpao[par].tempoParado.split(":");
+                        // // SEPARANDO DIAS E HORAS
+                        
+                        // console.log(Number(tempoFormatado[0]))
+                        // let dias = Number(tempoFormatado[0]) / 24;
+                        // dias = dias.toFixed(10)
+                        
+                        // let arrDias = String(dias).split( ".");
+                        // if(arrDias[1] == undefined){
+                        //     hora = '00'
+                        // }else{
+                        //     hora = Math.trunc((Number(arrDias[1]) * 24) / 100)
+                        //     hora = String(hora)
+                        //     if(hora.length > 1 ){
+                        //         if(hora.charAt(hora.length-1) == '0'){
+                        //             hora.substring(0, hora.length - 1);
+                        //             console.log('deu : '+hora )
+                        //         }                              
+                        //     }
+                       
+                        // }
+                        // hora =  String(hora);
+                        // //hora = hora.substring(0, 2);
+                        // console.log('3 : '+hora)
+                     
 
                         if( tempoFormatado[0].length < 2 ){
-                            tempoFormatado[0] = '0'+tempoFormatado[0]
+                            tempoFormatado[0] = '0'+tempoFormatado[0];
                         }
                         if( tempoFormatado[1].length < 2 ){
-                            tempoFormatado[1] = '0'+tempoFormatado[1]
+                            tempoFormatado[1] = '0'+tempoFormatado[1];
                         }
                         if( tempoFormatado[2].length < 2 ){
-                            tempoFormatado[2] = '0'+tempoFormatado[2]
+                            tempoFormatado[2] = '0'+tempoFormatado[2];
                         }
 
-                        formatado = tempoFormatado[0]+':'+tempoFormatado[1]+':'+tempoFormatado[2]
+                        formatado =  tempoFormatado[0]+':'+tempoFormatado[1]+':'+tempoFormatado[2]
                     
                         parada.push({
                             cdPt: paradas.data.paradasGalpao[par].cdInjetora,
@@ -205,7 +229,7 @@
                     }else{
                         this.pts = view_atual
                     }
-                }, 15000);
+                }, 20000);
                 // FIM DO BLOCO
      
               }))

@@ -1,0 +1,82 @@
+const cdTurno = '';
+const dsTurno = '';
+const BiFiltroDTO = {
+    hrsDisp : '',
+    hrsDispDec : '',
+    hrsParComPeso : '',
+    hrsParComPesoDec : '',
+
+    indPar : '',
+    pcsPerdasParComPeso : '',
+    pcsPerdasParComPesoKg : '',
+    pcsPerdasParComPesoTon : '',
+    pcsPerdasPCI : '',
+    pcsPerdasPCIKg : '',
+    pcsPerdasPCITon : '',
+
+    pcsProdBruta : '',
+    pcsProdBrutaKg : '',
+    pcsProdBrutaTon : '',
+    pcsProdLiquida : '',
+    pcsProdLiquidaKg : '',
+    pcsProdLiquidaTon : '',
+    pcsProdRefugada : '',
+    pcsProdRefugadaKg : '',
+    pcsProdRefugadaTon : '',
+    indRef : '',
+    indRefGr : '',
+    indRefSeg : '',
+    indPCA : '',
+
+    pcsProdPrev : '',
+    pcsProdPrevKg : '',
+    pcsProdPrevTon : '',
+    efiRea : '',
+    efiReaGr : '',
+    efiReaSeg : '',
+    efiCic : '',
+    pcsRitmo : '',
+    pcsRitmoKg : '',
+    pcsRitmoTon : '',
+
+    pcsPerdasTotal : '',
+    pcsPerdasTotalKg : '',
+    pcsPerdasTotalTon : '',
+    indPerdas : '',
+    indPerdasGr : '',
+    indPerdasSeg : '',
+    efiCicPonderada : '',
+
+
+    hrsParSemPeso : '',
+    hrsParSemPesoDec : '',
+    hrsCiclosProdutivos : '',
+    hrsCiclosProdutivosDec : '',
+    hrsCiclosImprodutivos : '',
+    hrsCiclosImprodutivosDec : '',
+    hrsPCI : '',
+    hrsPCIDec : '',
+
+    hrsTrabalhadas : '',
+    hrsTrabalhadasDec : '',
+    hrsRefugadas : '',
+    hrsRefugadasDec : '',
+    hrsRitmo : '',
+    hrsRitmoDec : '',
+    hrsBoas : '',
+    hrsBoasDec : '',
+
+    hrsProdutivas : '',
+    hrsProdutivasDec : '',
+    hrsTotais : '',
+    hrsTotaisDec : '',
+
+    indUtilizacao : '',
+    eficiencia : '',
+    indOEE : '',
+    indOEECapital : '',
+
+    hrsCTA : '',
+    hrsCTADec : '',
+
+};

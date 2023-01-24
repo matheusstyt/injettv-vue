@@ -73,7 +73,7 @@ canvas {
 color: white; 
 }
 strong {
-    font-size: 40px;
+    font-size: 1.1vmax;
 }
 table {
     font-size: 1.4em;

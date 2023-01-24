@@ -4,17 +4,7 @@
       <h1 class=center-align>Produtividade - {{ galpaoName }}<span id=galpao></span></h1>
       <div>
           <div class="row speedometer">
-                          <div class="col l3">
-                              <div class="row flex center-align">
-                                  <div class=canvas-container>
-                                      <canvas class=Gauge id=eficiencia></canvas>
-                                  </div>
-                              </div>
-                              <div class="row center-align">
-                                  <strong>Eficiência (<span id=eficienciaValue>{{indicadores.eficiencia}}</span>)</strong>
-                              </div>
-                          </div>
-                          <div class="col l3">
+               <div class="col l3">
                               <div class="row flex">
                                   <div class=canvas-container>
                                       <canvas class=Gauge id=oee></canvas>
@@ -25,13 +15,24 @@
                               </div>
                           </div>
                           <div class="col l3">
+                              <div class="row flex center-align">
+                                  <div class=canvas-container>
+                                      <canvas class=Gauge id=eficiencia></canvas>
+                                  </div>
+                              </div>
+                              <div class="row center-align">
+                                  <strong>Performance (<span id=eficienciaValue>{{indicadores.eficiencia}}</span>)</strong>
+                              </div>
+                          </div>
+                       
+                          <div class="col l3">
                               <div class="row flex">
                                   <div class=canvas-container>
                                       <canvas class=Gauge id=utilizacao></canvas>
                                   </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Utilização (<span id=utilizacaoValue>{{indicadores.indUtilizacao}}</span>)</strong>
+                                  <strong>Produção Líquida (<span id=utilizacaoValue>{{parseInt(indicadores.pcsProdLiquida)}}</span>)</strong>
                               </div>
                           </div>
                           <div class="col l3">
@@ -41,7 +42,7 @@
                                       </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Refugo (<span id=refugoValue>{{indicadores.indRef}}</span>)</strong>
+                                  <strong>Ciclo Médio (<span id=refugoValue>{{indicadores.cicloMedio}}</span>)</strong>
                               </div>
                           </div>
           </div>
@@ -59,19 +60,19 @@
                   </tr>
               
               <tr>
-                  <td>% Eficiência</td>
+                  <td>% Performance</td>
                   <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.eficiencia}}</th>
                   <td>{{indicadores.eficiencia}}%</td>
               </tr>
               <tr>
-                  <td>% Utilização</td>
-                  <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indUtilizacao}}</th>
-                  <td>{{indicadores.indUtilizacao}}%</td>
+                  <td>Produção Líquida</td>
+                  <th v-for="(indicadoresTurno, index) in bi">{{parseInt(indicadoresTurno.indicadores.pcsProdLiquida)}}</th>
+                  <td>{{parseInt(indicadores.pcsProdLiquida)}}</td>
               </tr>
               <tr>
-                  <td>% Refugo</td>
-                  <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indRef}}</th> 
-                  <td>{{indicadores.indRef}}%</td>
+                  <td> Ciclo Médio</td>
+                  <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.cicloMedio}}</th> 
+                  <td>{{indicadores.cicloMedio}}</td>
               </tr>
           </table>
       </div>
@@ -96,17 +97,7 @@
       },
       created () {
           this.getFirstProdutividade();
-          setInterval(() =>{
-              if(sessionStorage.getItem('maquinas') == 'true'){
-                window.location.href = '/maquinas'
-              }
-              else if(sessionStorage.getItem('paradas') == 'true'){
-                window.location.href = '/parada'
-              }
-              else{
-                window.location.reload();
-              }
-          }, 20000)
+         
       },
       data() {
           return {
@@ -164,46 +155,85 @@
               };
               var speeds = [
                   {
-                      id: 'eficiencia',
-                      value: this.indicadores.eficiencia
-                  },
+                        id: 'eficiencia',
+                        value: this.indicadores.eficiencia,
+                        max: 100
+                    },
                   {
-                      id: 'oee',
-                      value: this.indicadores.indOEE
-                  },
+                        id: 'oee',
+                        value: this.indicadores.indOEE,
+                        max: 100
+                    },
                   {
-                      id: 'utilizacao',
-                      value: this.indicadores.indUtilizacao
-                  },
+                        id: 'utilizacao',
+                        value: this.indicadores.pcsProdLiquida,
+                        max: this.indicadores.pcsProdPrev
+                    },
                   {
-                      id: 'refugo',
-                      value: this.indicadores.indRef
-                  }
+                        id: 'refugo',
+                        value: this.indicadores.cicloMedio,
+                        max: ((this.indicadores.efiCic / 100)*this.indicadores.cicloMedio)
+                    },
               ];
-              $(function() {
-                  speeds.forEach(speed => {
-                  var opts = {
-                      angle: -0.10, // The span of the gauge arc
-                      lineWidth: 0.25, // The line thickness
-                      radiusScale: 0.9, // Relative radius
-                      limitMax: false,     // If false, max value increases automatically if value > maxValue
-                      limitMin: false,     // If true, the min value of the gauge will be fixed
-                      generateGradient: true,
-                      highDpiSupport: true,     // High resolution support
-                      percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
-                      staticLabels: {
-                          font: '20px sans-serif',
-                          labels: [50, 100],
-                          color: '#fff'
-                      }
-                  };
-                  var target = document.getElementById(speed.id); // your canvas element
-                  var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-                  gauge.maxValue = 100; // set max gauge value
-                  gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-                  gauge.animationSpeed = 33; // set animation speed (32 is default value)
-                  gauge.set(speed.value); // set actual value
-              });
+                $(function() {
+                    speeds.forEach(speed => {
+                    console.log('chegou aqui')
+                    if(speed.id == 'utilizacao'){
+                        var opts = {
+                        angle: -0.10, // The span of the gauge arc
+                        lineWidth: 0.25, // The line thickness
+                        radiusScale: 0.9, // Relative radius
+                        limitMax: false,     // If false, max value increases automatically if value > maxValue
+                        limitMin: false,     // If true, the min value of the gauge will be fixed
+                        generateGradient: true,
+                        highDpiSupport: true,     // High resolution support
+                        percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+                        staticLabels: {
+                            font: '20px sans-serif',
+                            labels: [(speed.max*0.5), (speed.max*0.99)],
+                            color: '#fff'
+                        }
+                    };
+                    }else if(speed.id == 'refugo'){
+                        var opts = {
+                        angle: -0.10, // The span of the gauge arc
+                        lineWidth: 0.25, // The line thickness
+                        radiusScale: 0.9, // Relative radius
+                        limitMax: false,     // If false, max value increases automatically if value > maxValue
+                        limitMin: false,     // If true, the min value of the gauge will be fixed
+                        generateGradient: true,
+                        highDpiSupport: true,     // High resolution support
+                        percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+                        staticLabels: {
+                            font: '20px sans-serif',
+                            labels: [(speed.max*0.5), (speed.max*0.99)],
+                            color: '#fff'
+                        }
+                    };
+                    }else{
+                        var opts = {
+                        angle: -0.10, // The span of the gauge arc
+                        lineWidth: 0.25, // The line thickness
+                        radiusScale: 0.9, // Relative radius
+                        limitMax: false,     // If false, max value increases automatically if value > maxValue
+                        limitMin: false,     // If true, the min value of the gauge will be fixed
+                        generateGradient: true,
+                        highDpiSupport: true,     // High resolution support
+                        percentColors: [[0.0, "#FF0000" ], [0.50, "#FFFF00"], [1.0, "#39ff14"]],
+                        staticLabels: {
+                            font: '20px sans-serif',
+                            labels: [50, 100],
+                            color: '#fff'
+                        }
+                    };
+                    }
+                    var target = document.getElementById(speed.id); // your canvas element
+                    var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                    gauge.maxValue = speed.max; // set max gauge value
+                    gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+                    gauge.animationSpeed = 33; // set animation speed (32 is default value)
+                    gauge.set(speed.value); // set actual value
+                });
               });            
           },
            getFirstProdutividade (){
@@ -266,14 +296,25 @@
                   ])
                   .then(axios.spread((velocimetro, bi, turnos) => {
                         
-                      this.info = bi.data.indicadores  
-                      this.bi = bi.data.indicadoresTurno
-                      this.indicadores = bi.data.indicadores
-                      this.velocimetro = velocimetro.data.indicadores
-                      this.turnos = turnos.data.turnos
-                      $('#preloader').fadeIn().toggleClass('hide');           
-                          this.getGauge();  
-     
+                        this.info = bi.data.indicadores  
+                        this.bi = bi.data.indicadoresTurno
+                        console.log(bi)
+                        this.indicadores = bi.data.indicadores
+                        this.velocimetro = velocimetro.data.indicadores
+                        this.turnos = turnos.data.turnos
+                        $('#preloader').fadeIn().toggleClass('hide');           
+                        this.getGauge();  
+                        setInterval(() =>{
+                            if(sessionStorage.getItem('maquinas') == 'true'){
+                                window.location.href = '/maquinas'
+                            }
+                            else if(sessionStorage.getItem('paradas') == 'true'){
+                                window.location.href = '/parada'
+                            }
+                            else{
+                                window.location.reload();
+                            }
+                        }, 30000);   
                   }))
                   // .catch(errorBI => response.status(500).render('error', {error: 'json.stringify(errorBI)'}));
                   .catch(errorBI => this.info = errorBI);

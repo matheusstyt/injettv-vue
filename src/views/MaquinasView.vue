@@ -3,7 +3,7 @@
         <h1 align="center">Performance Máquinas - {{ galpaoName }}</h1>
     <!-- {{ info }} -->
         <div class=container-g id="container">
-          <div class="legends">
+            <div class="legends">
             <div id="legenda-box">
                 <h6><b>Cor da 1° Coluna</b></h6>
                 <div v-for="(cor1, index) in legendaColors1" class="color-conteiner"> 
@@ -18,7 +18,7 @@
                 <p>{{cor2.nome}} </p>
               </div>
             </div>
-        </div>
+            </div>
         <div class="maquinas-g col l12" >
           <table class="tes" name="testee">
               <tr>
@@ -81,7 +81,7 @@
     methods:{
         errorF(error){
             sessionStorage.setItem('error', error)
-            window.location.href = '/error'
+            //window.location.href = '/error'
         },
         getToday(){
             var today = new Date();
@@ -190,7 +190,7 @@
                         }else{
                             this.pts = view_atual
                         }
-                    }, 15000);
+                    }, 20000);
                     // FIM DO BLOCO
                     this.turno = res
                 })

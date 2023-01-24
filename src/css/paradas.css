@@ -65,7 +65,7 @@ table{
     margin: 2vmax auto;   
   }
   td, th{
-    padding: 1.5vmax;
+    padding: 1.7vmax;
     font-family: 'Arial';
     text-align: center;
     text-shadow: 1px 0px var(--color-text);
