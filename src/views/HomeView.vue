@@ -1,6 +1,6 @@
 
 <script>
-//import './indicadores/filtroBI'
+//import './indicadores/Monitorizacao'
 
 import '../css/produtividade.css'
 import Preloader from '../components/Preloader.vue'

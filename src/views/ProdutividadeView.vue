@@ -11,7 +11,7 @@
                                   </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>OEE (<span id=oeeValue>{{indicadores.indOEE}}</span>)</strong>
+                                  <strong>OEE (<span id=oeeValue>{{vIndOEE}}</span>)</strong>
                               </div>
                           </div>
                           <div class="col l3">
@@ -21,7 +21,7 @@
                                   </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Performance (<span id=eficienciaValue>{{indicadores.eficiencia}}</span>)</strong>
+                                  <strong>Performance (<span id=eficienciaValue>{{vPerformances}}</span>)</strong>
                               </div>
                           </div>
                        
@@ -32,7 +32,7 @@
                                   </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Produção Líquida (<span id=utilizacaoValue>{{parseInt(indicadores.pcsProdLiquida)}}</span>)</strong>
+                                  <strong>Produção Líquida (<span id=utilizacaoValue>{{parseInt(vPcsProdLiquida)}}</span>)</strong>
                               </div>
                           </div>
                           <div class="col l3">
@@ -42,7 +42,7 @@
                                       </div>
                               </div>
                               <div class="row center-align">
-                                  <strong>Ciclo Médio (<span id=refugoValue>{{indicadores.cicloMedio}}</span>)</strong>
+                                  <strong>Ciclo Médio (<span id=refugoValue>{{vCicloMedio}}</span>)</strong>
                               </div>
                           </div>
           </div>
@@ -57,6 +57,8 @@
                       <td>% Produtividade  OEE</td>
                       <th v-for="(indicadoresTurno, index) in bi">{{indicadoresTurno.indicadores.indOEE}}</th>
                       <td>{{indicadores.indOEE}}%</td>
+                    
+                     
                   </tr>
               
               <tr>
@@ -111,6 +113,15 @@
               velocimetro : {}, 
               turnos: null,
               info : 0,
+              vIndOEE : 0,
+              vPcsProdLiquida : 0,
+              vIndOEE : 0,
+              vCicloMedio : 0,
+              vPerformances : 0,
+              vPcsProdPrev : 0
+
+
+
   
           }
       },
@@ -156,23 +167,23 @@
               var speeds = [
                   {
                         id: 'eficiencia',
-                        value: this.indicadores.eficiencia,
+                        value: this.vPerformances,
                         max: 100
                     },
                   {
                         id: 'oee',
-                        value: this.indicadores.indOEE,
+                        value: this.vIndOEE,
                         max: 100
                     },
                   {
                         id: 'utilizacao',
-                        value: this.indicadores.pcsProdLiquida,
-                        max: this.indicadores.pcsProdPrev
+                        value: this.vPcsProdLiquida,
+                        max: this.vPcsProdPrev
                     },
                   {
                         id: 'refugo',
-                        value: this.indicadores.cicloMedio,
-                        max: ((this.indicadores.efiCic / 100)*this.indicadores.cicloMedio)
+                        value: this.vCicloMedio,
+                        max: ((this.vPerformances / 100)*this.vCicloMedio)
                     },
               ];
                 $(function() {
@@ -284,6 +295,14 @@
                           dtIni: year + "-" + mes +  "-" + dd,
                           dtFim: year + "-" + mes +  "-" + dd,
                       }),
+                      axios.post(`${this.ip}/idw/rest/injet/bi/resumoBI`, {   					
+                            anoIni: year,
+                            mesIni: mes,
+                            anoFim: year,
+                            mesFim: mes,
+                            cdGalpao: this.cd,
+                            agrupamentoBI: 1,
+                        }),
                       axios.post(`${this.ip}/idw/rest/injet/bi/resumoBI`, {                
                           anoIni: year,
                           mesIni: mes,
@@ -300,7 +319,11 @@
                         this.bi = bi.data.indicadoresTurno
                         console.log(bi)
                         this.indicadores = bi.data.indicadores
-                        this.velocimetro = velocimetro.data.indicadores
+                        this.vIndOEE = velocimetro.data.indicadores.indOEE
+                        this.vCicloMedio = velocimetro.data.indicadores.cicloMedio
+                        this.vPcsProdLiquida = velocimetro.data.indicadores.pcsProdLiquida
+                        this.vPerformances = velocimetro.data.indicadores.eficiencia
+                        this.vPcsProdPrev = velocimetro.data.indicadores.pcsProdPrev
                         this.turnos = turnos.data.turnos
                         $('#preloader').fadeIn().toggleClass('hide');           
                         this.getGauge();  
