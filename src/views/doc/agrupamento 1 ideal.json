@@ -1,0 +1,162 @@
+{ 
+"filtroBI": { 
+
+		"anoIni": "2023", 
+		"mesIni": "02", 
+		"anoFim": "2023", 
+		"mesFim": "02", 
+		"cdTurno": "", 
+		"cdPt": "", 
+		"cdGt": "", 
+		"cdClasseMaquina": "", 
+		"cdRap": "", 
+		"cdGrpRap": "", 
+		"cdProduto": "", 
+		"cdGalpao": "000005", 
+		"agrupamentoBI": 1, 
+		"cdEstrutura": "", 
+		"dsTurno": "", 
+		"dsPt": "", 
+		"dsGt": "", 
+		"dsGrpRap": "", 
+		"dsProduto": "", 
+		"injetTV": true 
+	}, 
+
+	"indicadores": { 
+
+		"pcsProdLiquida": "47260.00", 
+		"indRef": "0.01", 
+        "pcsProdPrev": "45872.00", 
+		"efiRea": "33.61", 
+		"efiCic": "191.04", 
+		"efiCicPonderada": "191.04", 
+		"indUtilizacao": "16.66", 
+		"eficiencia": "187.62", 
+		"indOEE": "31.25", 
+		"cicloMedio": "8.898" 
+	}, 
+
+    "indicadoresTurno": [ 
+    { 
+        "cdTurno": "000001", 
+        "dsTurno": "PRIMEIRO TURNO", 
+        "filtro": { 
+
+            "anoIni": "2023", 
+            "mesIni": "02", 
+            "anoFim": "2023", 
+            "mesFim": "02", 
+            "cdTurno": "000001", 
+            "cdPt": "", 
+            "cdGt": "", 
+            "cdClasseMaquina": "", 
+            "cdRap": "", 
+            "cdGrpRap": "", 
+            "cdProduto": "", 
+            "cdGalpao": "000005", 
+            "agrupamentoBI": 1, 
+            "cdEstrutura": "", 
+            "dsTurno": "", 
+            "dsPt": "", 
+            "dsGt": "", 
+            "dsGrpRap": "", 
+            "dsProduto": "" 
+        }, 
+        "indicadores": { 
+
+            "pcsProdLiquida": "16937.00", 
+            "indRef": "0.03", 
+            "pcsProdPrev": "49013.00", 
+            "efiRea": "34.56", 
+            "efiCic": "191.85", 
+            "indUtilizacao": "17.01", 
+            "eficiencia": "186.68", 
+            "indOEE": "31.75", 
+            "cicloMedio": "10.685" 
+		} 
+    },
+    { 
+
+        "cdTurno": "000002", 
+        "dsTurno": "SEGUNDO TURNO", 
+        "filtro": { 
+
+            "anoIni": "2023", 
+            "mesIni": "02", 
+            "anoFim": "2023", 
+            "mesFim": "02", 
+            "cdTurno": "000002", 
+            "cdPt": "", 
+            "cdGt": "", 
+            "cdClasseMaquina": "", 
+            "cdRap": "", 
+            "cdGrpRap": "", 
+            "cdProduto": "", 
+            "cdGalpao": "000005", 
+            "agrupamentoBI": 1, 
+            "cdEstrutura": "", 
+            "dsTurno": "", 
+            "dsPt": "", 
+            "dsGt": "", 
+            "dsGrpRap": "", 
+            "dsProduto": "", 
+            "injetTV": true 
+
+        }, 
+        "indicadores": { 
+            "pcsProdLiquida": "16937.00", 
+            "indRef": "0.03", 
+            "pcsProdPrev": "49013.00", 
+            "efiRea": "34.56", 
+            "efiCic": "191.85", 
+            "indUtilizacao": "17.01", 
+            "eficiencia": "186.68", 
+            "indOEE": "31.75", 
+            "cicloMedio": "10.685" 
+        }
+
+    },	 
+    { 
+        "cdTurno": "000003", 
+        "dsTurno": "TERCEIRO TURNO", 
+        "filtro": { 
+
+            "anoIni": "2023", 
+            "mesIni": "02", 
+            "anoFim": "2023", 
+            "mesFim": "02", 
+            "cdTurno": "000003", 
+            "cdPt": "", 
+            "cdGt": "", 
+            "cdClasseMaquina": "", 
+            "cdRap": "", 
+            "cdGrpRap": "", 
+            "cdProduto": "", 
+            "cdGalpao": "000005", 
+            "agrupamentoBI": 1, 
+            "cdEstrutura": "", 
+            "dsTurno": "", 
+            "dsPt": "", 
+            "dsGt": "", 
+            "dsGrpRap": "", 
+            "dsProduto": "", 
+            "injetTV": true 
+        }, 
+
+        "indicadores": { 
+
+            "pcsProdLiquida": "16937.00", 
+            "indRef": "0.03", 
+            "pcsProdPrev": "49013.00", 
+            "efiRea": "34.56", 
+            "efiCic": "191.85", 
+            "indUtilizacao": "17.01", 
+            "eficiencia": "186.68", 
+            "indOEE": "31.75", 
+            "cicloMedio": "10.685" 
+
+        }
+    }
+    ]
+} 

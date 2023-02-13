@@ -118,7 +118,8 @@
               vIndOEE : 0,
               vCicloMedio : 0,
               vPerformances : 0,
-              vPcsProdPrev : 0
+              vPcsProdPrev : 0,
+              offline : false
 
 
 
@@ -294,6 +295,7 @@
                           cdTurno: turnoAtual.data.cdTurno,
                           dtIni: year + "-" + mes +  "-" + dd,
                           dtFim: year + "-" + mes +  "-" + dd,
+                          injetTV: true
                       }),
                       axios.post(`${this.ip}/idw/rest/injet/bi/resumoBI`, {   					
                             anoIni: year,
@@ -302,22 +304,18 @@
                             mesFim: mes,
                             cdGalpao: this.cd,
                             agrupamentoBI: 1,
+                            injetTV: true
                         }),
-                      axios.post(`${this.ip}/idw/rest/injet/bi/resumoBI`, {                
-                          anoIni: year,
-                          mesIni: mes,
-                          anoFim: year,
-                          mesFim: mes,
-                          cdGalpao: this.cd,
-                          agrupamentoBI: 1,
-                      }),
                       axios.get(`${this.ip}/idw/rest/injet/monitorizacao/turnos`)
                   ])
                   .then(axios.spread((velocimetro, bi, turnos) => {
                         
                         this.info = bi.data.indicadores  
                         this.bi = bi.data.indicadoresTurno
-                        console.log(bi)
+                        console.log("bi")
+                        console.log(bi.data)
+                        console.log("velocimetro.data")
+                        console.log(velocimetro.data)
                         this.indicadores = bi.data.indicadores
                         this.vIndOEE = velocimetro.data.indicadores.indOEE
                         this.vCicloMedio = velocimetro.data.indicadores.cicloMedio
@@ -325,6 +323,16 @@
                         this.vPerformances = velocimetro.data.indicadores.eficiencia
                         this.vPcsProdPrev = velocimetro.data.indicadores.pcsProdPrev
                         this.turnos = turnos.data.turnos
+                        console.log(this.vIndOEE)
+                        console.log(this.vCicloMedio)
+                        console.log(this.vPcsProdLiquida)
+                        console.log(this.vPcsProdPrev)
+                        // if(this.this.vIndOEE <= 0 && vCicloMedio <= 0 && vPcsProdLiquida <= 0 && vPerformances <= 0 && vPcsProdPrev <= 0){
+                        //     console.log('zerado')
+                        // }else{
+                        //     console.log('não zerado')
+                        // }
+                        // this.offline = true
                         $('#preloader').fadeIn().toggleClass('hide');           
                         this.getGauge();  
                         setInterval(() =>{

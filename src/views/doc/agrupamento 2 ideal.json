@@ -1,0 +1,39 @@
+{
+	"filtroBI": {
+		"anoIni": "",
+		"mesIni": "",
+		"anoFim": "",
+		"mesFim": "",
+		"dtIni": "Feb 9, 2023 12:00:00 AM",
+		"dtFim": "Feb 9, 2023 12:00:00 AM",
+		"cdTurno": "000001",
+		"cdPt": "",
+		"cdGt": "",
+		"cdClasseMaquina": "",
+		"cdRap": "",
+		"cdGrpRap": "",
+		"cdProduto": "",
+		"cdGalpao": "000005",
+		"agrupamentoBI": 2,
+		"cdEstrutura": "",
+		"dsTurno": "PRIMEIRO TURNO",
+		"dsPt": "",
+		"dsGt": "",
+		"dsGrpRap": "",
+		"dsProduto": "",
+		"injetTV": true
+	},
+	"indicadores": {
+	
+		"pcsProdLiquida": "0.00",
+		"indRef": "0.00",
+		"pcsProdPrev": "4212.00",
+		"efiRea": "0.00",
+		"efiCic": "0.00",
+        "indUtilizacao": "17.01", 
+		"eficiencia": "0.00",
+		"indOEE": "0.00",
+		"cicloMedio": "0.0"
+	}
+
+}
